@@ -349,7 +349,8 @@ class ContestJoin(LoginRequiredMixin, ContestMixin, BaseDetailView):
         profile.save()
         contest._updating_stats_only = True
         contest.update_user_count()
-        return HttpResponseRedirect(reverse('problem_list'))
+
+        return HttpResponseRedirect(reverse('contest_view', args=(contest.key,)))
 
     def ask_for_access_code(self, form=None):
         contest = self.object
@@ -612,6 +613,9 @@ class ContestParticipationList(LoginRequiredMixin, ContestRankingBase):
             ranker=lambda users, key: ((user.participation.virtual or live_link, user) for user in users))
 
     def get_context_data(self, **kwargs):
+        if self.object.hide_participation_tab:
+            raise Http404()
+
         context = super().get_context_data(**kwargs)
         context['has_rating'] = False
         context['now'] = timezone.now()

@@ -109,8 +109,11 @@ class ContestForm(ModelForm):
 class ContestAdmin(VersionAdmin):
     fieldsets = (
         (None, {'fields': ('key', 'name', 'organizers')}),
-        (_('Settings'), {'fields': ('is_visible', 'no_comments', 'use_clarifications', 'hide_problem_tags',
-                            'hide_scoreboard', 'run_pretests_only', 'no_social_share', 'hide_points_on_scoreboard')}),
+        (_('Settings'), {'fields': ('is_visible', 'use_clarifications', 'hide_problem_tags',
+                            'hide_scoreboard', 'run_pretests_only')}),
+        (_('Visibility'), {'fields': ('no_social_share',
+                            'hide_points_on_scoreboard',
+                            'hide_participation_tab')}),
         (_('Scheduling'), {'fields': ('start_time', 'end_time', 'time_limit')}),
         (_('Details'), {'fields': ('description', 'og_image', 'logo_override_image', 'tags', 'summary')}),
         (_('Format'), {'fields': ('format_name', 'format_config')}),

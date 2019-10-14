@@ -66,9 +66,6 @@ class Contest(models.Model):
                                           help_text=_('Whether the scoreboard should remain hidden for the duration '
                                                       'of the contest.'),
                                           default=False)
-    no_comments = models.BooleanField(verbose_name=_('disable comments'),
-                                            help_text=_('Disable comments on contest page'),
-                                             default=True)
     use_clarifications = models.BooleanField(verbose_name=_('use clarification system'),
                                              help_text=_('Use clarification system instead of comments.'),
                                              default=True)
@@ -77,6 +74,9 @@ class Contest(models.Model):
                                              default=False)
     hide_points_on_scoreboard = models.BooleanField(verbose_name=_('hide points on scoreboard'),
                                             help_text=_('Hide points on scoreboard page'),
+                                             default=False)
+    hide_participation_tab = models.BooleanField(verbose_name=_('hide participation tab'),
+                                            help_text=_('Hide participation tab on contest page'),
                                              default=False)
     rating_floor = models.IntegerField(verbose_name=('rating floor'), help_text=_('Rating floor for contest'),
                                        null=True, blank=True)

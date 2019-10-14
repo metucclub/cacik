@@ -9,7 +9,7 @@
         {% else %}
             {{ make_tab('ranking', 'fa-bar-chart', None, _('Hidden Scoreboard')) }}
         {% endif %}
-        {% if contest.show_scoreboard and request.user.is_authenticated %}
+        {% if not contest.hide_participation_tab and contest.show_scoreboard and request.user.is_authenticated %}
             {{ make_tab('participation', 'fa-users', url('contest_participation_own', contest.key), _('Participation')) }}
         {% endif %}
     {% endif %}

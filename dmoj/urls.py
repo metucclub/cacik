@@ -203,8 +203,8 @@ urlpatterns = [
     url(r'^contest/(?P<contest>\w+)', include([
         url(r'^$', contests.ContestDetail.as_view(), name='contest_view'),
         url(r'^/clone$', contests.ContestClone.as_view(), name='contest_clone'),
-        url(r'^/ranking/$', contests.ContestRanking.as_view(), name='contest_ranking'),
-        url(r'^/ranking/ajax$', contests.contest_ranking_ajax, name='contest_ranking_ajax'),
+        url(r'^/scoreboard/$', contests.ContestRanking.as_view(), name='contest_ranking'),
+        url(r'^/scoreboard/ajax$', contests.contest_ranking_ajax, name='contest_ranking_ajax'),
         url(r'^/join$', contests.ContestJoin.as_view(), name='contest_join'),
         url(r'^/leave$', contests.ContestLeave.as_view(), name='contest_leave'),
 

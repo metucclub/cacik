@@ -73,7 +73,7 @@
         {% endcache %}
     </div>
 
-    {% if contest.ended or request.user.is_superuser or is_organizer %}
+    {% if request.user.is_authenticated and (contest.can_join or contest.ended) %}
         <hr>
         <div class="contest-problems">
             <h2 style="margin-bottom: 0.2em"><i class="fa fa-fw fa-question-circle"></i>{{ _('Problems') }} </h2>
@@ -92,7 +92,7 @@
                 {% for problem in contest_problems %}
                     <tr>
                         <td>
-                            {% if request.user.is_superuser or problem.is_public or (participating and not participation.ended) %}
+                            {% if request.user.is_superuser or problem.is_public or contest.is_in_contest(request.user) %}
                                 <a href="{{ url('problem_detail', problem.code) }}">
                                     {{ contest.contest_problems.get(problem=problem).letter }}
                                 </a>
@@ -101,7 +101,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if request.user.is_superuser or problem.is_public or (participating and not participation.ended) %}
+                            {% if request.user.is_superuser or problem.is_public or contest.is_in_contest(request.user) %}
                                 <a href="{{ url('problem_detail', problem.code) }}">{{ problem.i18n_name }}</a>
                             {% else %}
                                 {{ problem.i18n_name }}
@@ -110,14 +110,14 @@
                         <td>{{ problem.points|floatformat }}{% if problem.partial %}p{% endif %}</td>
                         <td>{{ problem.ac_rate|floatformat(1) }}%</td>
                         <td>
-                            {% if request.user.is_superuser or problem.is_public or (participating and not participation.ended) %}
+                            {% if request.user.is_superuser or problem.is_public or contest.is_in_contest(request.user) %}
                                 <a href="{{ url('ranked_submissions', problem.code) }}">{{ problem.user_count }}</a>
                             {% else %}
                                 {{ problem.user_count }}
                             {% endif %}
                         </td>
                         <td>
-                            {% if problem.is_public and (not participating or participation.ended) and problem.has_public_editorial %}
+                            {% if request.user.is_superuser or (problem.is_public and not contest.is_in_contest(request.user) and problem.has_public_editorial) %}
                                 <a href="{{ url('problem_editorial', problem.code) }}">{{ _('Editorial') }}</a>
                             {% endif %}
                         </td>
@@ -137,9 +137,7 @@
         </span>
     {% endif %}
 
-    {% if not contest.no_comments %}
-        {% include "comments/list.html" %}
-    {% endif %}
+    {% include "comments/list.html" %}
 {% endblock %}
 
 {% block description_end %}{% endblock %}
