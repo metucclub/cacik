@@ -44,18 +44,18 @@
     <script>window.bad_browser = true</script>
     <![endif]-->
     {% block meta %}{% endblock %}
-    {% if not INLINE_FONTAWESOME %}
-        <link rel="stylesheet" href="{{ FONTAWESOME_CSS }}">
-    {% endif %}
+
     {% compress css %}
-        <link rel="stylesheet" href="{{ static('style.css') }}">
+        <link rel="stylesheet" href="{{ sass_src('scss/style.scss') }}">
+
         {% if PYGMENT_THEME %}
             <link rel="stylesheet" href="{{ static(PYGMENT_THEME) }}">
-        {% endif %}{% if INLINE_FONTAWESOME %}
-        <link rel="stylesheet" href="{{ static('libs/fontawesome/font-awesome.css') }}">{% endif %}
-        <link rel="stylesheet" type="text/css" href="{{ static('libs/featherlight/featherlight.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ static('libs/clipboard/tooltip.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ static('libs/select2/select2.css') }}">
+        {% endif %}
+
+        <link rel="stylesheet" href="{{ static('libs/fontawesome/font-awesome.css') }}">
+        <link rel="stylesheet" href="{{ static('libs/featherlight/featherlight.min.css') }}">
+        <link rel="stylesheet" href="{{ static('libs/clipboard/tooltip.css') }}">
+        <link rel="stylesheet" href="{{ static('libs/select2/select2.css') }}">
     {% endcompress %}
     <link rel="canonical"
           href="{{ DMOJ_SCHEME }}://{{ DMOJ_CANONICAL|default(site.domain) }}{{ request.get_full_path() }}">
@@ -67,22 +67,21 @@
         </style>
     {% endif %}
     {% block media %}{% endblock %}
-    {% if not INLINE_JQUERY %}
-        <script src="{{ JQUERY_JS }}"></script>
-    {% endif %}
+
 
     {% compress js %}
         <script>{{ inlinei18n(LANGUAGE_CODE)|safe }}</script>
-        {% if INLINE_JQUERY %}
-            <script src="{{ static('libs/jquery-3.4.1.min.js') }}"></script>
-        {% endif %}
+
+        <script src="{{ static('libs/jquery-3.4.1.min.js') }}"></script>
         <script src="{{ static('libs/jquery-cookie.js') }}"></script>
         <script src="{{ static('libs/jquery-taphold.js') }}"></script>
         <script src="{{ static('libs/jquery.unveil.js') }}"></script>
         <script src="{{ static('libs/moment.js') }}"></script>
         <script src="{{ static('libs/select2/select2.js') }}"></script>
+
         {% include "extra_js.html" %}
-        <script src="{{ static('common.js') }}"></script>
+
+        <script src="{{ static('js/common.js') }}"></script>
         <script>
             moment.locale('{{ LANGUAGE_CODE }}');
             $(function () {

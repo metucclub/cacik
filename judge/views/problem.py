@@ -25,7 +25,6 @@ from django.views.generic import ListView, View
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import SingleObjectMixin
 
-from django_ace.widgets import ACE_URL
 from judge.comments import CommentedDetailView
 from judge.forms import ProblemCloneForm, ProblemSubmitForm
 from judge.models import ContestProblem, ContestSubmission, Judge, Language, Problem, ProblemGroup, \
@@ -260,11 +259,11 @@ class ProblemPdfView(ProblemMixin, SingleObjectMixin, View):
                 }).replace('"//', '"https://').replace("'//", "'https://")
                 maker.title = problem_name
 
-                assets = ['style.css', 'pygment-github.css']
+                maker.load(file, os.path.join(settings.STATIC_ROOT, 'css', 'style.css'))
+                maker.load(file, os.path.join(settings.STATIC_ROOT, 'css', 'pygment-github.css'))
                 if maker.math_engine == 'jax':
-                    assets.append('mathjax_config.js')
-                for file in assets:
-                    maker.load(file, os.path.join(settings.DMOJ_RESOURCES, file))
+                    maker.load(file, os.path.join(settings.STATIC_ROOT, 'js', 'mathjax_config.js'))
+
                 maker.make()
                 if not maker.success:
                     with open(error_cache, 'wb') as f:
@@ -642,8 +641,6 @@ def problem_submit(request, problem=None, submission=None):
         'no_judges': not form.fields['language'].queryset,
         'submission_limit': submission_limit,
         'submissions_left': submissions_left,
-        'ACE_URL': ACE_URL,
-
         'default_lang': default_lang,
     })
 

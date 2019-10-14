@@ -133,6 +133,7 @@ INSTALLED_APPS += (
     'django_social_share',
     'social_django',
     'compressor',
+    'sass_processor',
     'django_ace',
     'pagedown',
     'sortedm2m',
@@ -303,8 +304,15 @@ MARKDOWN_STYLES = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'dmoj',
+        'USER': 'root',
+        'PASSWORD': 'pass',
+        'HOST': '127.0.0.1',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'sql_mode': 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION',
+        },
     },
 }
 
@@ -339,19 +347,39 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DMOJ_RESOURCES = os.path.join(BASE_DIR, 'resources')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+    'sass_processor.finders.CssFinder',
 )
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'resources'),
 ]
 STATIC_URL = '/static/'
 
+# Django compressor settings
+COMPRESS_OUTPUT_DIR = 'cache'
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.CSSMinFilter',
+]
+COMPRESS_JS_FILTERS = ['compressor.filters.jsmin.JSMinFilter']
+COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
+
+# Sass settings
+# https://github.com/jrief/django-sass-processor
+SASS_PRECISION = 8
+
 # Define a cache
-CACHES = {}
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
 
 # Authentication
 AUTHENTICATION_BACKENDS = (

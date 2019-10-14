@@ -5,6 +5,7 @@ from django.utils.http import urlquote
 from jinja2.ext import Extension
 from mptt.utils import get_cached_trees
 from statici18n.templatetags.statici18n import inlinei18n
+from sass_processor.processor import sass_processor
 
 from judge.highlight_code import highlight_code
 from judge.user_translations import gettext
@@ -21,6 +22,7 @@ registry.filter('roundfloat', round)
 registry.function('inlinei18n', inlinei18n)
 registry.function('mptt_tree', get_cached_trees)
 registry.function('user_trans', gettext)
+registry.function('sass_src', sass_processor)
 
 
 @registry.function

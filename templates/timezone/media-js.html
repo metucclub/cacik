@@ -6,7 +6,7 @@
             $('#open-map').featherlight({
                 afterOpen: function () {
                     timezone_picker($('.featherlight-inner .map-inset'), $('#id_timezone'),
-                        '{{ static('libs/timezone-map/timezone-picker.json') }}');
+                        "{{ static('libs/timezone-map/timezone-picker.json') }}");
                 }
             });
         });

@@ -46,9 +46,6 @@ from django.core import signing
 from django.forms.models import ModelChoiceIterator
 from django.urls import reverse_lazy
 
-DEFAULT_SELECT2_JS = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'
-DEFAULT_SELECT2_CSS = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css'
-
 __all__ = ['Select2Widget', 'Select2MultipleWidget', 'Select2TagWidget',
            'HeavySelect2Widget', 'HeavySelect2MultipleWidget', 'HeavySelect2TagWidget']
 
@@ -92,9 +89,8 @@ class Select2Mixin(object):
             https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
         """
         return forms.Media(
-            js=(getattr(settings, 'SELECT2_JS_URL', DEFAULT_SELECT2_JS),
-                'django_select2.js'),
-            css={'screen': (getattr(settings, 'SELECT2_CSS_URL', DEFAULT_SELECT2_CSS),)},
+            js=('libs/select2/select2.js', 'js/django_select2.js'),
+            css={'screen': ('libs/select2/select2.css',)},
         )
 
     media = property(_get_media)

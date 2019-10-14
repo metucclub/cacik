@@ -49,8 +49,11 @@ class Command(BaseCommand):
                 'math_engine': maker.math_engine,
             }).replace('"//', '"https://').replace("'//", "'https://")
             maker.title = problem_name
-            for file in ('style.css', 'pygment-github.css', 'mathjax_config.js'):
-                maker.load(file, os.path.join(settings.DMOJ_RESOURCES, file))
+
+            maker.load(file, os.path.join(settings.STATIC_ROOT, 'css', 'style.css'))
+            maker.load(file, os.path.join(settings.STATIC_ROOT, 'css', 'pygment-github.css'))
+            maker.load(file, os.path.join(settings.STATIC_ROOT, 'js', 'mathjax_config.js'))
+
             maker.make(debug=True)
             if not maker.success:
                 print(maker.log, file=sys.stderr)

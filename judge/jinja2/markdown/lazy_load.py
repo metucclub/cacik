@@ -5,7 +5,7 @@ from lxml import html
 
 
 def lazy_load(tree):
-    blank = static('blank.gif')
+    blank = static('blank.gif') # TODO
     for img in tree.xpath('.//img'):
         src = img.get('src', '')
         if src.startswith('data') or '-math' in img.get('class', ''):

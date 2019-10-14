@@ -29,3 +29,12 @@ pymoss
 packaging
 celery
 ansi2html
+libsass
+django-compressor
+django-sass-processor
+celery
+sqlparse
+mysqlclient
+websocket-client
+unicodecsv
+redis

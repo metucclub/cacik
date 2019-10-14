@@ -6,6 +6,8 @@ from django.utils.html import conditional_escape
 
 from judge.widgets.mixins import CompressorWidgetMixin
 
+from sass_processor.processor import sass_processor
+
 __all__ = ['PagedownWidget', 'AdminPagedownWidget',
            'MathJaxPagedownWidget', 'MathJaxAdminPagedownWidget',
            'HeavyPreviewPageDownWidget', 'HeavyPreviewAdminPageDownWidget']
@@ -28,25 +30,28 @@ else:
         compress_js = True
 
         def __init__(self, *args, **kwargs):
-            kwargs.setdefault('css', ('pagedown_widget.css',))
+            kwargs.setdefault('css', (sass_processor('scss/content-description.scss'),))
             super(PagedownWidget, self).__init__(*args, **kwargs)
 
 
     class AdminPagedownWidget(PagedownWidget, admin_widgets.AdminTextareaWidget):
         class Media:
-            css = {'all': [
-                'content-description.css',
-                'admin/css/pagedown.css',
-            ]}
+            css = {
+                'all': [
+                    sass_processor('scss/content-description.scss'),
+                    'admin/css/pagedown.css',
+                ],
+            }
+
             js = ['admin/js/pagedown.js']
 
 
     class MathJaxPagedownWidget(PagedownWidget):
         class Media:
             js = [
-                'mathjax_config.js',
-                'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
-                'pagedown_math.js',
+                'js/mathjax_config.js',
+                'libs/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+                'js/pagedown_math.js',
             ]
 
 
@@ -83,14 +88,17 @@ else:
             }
 
         class Media:
-            css = {'all': ['dmmd-preview.css']}
-            js = ['dmmd-preview.js']
+            css = {
+                'all': ['css/dmmd-preview.css']
+            }
+
+            js = ['js/dmmd-preview.js']
 
 
     class HeavyPreviewAdminPageDownWidget(AdminPagedownWidget, HeavyPreviewPageDownWidget):
         class Media:
             css = {'all': [
-                'pygment-github.css',
-                'table.css',
-                'ranks.css',
+                'css/pygment-github.css',
+                sass_processor('scss/table.scss'),
+                sass_processor('scss/ranks.scss'),
             ]}

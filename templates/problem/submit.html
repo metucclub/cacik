@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block js_media %}
-    <script type="text/javascript" src="{{ ACE_URL }}/ace.js"></script>
+    <script type="text/javascript" src="{{ static('libs/ace/ace.js')"></script>
     {% compress js %}
         {{ form.media.js }}
         <script type="text/javascript">
