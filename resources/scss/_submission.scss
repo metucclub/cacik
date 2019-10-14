@@ -5,38 +5,48 @@
 }
 
 #submissions-table {
-    background: rgba(0, 0, 0, .01);
+    border: 0;
+    margin-left: 0;
+
+    tr {
+        transition: background-color linear 0.2s;
+
+        &:hover {
+            background: #F2F2F2;
+        }
+    }
 }
 
-.submission-row {
-    display: flex;
-    border-left: #ccc 1px solid;
-    border-right: #ccc 1px solid;
-    transition: background-color linear 0.2s;
-
-    &:hover {
-        background: #F2F2F2;
-    }
-
-    &:first-of-type {
-        border-top: #ccc 1px solid;
-    }
-
-    > div {
-        padding: 7px 5px;
-        vertical-align: middle;
-        border-bottom: #ccc 1px solid;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .sub-result {
+col {
+    &.sub-result {
         min-width: 80px;
-        width: 80px;
-        text-align: center;
-        border-bottom-color: white;
-        border-right: #ccc 1px solid;
+    }
+
+    &.sub-prop {
+        text-align: right;
+    }
+}
+
+#submissions-table tr td {
+    border-top: none;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+#submissions-table td:first-child {
+    border-bottom: 1px solid white;
+}
+
+#submissions-table tr:first-child td {
+    border-top: 1px solid #d4d4d4;
+}
+
+#submissions-table tr:last-child td:first-child {
+    border-bottom: 1px solid #d4d4d4;
+}
+
+td {
+    &.sub-result {
+        min-width: 80px;
 
         .state {
             font-size: 0.7em;
@@ -50,33 +60,38 @@
         }
     }
 
-    .sub-info {
-        flex: 1;
-        padding-left: 20px !important;
-
+    &.sub-info {
         .name {
             font-weight: 700;
             font-size: 1.2em;
         }
     }
 
-    .sub-testcase {
-        color: #555;
-        white-space: nowrap;
+    &.sub-info-grading {
+        width: auto !important;
+        min-width: 58% !important;
     }
 
-    .sub-prop {
+    &.sub-testcase {
+        color: #555;
+        white-space: nowrap;
+        vertical-align: middle;
+        text-align: right;
+        padding-right: 2%;
+        border-right: none;
+    }
+
+    &.sub-prop {
+        text-align: right;
+
         a {
             white-space: nowrap;
         }
     }
 
-    .sub-usage {
-        min-width: 70px;
-        width: 70px;
+    &.sub-usage {
         white-space: nowrap;
-        text-align: center;
-        border-left: #ccc 1px solid;
+        min-width: 4em;
 
         .time {
             font-weight: bold;
@@ -84,11 +99,20 @@
     }
 }
 
+col.sub-info,
+td.sub-info {
+    width: 90%;
+    text-align: left;
+    padding-left: 20px;
+    border-right: none;
+}
+
 .sub-prop .fa {
     display: none;
 }
 
-label[for="language"], label[for="status"] {
+label[for="language"],
+label[for="status"] {
     padding-bottom: 0.25em;
     display: block;
 }
@@ -117,8 +141,8 @@ label[for="language"], label[for="status"] {
 #content-right.submission {
     flex: 12%;
     min-width: initial;
-    max-width: 100%;
-    padding-top: 0;
+    max-width: 235px;
+    padding-top: 2.25em;
 }
 
 @media(max-width: 700px) {
@@ -177,7 +201,8 @@ label[for="language"], label[for="status"] {
     }
 }
 
-.source-code pre, .source-ln pre {
+.source-code pre,
+.source-ln pre {
     margin: 0;
     padding: 0;
     white-space: pre;
@@ -256,14 +281,6 @@ label[for="language"], label[for="status"] {
     .toggle {
         font-weight: normal;
     }
-
-    .case-feedback {
-        vertical-align: top;
-    }
-
-    .case-ext-feedback {
-        width: 50%;
-    }
 }
 
 .case-AC {
@@ -281,12 +298,16 @@ label[for="language"], label[for="status"] {
     font-weight: bold;
 }
 
-.case-TLE, .case-SC {
+.case-TLE,
+.case-SC {
     color: gray;
     font-weight: bold;
 }
 
-.case-MLE, .case-OLE, .case-RTE, .case-IR {
+.case-MLE,
+.case-OLE,
+.case-RTE,
+.case-IR {
     color: orange;
     font-weight: bold;
 }

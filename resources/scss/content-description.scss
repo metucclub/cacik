@@ -229,20 +229,24 @@
 
         .info-float {
             float: none;
-            padding: 0;
+            padding: 10px 0 0;
             position: sticky;
-            top: 70px;
+            top: 60px;
             width: 100%;
         }
     }
 }
 
 @media not all and (min-width: 700px) {
-    #content-right .info-float {
-        float: none;
-        width: 100% !important;
-        position: static !important;
-        box-sizing: border-box;
+    #content-right {
+        margin: 0 auto;
+
+        .info-float {
+            float: none;
+            width: 100% !important;
+            position: static !important;
+            box-sizing: border-box;
+        }
     }
 }
 

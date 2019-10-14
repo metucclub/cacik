@@ -15,7 +15,7 @@
     color: #55ACEE;
 }
 
-.facebook-this it {
+.facebook-this i {
     color: #133783;
 }
 
@@ -32,27 +32,25 @@
 .button,
 button,
 input[type=submit] {
-    color: white !important;
+    color: white;
     text-decoration: none !important;
     cursor: pointer;
     vertical-align: middle;
     white-space: nowrap;
     font-weight: 400;
     line-height: 1.4;
-    background: rgb(51, 122, 183) none repeat scroll 0 (0% / auto) padding-box border-box;
-    background: -webkit-linear-gradient(top, #337ab7 0, #265a88 100%) repeat-x;
-    background: linear-gradient(to bottom, #337ab7 0, #265a88 100%) repeat-x;
     border-radius: $widget_border_radius;
     padding: 6px 12px;
     display: block;
-    border: 1px solid #245580;
+    background: $widget_bg;
+    border: 1px solid #423466;
     text-align: center;
 
     // 4k hack
     font-size: $base_font_size;
 
     &:hover {
-        background: #265a88;
+        background: #604e8b;
     }
 
     &.disabled {
@@ -71,14 +69,14 @@ button.full {
 button:hover,
 button:hover,
 input[type=submit]:hover {
-    background: #265a88;
+    background: #604e8b;
 }
 
 .button:active,
 button:active,
 input[type=submit]:hover {
-    border-color: #245580;
-    background: #265a88;
+    border-color: #423466;
+    background: #4a3a70;
 }
 
 .inline-button {
@@ -201,16 +199,10 @@ input {
 
         a,
         span {
-            border-top-width: 3px !important;
+            border-top-width: 2px !important;
         }
 
         &.active {
-
-            a,
-            span {
-                border-top-color: $highlight_blue !important;
-            }
-
             .tab-icon {
                 color: black;
             }
@@ -308,7 +300,7 @@ ul.pagination {
                     line-height: 1.42857;
                     text-decoration: none;
                     color: #FFF;
-                    background-color: $widget_black;
+                    background-color: $widget_bg;
                     border: 1px solid #505050;
                     margin-left: -1px;
                 }
@@ -318,20 +310,19 @@ ul.pagination {
         .disabled-page> {
             a {
                 color: #888;
-                background-color: $widget_black;
+                background-color: $widget_bg;
                 border-color: #282828;
             }
 
             span {
                 color: #888;
-                background-color: $widget_black;
+                background-color: $widget_bg;
                 border-color: #505050;
             }
         }
 
         .active-page> {
             a {
-                z-index: 2;
                 color: #FFF;
                 background-color: $highlight_blue;
                 border-color: transparent;
@@ -448,9 +439,10 @@ ul.select2-selection__rendered {
 
 .sidebox h3 {
     margin: 0 -5px;
-    background: $widget_black;
+    background: $widget_bg;
     border-radius: $widget_border_radius $widget_border_radius 0 0;
-    color: white;
+    border: 1px solid $border_gray;
+    color: $widget_header;
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 7px;
@@ -458,7 +450,7 @@ ul.select2-selection__rendered {
 }
 
 .sidebox h3 .fa {
-    color: white;
+    color: $widget_header;
     float: right;
     margin: 0.2em 0.4em 0 0;
 }
@@ -504,46 +496,4 @@ ul.select2-selection__rendered {
 
 .semibold {
     font-weight: 600;
-}
-
-.messages {
-    list-style-type: none;
-    padding: 0;
-
-    li {
-        padding: 1em 1.5em;
-        margin-bottom: 1em;
-        border: 1px solid transparent;
-        border-radius: 5px;
-
-        &.debug {
-            color: #383d41;
-            background-color: #e2e3e5;
-            border-color: #d6d8db;
-        }
-
-        &.info {
-            color: #0c5460;
-            background-color: #d1ecf1;
-            border-color: #bee5eb;
-        }
-
-        &.success {
-            color: #155724;
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-        }
-
-        &.warning {
-            color: #856404;
-            background-color: #fff3cd;
-            border-color: #ffeeba;
-        }
-
-        &.error {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-        }
-    }
 }

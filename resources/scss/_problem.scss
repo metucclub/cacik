@@ -76,7 +76,7 @@
     &.problems {
         flex: 26.5%;
         max-width: unset;
-        padding-top: 0;
+        padding-top: 2.25em;
     }
 }
 
@@ -91,7 +91,8 @@
     height: 2.3em;
 }
 
-label[for="category"], label[for="type"] {
+label[for="category"],
+label[for="type"] {
     padding-bottom: 0.25em;
     display: block;
 }
@@ -127,7 +128,7 @@ ul.problem-list {
     content: " ";
 }
 
-.authors-value, .judges-value {
+.authors-value {
     padding-left: 1.5em;
 }
 
@@ -160,27 +161,6 @@ ul.problem-list {
 
 .no-submissions-left {
     color: red;
-}
-
-.organization-tags {
-    padding-left: 0.75em;
-    vertical-align: middle;
-}
-
-.organization-tag {
-    box-shadow: inset 0 -0.1em 0 rgba(0, 0, 0, 0.12);
-    padding: 0.15em 0.3em;
-    border-radius: 0.15em;
-    font-weight: 600;
-    margin-right: 0.45em;
-    position: relative;
-    background-color: #ccc;
-    transform: translateY(+35%);
-    display: inline-block;
-}
-
-.organization-tag a {
-    color: #000;
 }
 
 .pdf-icon {
@@ -251,7 +231,8 @@ ul.problem-list {
     padding: 4px 10px;
 }
 
-#category, #types {
+#category,
+#types {
     visibility: hidden;
 }
 
@@ -270,7 +251,8 @@ ul.problem-list {
         left: -8px;
     }
 
-    .noUi-handle:before, .noUi-handle:after {
+    .noUi-handle:before,
+    .noUi-handle:after {
         top: 3px;
         height: 12px;
     }

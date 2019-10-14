@@ -41,7 +41,8 @@ th.header.rank {
     height: 2.3em;
 }
 
-.user-search-image, .user-search-name {
+.user-search-image,
+.user-search-name {
     vertical-align: middle;
 }
 
@@ -58,7 +59,10 @@ th.header.rank {
         vertical-align: middle;
     }
 
-    .rank, .points, .problems, .username {
+    .rank,
+    .points,
+    .problems,
+    .username {
         white-space: nowrap;
     }
 
@@ -128,6 +132,7 @@ a.edit-profile {
         max-height: 20%;
         line-height: 2.5em;
     }
+
     ul {
         -webkit-columns: 300px 4;
         -moz-columns: 300px 4;
@@ -137,6 +142,7 @@ a.edit-profile {
         margin-left: -20px;
         margin-bottom: 0;
     }
+
     a img {
         max-width: 1em;
         margin-right: 3px;
@@ -160,12 +166,12 @@ a.edit-profile {
     overflow: hidden;
 }
 
-.hide-solved-problems > span {
+.hide-solved-problems>span {
     position: relative;
     display: inline-block;
 }
 
-.hide-solved-problems > span:before {
+.hide-solved-problems>span:before {
     content: "";
     position: absolute;
     top: 50%;
@@ -222,11 +228,8 @@ a.edit-profile {
         color: #777;
     }
 
-    div.sub-pp {
+    td.sub-pp {
         text-align: right;
-        min-width: unset;
-        width: unset;
-        border-left: none;
     }
 
     td.problem-name {
