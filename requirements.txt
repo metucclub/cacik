@@ -32,6 +32,7 @@ ansi2html
 libsass
 django-compressor
 django-sass-processor
+django-preferences
 celery
 sqlparse
 mysqlclient

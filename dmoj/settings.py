@@ -29,93 +29,81 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 SITE_ID = 1
-SITE_NAME = 'DMOJ'
-SITE_LONG_NAME = 'DMOJ: Modern Online Judge'
 
 PYGMENT_THEME = 'pygment-github.css'
 
-# Application definition
 
-INSTALLED_APPS = ()
-
-try:
-    import wpadmin
-except ImportError:
-    pass
-else:
-    del wpadmin
-    INSTALLED_APPS += ('wpadmin',)
-
-    WPADMIN = {
-        'admin': {
-            'title': 'DMOJ Admin',
-            'menu': {
-                'top': 'wpadmin.menu.menus.BasicTopMenu',
-                'left': 'wpadmin.menu.custom.CustomModelLeftMenuWithDashboard',
-            },
-            'custom_menu': [
-                {
-                    'model': 'judge.Problem',
-                    'icon': 'fa-question-circle',
-                    'children': [
-                        'judge.ProblemGroup',
-                        'judge.ProblemType',
-                    ],
-                },
-                {
-                    'model': 'judge.Submission',
-                    'icon': 'fa-check-square-o',
-                    'children': [
-                        'judge.Language',
-                        'judge.Judge',
-                    ],
-                },
-                {
-                    'model': 'judge.Contest',
-                    'icon': 'fa-bar-chart',
-                    'children': [
-                        'judge.ContestParticipation',
-                        'judge.ContestTag',
-                    ],
-                },
-                {
-                    'model': 'auth.User',
-                    'icon': 'fa-user',
-                    'children': [
-                        'auth.Group',
-                        'registration.RegistrationProfile',
-                    ],
-                },
-                {
-                    'model': 'judge.Profile',
-                    'icon': 'fa-user-plus',
-                    'children': [
-                        'judge.Organization',
-                        'judge.OrganizationRequest',
-                    ],
-                },
-                {
-                    'model': 'judge.NavigationBar',
-                    'icon': 'fa-bars',
-                    'children': [
-                        'judge.MiscConfig',
-                        'judge.License',
-                        'sites.Site',
-                        'redirects.Redirect',
-                    ],
-                },
-                ('judge.BlogPost', 'fa-rss-square'),
-                ('judge.Comment', 'fa-comment-o'),
-                ('flatpages.FlatPage', 'fa-file-text-o'),
-                ('judge.Solution', 'fa-pencil'),
-            ],
-            'dashboard': {
-                'breadcrumbs': True,
-            },
+WPADMIN = {
+    'admin': {
+        'title': 'DMOJ Admin',
+        'menu': {
+            'top': 'wpadmin.menu.menus.BasicTopMenu',
+            'left': 'wpadmin.menu.custom.CustomModelLeftMenuWithDashboard',
         },
-    }
+        'custom_menu': [
+            {
+                'model': 'judge.Problem',
+                'icon': 'fa-question-circle',
+                'children': [
+                    'judge.ProblemGroup',
+                    'judge.ProblemType',
+                ],
+            },
+            {
+                'model': 'judge.Submission',
+                'icon': 'fa-check-square-o',
+                'children': [
+                    'judge.Language',
+                    'judge.Judge',
+                ],
+            },
+            {
+                'model': 'judge.Contest',
+                'icon': 'fa-bar-chart',
+                'children': [
+                    'judge.ContestParticipation',
+                    'judge.ContestTag',
+                ],
+            },
+            {
+                'model': 'auth.User',
+                'icon': 'fa-user',
+                'children': [
+                    'auth.Group',
+                    'registration.RegistrationProfile',
+                ],
+            },
+            {
+                'model': 'judge.Profile',
+                'icon': 'fa-user-plus',
+                'children': [
+                    'judge.Organization',
+                    'judge.OrganizationRequest',
+                ],
+            },
+            {
+                'model': 'judge.NavigationBar',
+                'icon': 'fa-bars',
+                'children': [
+                    'judge.MiscConfig',
+                    'judge.License',
+                    'sites.Site',
+                    'redirects.Redirect',
+                ],
+            },
+            ('judge.BlogPost', 'fa-rss-square'),
+            ('judge.Comment', 'fa-comment-o'),
+            ('flatpages.FlatPage', 'fa-file-text-o'),
+            ('judge.Solution', 'fa-pencil'),
+        ],
+        'dashboard': {
+            'breadcrumbs': True,
+        },
+    },
+}
 
-INSTALLED_APPS += (
+INSTALLED_APPS = (
+    'wpadmin',
     'django.contrib.admin',
     'judge',
     'django.contrib.auth',
@@ -140,6 +128,7 @@ INSTALLED_APPS += (
     'statici18n',
     'impersonate',
     'django_jinja',
+    'preferences',
 )
 
 MIDDLEWARE = (
@@ -213,6 +202,7 @@ TEMPLATES = [
                 'judge.template_context.math_setting',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
+                'preferences.context_processors.preferences_cp',
             ],
             'autoescape': select_autoescape(['html', 'xml']),
             'trim_blocks': True,
@@ -370,9 +360,8 @@ COMPRESS_CSS_FILTERS = [
 COMPRESS_JS_FILTERS = ['compressor.filters.jsmin.JSMinFilter']
 COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
 
-# Sass settings
-# https://github.com/jrief/django-sass-processor
-SASS_PRECISION = 8
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Define a cache
 CACHES = {
@@ -415,6 +404,12 @@ JUDGE_AMQP_PATH = None
 MOSS_API_KEY = None
 
 CELERY_WORKER_HIJACK_ROOT_LOGGER = False
+
+PROBLEM_PDF_CACHE = os.path.join(BASE_DIR, 'static')
+DMOJ_PDF_PROBLEM_CACHE = PROBLEM_PDF_CACHE
+
+# Path to a PhantomJS executable.
+PHANTOMJS = '/usr/bin/phantomjs'
 
 try:
     with open(os.path.join(os.path.dirname(__file__), 'local_settings.py')) as f:
