@@ -1,4 +1,4 @@
-@import "vars";
+@import "_vars";
 
 .blog-content {
     padding-right: 0em;
@@ -74,7 +74,9 @@
 }
 
 @media (min-width: 800px) {
-    .blog-content, .blog-sidebar {
+
+    .blog-content,
+    .blog-sidebar {
         display: block !important;
     }
 

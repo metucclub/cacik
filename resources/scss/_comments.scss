@@ -1,4 +1,4 @@
-@import "vars";
+@import "_vars";
 
 .comment-score {
     font-weight: bold;
@@ -6,7 +6,9 @@
 }
 
 a {
-    &.upvote-link, &.downvote-link {
+
+    &.upvote-link,
+    &.downvote-link {
         color: black;
     }
 
@@ -64,7 +66,7 @@ a {
         color: #444;
     }
 
-    a + a {
+    a+a {
         padding-left: 2px;
     }
 }
@@ -83,7 +85,8 @@ a {
         padding-right: 10px;
     }
 
-    input, textarea {
+    input,
+    textarea {
         min-width: 100%;
         max-width: 100%;
 
@@ -105,7 +108,7 @@ a {
     margin: (-50px) -4px 10px -40px;
     padding-top: 50px;
 
-    &:target > .comment-box {
+    &:target>.comment-box {
         border-left: 10px solid $highlight_blue;
         padding-left: 5px;
     }

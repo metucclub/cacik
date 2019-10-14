@@ -1,4 +1,4 @@
-@import "vars";
+@import "_vars";
 
 #judge-versions {
     display: block;
@@ -36,7 +36,8 @@
         }
     }
 
-    td, th {
+    td,
+    th {
         display: block;
         flex: 1 0 110px;
         overflow-x: hidden;

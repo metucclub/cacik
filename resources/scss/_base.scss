@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-@import "vars";
+@import "_vars";
 
 @-ms-viewport {
     min-width: 480px;
@@ -186,25 +186,25 @@ header {
         text-transform: none;
     }
 
-    & > ul {
+    &>ul {
         display: block;
         margin: 0;
 
-        & > li > a > span {
+        &>li>a>span {
             font-size: 13px;
             height: 36px;
             padding-top: 8px;
             display: block;
             white-space: nowrap;
 
-            & > img {
+            &>img {
                 vertical-align: middle;
                 border-radius: $widget_border_radius;
                 display: inline;
                 margin: 2px 6px 0 5px;
             }
 
-            & > span {
+            &>span {
                 color: #eee;
                 vertical-align: middle;
                 display: inline;
@@ -271,7 +271,8 @@ nav {
                 }
             }
 
-            a, button {
+            a,
+            button {
                 display: inline-block;
                 text-decoration: none;
                 vertical-align: middle;
@@ -320,7 +321,8 @@ nav {
                 li {
                     display: block;
 
-                    a, button {
+                    a,
+                    button {
                         padding: 8px 20px 8px 8px !important;
                         font-size: 0.8em;
                         line-height: 18px;
@@ -340,7 +342,9 @@ nav {
                 height: auto;
             }
 
-            &:hover > ul, &:active > ul, &:focus > ul {
+            &:hover>ul,
+            &:active>ul,
+            &:focus>ul {
                 display: block !important;
             }
 
@@ -449,7 +453,8 @@ noscript #noscript {
     }
 }
 
-#form-errors, .form-errors {
+#form-errors,
+.form-errors {
     background: rgba(255, 0, 0, 0.3);
     border: 3px solid red;
     border-radius: $widget_border_radius;
@@ -633,13 +638,13 @@ math {
         right: 6px;
         position: absolute;
 
-        & > ul > li {
-            & > a > span {
+        &>ul>li {
+            &>a>span {
                 padding-top: 4px;
                 height: 32px;
             }
 
-            & > ul {
+            &>ul {
                 left: 0 !important;
                 margin-top: 0 !important;
             }
@@ -661,7 +666,7 @@ math {
                 display: none;
             }
 
-            &:not(:hover) > ul {
+            &:not(:hover)>ul {
                 display: none !important;
             }
 

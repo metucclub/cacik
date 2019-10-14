@@ -1,4 +1,4 @@
-@import "vars";
+@import "_vars";
 
 .content-description {
     line-height: 1.5em;
@@ -15,7 +15,12 @@
         height: auto;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         font-weight: normal;
         color: #111;
         margin-bottom: 0.75em;
@@ -23,7 +28,10 @@
         background: 0;
     }
 
-    h3, h4, h5, h6 {
+    h3,
+    h4,
+    h5,
+    h6 {
         font-weight: bold;
     }
 
@@ -75,14 +83,19 @@
         padding: 0;
     }
 
-    pre, code, kbd, samp, span.code {
+    pre,
+    code,
+    kbd,
+    samp,
+    span.code {
         color: #000;
         page-break-inside: avoid;
         font-family: $monospace-fonts;
         font-size: 0.98em;
     }
 
-    code, span.code {
+    code,
+    span.code {
         font-family: $monospace-fonts !important;
         margin: 0 2px;
         padding: 0 5px;
@@ -94,7 +107,9 @@
     }
 
     pre {
-        code, div.code {
+
+        code,
+        div.code {
             border: 0;
             line-height: 1em;
             margin: 0;
@@ -114,7 +129,8 @@
         border-radius: $widget_border_radius;
     }
 
-    b, strong {
+    b,
+    strong {
         font-weight: bold;
     }
 
@@ -154,7 +170,8 @@
         bottom: -0.25em;
     }
 
-    ul, ol {
+    ul,
+    ol {
         padding: 0 0 0 2em !important;
     }
 
@@ -251,7 +268,8 @@ a.view-pdf {
     padding-right: 0.2em;
 }
 
-#problem-types, #allowed-langs {
+#problem-types,
+#allowed-langs {
     .toggled {
         margin-left: 1.3em;
     }
