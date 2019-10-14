@@ -39,3 +39,4 @@ mysqlclient
 websocket-client
 unicodecsv
 redis
+django-rosetta

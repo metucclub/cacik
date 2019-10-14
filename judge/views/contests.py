@@ -582,7 +582,7 @@ class ContestRanking(ContestRankingBase):
     tab = 'ranking'
 
     def get_title(self):
-        return _('%s Rankings') % self.object.name
+        return _('%s Scoreboard') % self.object.name
 
     def get_ranking_list(self):
         return get_contest_ranking_list(self.request, self.object)
