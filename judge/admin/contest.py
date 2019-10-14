@@ -64,7 +64,7 @@ class ContestProblemInline(admin.TabularInline):
     model = ContestProblem
     verbose_name = _('Problem')
     verbose_name_plural = 'Problems'
-    fields = ('problem', 'points', 'partial', 'is_pretested', 'max_submissions', 'output_prefix_override', 'order',
+    fields = ('problem', 'letter', 'points', 'partial', 'is_pretested', 'max_submissions', 'output_prefix_override', 'order',
               'rejudge_column')
     readonly_fields = ('rejudge_column',)
     form = ContestProblemInlineForm
@@ -110,7 +110,7 @@ class ContestAdmin(VersionAdmin):
     fieldsets = (
         (None, {'fields': ('key', 'name', 'organizers')}),
         (_('Settings'), {'fields': ('is_visible', 'no_comments', 'use_clarifications', 'hide_problem_tags',
-                            'hide_scoreboard', 'run_pretests_only', 'no_social_share')}),
+                            'hide_scoreboard', 'run_pretests_only', 'no_social_share', 'hide_points_on_scoreboard')}),
         (_('Scheduling'), {'fields': ('start_time', 'end_time', 'time_limit')}),
         (_('Details'), {'fields': ('description', 'og_image', 'logo_override_image', 'tags', 'summary')}),
         (_('Format'), {'fields': ('format_name', 'format_config')}),

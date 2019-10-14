@@ -75,6 +75,9 @@ class Contest(models.Model):
     no_social_share = models.BooleanField(verbose_name=_('disable social share buttons'),
                                             help_text=_('Disable social share buttons on contest page'),
                                              default=False)
+    hide_points_on_scoreboard = models.BooleanField(verbose_name=_('hide points on scoreboard'),
+                                            help_text=_('Hide points on scoreboard page'),
+                                             default=False)
     rating_floor = models.IntegerField(verbose_name=('rating floor'), help_text=_('Rating floor for contest'),
                                        null=True, blank=True)
     rating_ceiling = models.IntegerField(verbose_name=('rating ceiling'), help_text=_('Rating ceiling for contest'),
@@ -314,6 +317,7 @@ class ContestParticipation(models.Model):
 class ContestProblem(models.Model):
     problem = models.ForeignKey(Problem, verbose_name=_('problem'), related_name='contests', on_delete=CASCADE)
     contest = models.ForeignKey(Contest, verbose_name=_('contest'), related_name='contest_problems', on_delete=CASCADE)
+    letter = models.CharField(max_length=3, null=True, blank=True)
     points = models.IntegerField(verbose_name=_('points'))
     partial = models.BooleanField(default=True, verbose_name=_('partial'))
     is_pretested = models.BooleanField(default=False, verbose_name=_('is pretested'))

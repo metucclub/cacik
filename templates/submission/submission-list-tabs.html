@@ -5,7 +5,7 @@
     {% if my_submissions_link or tab == 'my_submissions_tab' %}
         {{ make_tab('my_submissions_tab', 'fa-user', my_submissions_link, _('Mine')) }}
     {% endif %}
-    {% if best_submissions_link %}
+    {% if (request.user.is_superuser or not preferences.SitePreferences.hide_best_solutions) and best_submissions_link %}
         {{ make_tab('best_submissions_list', 'fa-bar-chart', best_submissions_link, _('Best')) }}
     {% endif %}
     {% if tab == 'user_submissions_tab' %}

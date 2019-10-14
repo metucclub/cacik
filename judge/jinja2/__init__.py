@@ -24,6 +24,15 @@ registry.function('mptt_tree', get_cached_trees)
 registry.function('user_trans', gettext)
 registry.function('sass_src', sass_processor)
 
+@registry.function
+def colnum(n):
+    string = ''
+
+    while n > 0:
+        n, remainder = divmod(n - 1, 26)
+        string = chr(65 + remainder) + string
+
+    return string
 
 @registry.function
 def counter(start=1):

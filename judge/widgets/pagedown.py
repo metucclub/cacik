@@ -30,7 +30,7 @@ else:
         compress_js = True
 
         def __init__(self, *args, **kwargs):
-            kwargs.setdefault('css', (sass_processor('scss/content-description.scss'),))
+            kwargs.setdefault('css', ('css/pagedown_widget.css',))
             super(PagedownWidget, self).__init__(*args, **kwargs)
 
 

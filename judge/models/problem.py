@@ -110,10 +110,10 @@ class Problem(models.Model):
     testers = models.ManyToManyField(Profile, verbose_name=_('testers'), blank=True, related_name='tested_problems',
                                      help_text=_(
                                          'These users will be able to view the private problem, but not edit it.'))
-    types = models.ManyToManyField(ProblemType, verbose_name=_('problem types'),
+    types = models.ManyToManyField(ProblemType, verbose_name=_('problem types'), blank=True,
                                    help_text=_('The type of problem, '
                                                "as shown on the problem's page."))
-    group = models.ForeignKey(ProblemGroup, verbose_name=_('problem group'), on_delete=CASCADE,
+    group = models.ForeignKey(ProblemGroup, verbose_name=_('problem group'), blank=True, null=True, on_delete=CASCADE,
                               help_text=_('The group of problem, shown under Category in the problem list.'))
     time_limit = models.FloatField(verbose_name=_('time limit'),
                                    help_text=_('The time limit for this problem, in seconds. '

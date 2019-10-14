@@ -176,7 +176,7 @@
 
     <div id="common-content">
         {% block before_table %}{% endblock %}
-        {% if preferences.SitePreferences.extended_problems_page and not request.in_contest %}
+        {% if preferences.SitePreferences.enable_filters and not request.in_contest %}
             <div id="content-right" class="problems">
                 <div class="info-float">
                     {% include "problem/search-form.html" %}
@@ -204,7 +204,7 @@
                             <th class="solved"><i class="fa fa-check"></i></th>
                         {% endif %}
                         <th class="problem">{{ _('Problem') }}</th>
-                        {% if preferences.SitePreferences.extended_problems_page %}
+                        {% if preferences.SitePreferences.enable_filters %}
                             <th class="category">{{ _('Category') }}</th>
                         {% endif %}
                         {% if show_types %}
@@ -222,7 +222,7 @@
                         <th class="problem">
                             <a href="{{ sort_links.name }}">{{ _('Problem') }}{{ sort_order.name }}</a>
                         </th>
-                        {% if preferences.SitePreferences.extended_problems_page %}
+                        {% if preferences.SitePreferences.enable_filters %}
                             <th class="category">
                                 <a href="{{ sort_links.group }}">{{ _('Category') }}{{ sort_order.group }}</a>
                             </th>
@@ -281,7 +281,7 @@
                         <td class="problem">
                             <a href="{{ url('problem_detail', problem.code) }}">{{ problem.i18n_name }}</a>
                         </td>
-                        {% if preferences.SitePreferences.extended_problems_page %}
+                        {% if preferences.SitePreferences.enable_filters %}
                             <td class="category">{{ problem.group.full_name }}</td>
                         {% endif %}
                         {% if show_types %}

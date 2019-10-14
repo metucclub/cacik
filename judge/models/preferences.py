@@ -10,4 +10,6 @@ class SitePreferences(Preferences):
 
     enable_fts = models.BooleanField(default=False)
 
-    extended_problems_page = models.BooleanField(default=False)
+    no_problem_comments = models.BooleanField(default=False)
+    enable_filters = models.BooleanField(default=False)
+    hide_best_solutions = models.BooleanField(default=False)
