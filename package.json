@@ -1,0 +1,9 @@
+{
+  "name": "cacik",
+  "version": "1.0.0",
+  "dependencies": {
+    "qu": "^0.1.0",
+    "simplesets": "^1.2.0",
+    "ws": "^7.1.2"
+  }
+}
