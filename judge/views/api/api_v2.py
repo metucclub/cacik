@@ -68,10 +68,12 @@ def api_v2_user_info(request):
                           .order_by('-contest__end_time')):
         contest = participation.contest
 
+        is_scoreboard_frozen = not contest.can_see_real_scoreboard(profile.user)
+
         problems = list(contest.contest_problems.select_related('problem').defer('problem__description')
                                .order_by('order'))
         rank, result = next(filter(lambda data: data[1].user == profile.user,
-                                   ranker(contest_ranking_list(contest, problems),
+                                   ranker(contest_ranking_list(contest, is_scoreboard_frozen, problems),
                                           key=attrgetter('points', 'cumtime'))))
 
         contest_history.append({

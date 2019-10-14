@@ -495,31 +495,38 @@ ContestRankingProfile = namedtuple(
 BestSolutionData = namedtuple('BestSolutionData', 'code points time state is_pretested')
 
 
-def make_contest_ranking_profile(contest, participation, contest_problems):
+def make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, contest_problems):
     user = participation.user
+
     return ContestRankingProfile(
         id=user.id,
         user=user.user,
         css_class=user.css_class,
         username=user.username,
-        points=participation.score,
-        cumtime=participation.cumtime,
+        points=participation.frozen_score if is_scoreboard_frozen else participation.score,
+        cumtime=participation.frozen_cumtime if is_scoreboard_frozen else participation.cumtime,
         organization=user.organization,
         participation_rating=participation.rating.rating if hasattr(participation, 'rating') else None,
-        problem_cells=[contest.format.display_user_problem(participation, contest_problem)
-                       for contest_problem in contest_problems],
-        result_cell=contest.format.display_participation_result(participation),
+        problem_cells=[contest.format.display_user_problem(is_scoreboard_frozen, participation, contest_problem)
+                    for contest_problem in contest_problems],
+        result_cell=contest.format.display_participation_result(is_scoreboard_frozen, participation),
         participation=participation,
     )
 
 
-def base_contest_ranking_list(contest, problems, queryset):
-    return [make_contest_ranking_profile(contest, participation, problems) for participation in
-            queryset.select_related('user__user', 'rating').defer('user__about', 'user__organizations__about')]
+def base_contest_ranking_list(contest, is_scoreboard_frozen, problems, queryset):
+    return [make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, problems)
+        for participation in queryset.select_related('user__user', 'rating').defer('user__about', 'user__organizations__about')]
 
 
-def contest_ranking_list(contest, problems):
-    return base_contest_ranking_list(contest, problems, contest.users.filter(virtual=0, user__is_unlisted=False)
+def contest_ranking_list(contest, is_scoreboard_frozen, problems):
+    if is_scoreboard_frozen:
+        return base_contest_ranking_list(contest, is_scoreboard_frozen, problems, contest.users.filter(virtual=0, user__is_unlisted=False)
+                                     .prefetch_related('user__organizations')
+                                     .order_by('-frozen_score', 'frozen_cumtime'))
+
+
+    return base_contest_ranking_list(contest, is_scoreboard_frozen, problems, contest.users.filter(virtual=0, user__is_unlisted=False)
                                      .prefetch_related('user__organizations')
                                      .order_by('-score', 'cumtime'))
 
@@ -532,7 +539,8 @@ def get_contest_ranking_list(request, contest, participation=None, ranking_list=
         return ([(_('???'), make_contest_ranking_profile(contest, request.profile.current_contest, problems))],
                 problems)
 
-    users = ranker(ranking_list(contest, problems), key=attrgetter('points', 'cumtime'))
+    is_scoreboard_frozen = not contest.can_see_real_scoreboard(request.user)
+    users = ranker(ranking_list(contest, is_scoreboard_frozen, problems), key=attrgetter('points', 'cumtime'))
 
     if show_current_virtual:
         if participation is None and request.user.is_authenticated:

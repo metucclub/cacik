@@ -66,6 +66,8 @@ class Contest(models.Model):
                                           help_text=_('Whether the scoreboard should remain hidden for the duration '
                                                       'of the contest.'),
                                           default=False)
+    freeze_scoreboard_after = models.DateTimeField(verbose_name=_('freeze scoreboard after'), null=True, blank=True,
+                                        help_text=_('Freeze scoreboard after this time.'))
     use_clarifications = models.BooleanField(verbose_name=_('use clarification system'),
                                              help_text=_('Use clarification system instead of comments.'),
                                              default=True)
@@ -152,6 +154,20 @@ class Contest(models.Model):
             return False
         if self.hide_scoreboard and not self.is_in_contest(user) and self.end_time > timezone.now():
             return False
+        return True
+
+    def can_see_real_scoreboard(self, user):
+        if not self.can_see_scoreboard(user):
+            return False
+
+        if self.freeze_scoreboard_after is not None and not self.ended and self._now > self.freeze_scoreboard_after:
+            if user.has_perm('judge.see_private_contest'):
+                return True
+            if user.is_authenticated and self.organizers.filter(id=user.profile.id).exists():
+                return True
+
+            return False
+
         return True
 
     @property
@@ -254,6 +270,10 @@ class ContestParticipation(models.Model):
     virtual = models.IntegerField(verbose_name=_('virtual participation id'), default=LIVE,
                                   help_text=_('0 means non-virtual, otherwise the n-th virtual participation'))
     format_data = JSONField(verbose_name=_('contest format specific data'), null=True, blank=True)
+
+    frozen_score = models.IntegerField(verbose_name=_('frozen score'), default=0, db_index=True)
+    frozen_cumtime = models.PositiveIntegerField(verbose_name=_('frozen cumulative time'), default=0)
+    frozen_format_data = JSONField(verbose_name=_('contest format specific data'), null=True, blank=True)
 
     def recompute_results(self):
         self.contest.format.update_participation(self)
