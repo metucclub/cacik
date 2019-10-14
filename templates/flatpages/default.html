@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %}{{ flatpage.title }} - {{ SITE_LONG_NAME }}{% endblock %}
+{% block title %}{{ flatpage.title }} - {{ preferences.SitePreferences.site_name }}{% endblock %}
 {% block og_title %}
-    <meta property="og:title" content="{{ flatpage.title }} - {{ SITE_LONG_NAME }}">
+    <meta property="og:title" content="{{ flatpage.title }} - {{ preferences.SitePreferences.site_name }}">
 {% endblock %}
 
 {% block content_title %}{{ flatpage.title }}{% endblock %}

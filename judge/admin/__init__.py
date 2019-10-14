@@ -5,6 +5,7 @@ from judge.admin.comments import CommentAdmin
 from judge.admin.contest import ContestAdmin, ContestParticipationAdmin, ContestTagAdmin
 from judge.admin.interface import BlogPostAdmin, LicenseAdmin, LogEntryAdmin, NavigationBarAdmin
 from judge.admin.organization import OrganizationAdmin, OrganizationRequestAdmin
+from judge.admin.preferences import SitePreferencesAdmin
 from judge.admin.problem import ProblemAdmin
 from judge.admin.profile import ProfileAdmin
 from judge.admin.runtime import JudgeAdmin, LanguageAdmin
@@ -13,7 +14,8 @@ from judge.admin.taxon import ProblemGroupAdmin, ProblemTypeAdmin
 from judge.admin.ticket import TicketAdmin
 from judge.models import BlogPost, Comment, CommentLock, Contest, ContestParticipation, \
     ContestTag, Judge, Language, License, MiscConfig, NavigationBar, Organization, \
-    OrganizationRequest, Problem, ProblemGroup, ProblemType, Profile, Submission, Ticket
+    OrganizationRequest, Problem, ProblemGroup, ProblemType, Profile, \
+    SitePreferences, Submission, Ticket
 
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Comment, CommentAdmin)
@@ -29,6 +31,7 @@ admin.site.register(MiscConfig)
 admin.site.register(NavigationBar, NavigationBarAdmin)
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(OrganizationRequest, OrganizationRequestAdmin)
+admin.site.register(SitePreferences, SitePreferencesAdmin)
 admin.site.register(Problem, ProblemAdmin)
 admin.site.register(ProblemGroup, ProblemGroupAdmin)
 admin.site.register(ProblemType, ProblemTypeAdmin)

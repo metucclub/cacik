@@ -1,1 +1,1 @@
-Activate your {{ SITE_NAME }} account
+Activate your {{ preferences.SitePreferences.site_name }} account

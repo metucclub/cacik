@@ -15,6 +15,7 @@ from django.views.generic import FormView
 from judge.forms import TOTPForm
 from judge.utils.views import TitleMixin
 
+from judge.models import SitePreferences
 
 class TOTPView(TitleMixin, LoginRequiredMixin, FormView):
     form_class = TOTPForm
@@ -73,7 +74,7 @@ class TOTPEnableView(TOTPView):
     @classmethod
     def render_qr_code(cls, username, key):
         totp = pyotp.TOTP(key)
-        uri = totp.provisioning_uri(username, settings.SITE_NAME)
+        uri = totp.provisioning_uri(username, SitePreferences.site_name)
 
         qr = qrcode.QRCode(box_size=1)
         qr.add_data(uri)

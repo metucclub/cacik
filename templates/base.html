@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
-    <title>{% block title %}{{ title }} - {{ SITE_LONG_NAME }}{% endblock %}</title>
+    <title>{% block title %}{{ title }} - {{ preferences.SitePreferences.site_name }}{% endblock %}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     {% if misc_config.meta_keywords %}
         <meta name="keywords" content="{{ misc_config.meta_keywords }}">
@@ -10,30 +10,37 @@
         <meta name="description" content="{{ meta_description }}">
     {% endif %}
     <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Favicons-->
-    <link rel="apple-touch-icon" sizes="57x57" href="/static/icons/apple-touch-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/static/icons/apple-touch-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/static/icons/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/static/icons/apple-touch-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/static/icons/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/apple-touch-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/static/icons/apple-touch-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon-180x180.png">
-    <link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="/static/icons/android-chrome-192x192.png" sizes="192x192">
-    <link rel="icon" type="image/png" href="/static/icons/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16">
+
+    <meta name="theme-color" content="#604e8b">
+    <meta name="msapplication-TileColor" content="#604e8b">
+
+    {% if preferences.SitePreferences.site_logo %}
+        <meta name="msapplication-TileImage" content="{{ preferences.SitePreferences.site_logo.url }}">
+
+        <!-- Favicons-->
+        <link rel="apple-touch-icon" sizes="57x57" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="apple-touch-icon" sizes="60x60" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="apple-touch-icon" sizes="72x72" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="apple-touch-icon" sizes="76x76" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="apple-touch-icon" sizes="114x114" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="apple-touch-icon" sizes="120x120" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="apple-touch-icon" sizes="144x144" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="apple-touch-icon" sizes="152x152" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ preferences.SitePreferences.site_logo.url }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ preferences.SitePreferences.site_logo.url }}">
+    {% endif %}
+
     <link rel="manifest" href="/static/manifest.json">
-    <meta name="msapplication-TileColor" content="#FFBB33">
-    <meta name="msapplication-TileImage" content="/static/icons/mstile-144x144.png">
+
     {# Chrome 39 for Android colour #}
-    <meta name="theme-color" content="#FFBB33">
     {% if og_image %}
         <meta property="og:image" content="{{ request.build_absolute_uri(og_image) }}">
     {% endif %}
     {% block og_title %}{% endblock %}
-    <meta property="og:site_name" content="{{ SITE_LONG_NAME }}">
+    <meta property="og:site_name" content="{{ preferences.SitePreferences.site_name }}">
     <meta property="og:url"
           content="{{ DMOJ_SCHEME }}://{{ DMOJ_CANONICAL|default(site.domain) }}{{ request.get_full_path() }}">
     {% if meta_description %}
@@ -186,6 +193,7 @@
         <ul id="nav-list">
             <li class="home-nav-element"><a href="{{ url('home') }}">{% include "site-logo-fragment.html" %}</a></li>
             <li class="home-nav-element"><span class="nav-divider"></span></li>
+            <li class="home-nav-element"><a href="{{ url('home') }}">{{ preferences.SitePreferences.site_name }}</a></li>
             <li class="home-menu-item"><a href="{{ url('home') }}" class="nav-home">{{ _('Home') }}</a></li>
             {% for node in mptt_tree(nav_bar) recursive %}
                 <li>

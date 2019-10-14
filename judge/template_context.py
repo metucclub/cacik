@@ -9,7 +9,6 @@ from django.utils.functional import SimpleLazyObject, new_method_proxy
 from judge.utils.caniuse import CanIUse, SUPPORT
 from .models import MiscConfig, NavigationBar, Profile
 
-
 class FixedSimpleLazyObject(SimpleLazyObject):
     if not hasattr(SimpleLazyObject, '__iter__'):
         __iter__ = new_method_proxy(iter)
@@ -97,12 +96,6 @@ def misc_config(request):
     domain = get_current_site(request).domain
     return {'misc_config': MiscConfigDict(domain=domain),
             'i18n_config': MiscConfigDict(language=request.LANGUAGE_CODE, domain=domain)}
-
-
-def site_name(request):
-    return {'SITE_NAME': getattr(settings, 'SITE_NAME', 'DMOJ'),
-            'SITE_LONG_NAME': getattr(settings, 'SITE_LONG_NAME', getattr(settings, 'SITE_NAME', 'DMOJ')),
-            'SITE_ADMIN_EMAIL': getattr(settings, 'SITE_ADMIN_EMAIL', False)}
 
 
 def math_setting(request):

@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.http import Http404, HttpResponsePermanentRedirect
 from django.templatetags.static import static
+from django.conf.urls.static import static as static_urls
 from django.urls import reverse
 from django.utils.functional import lazystr
 from django.utils.translation import ugettext_lazy as _
@@ -374,6 +375,8 @@ for favicon in favicon_paths:
 handler404 = 'judge.views.error.error404'
 handler403 = 'judge.views.error.error403'
 handler500 = 'judge.views.error.error500'
+
+urlpatterns += static_urls(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if 'newsletter' in settings.INSTALLED_APPS:
     urlpatterns.append(url(r'^newsletter/', include('newsletter.urls')))
