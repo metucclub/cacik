@@ -6,7 +6,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
 from django.utils.functional import SimpleLazyObject, new_method_proxy
 
-from judge.utils.caniuse import CanIUse, SUPPORT
 from .models import MiscConfig, NavigationBar, Profile
 
 class FixedSimpleLazyObject(SimpleLazyObject):
@@ -99,12 +98,9 @@ def misc_config(request):
 
 
 def math_setting(request):
-    caniuse = CanIUse(request.META.get('HTTP_USER_AGENT', ''))
-
     if request.user.is_authenticated:
         engine = request.profile.math_engine
     else:
-        engine = getattr(settings, 'MATHOID_DEFAULT_TYPE', 'auto')
-    if engine == 'auto':
-        engine = 'mml' if bool(getattr(settings, 'MATHOID_URL', False)) and caniuse.mathml == SUPPORT else 'jax'
-    return {'MATH_ENGINE': engine, 'REQUIRE_JAX': engine == 'jax', 'caniuse': caniuse}
+        engine = getattr(settings, 'MATHOID_DEFAULT_TYPE', 'jax')
+
+    return {'MATH_ENGINE': engine, 'REQUIRE_JAX': engine == 'jax'}
