@@ -66,9 +66,15 @@ class Contest(models.Model):
                                           help_text=_('Whether the scoreboard should remain hidden for the duration '
                                                       'of the contest.'),
                                           default=False)
-    use_clarifications = models.BooleanField(verbose_name=_('no comments'),
-                                             help_text=_("Use clarification system instead of comments."),
+    no_comments = models.BooleanField(verbose_name=_('disable comments'),
+                                            help_text=_('Disable comments on contest page'),
                                              default=True)
+    use_clarifications = models.BooleanField(verbose_name=_('use clarification system'),
+                                             help_text=_('Use clarification system instead of comments.'),
+                                             default=True)
+    no_social_share = models.BooleanField(verbose_name=_('disable social share buttons'),
+                                            help_text=_('Disable social share buttons on contest page'),
+                                             default=False)
     rating_floor = models.IntegerField(verbose_name=('rating floor'), help_text=_('Rating floor for contest'),
                                        null=True, blank=True)
     rating_ceiling = models.IntegerField(verbose_name=('rating ceiling'), help_text=_('Rating ceiling for contest'),

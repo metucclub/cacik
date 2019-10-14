@@ -28,7 +28,8 @@ from django.views.generic.detail import SingleObjectMixin
 from judge.comments import CommentedDetailView
 from judge.forms import ProblemCloneForm, ProblemSubmitForm
 from judge.models import ContestProblem, ContestSubmission, Judge, Language, Problem, ProblemGroup, \
-    ProblemTranslation, ProblemType, RuntimeVersion, Solution, Submission, SubmissionSource, \
+    ProblemTranslation, ProblemType, RuntimeVersion, SitePreferences, \
+    Solution, Submission, SubmissionSource, \
     TranslatedProblemForeignKeyQuerySet
 from judge.pdf_problems import DefaultPdfMaker, HAS_PDF
 from judge.utils.diggpaginator import DiggPaginator
@@ -387,7 +388,7 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, ListView
         if 'search' in self.request.GET:
             self.search_query = query = ' '.join(self.request.GET.getlist('search')).strip()
             if query:
-                if settings.ENABLE_FTS and self.full_text:
+                if SitePreferences.enable_fts and self.full_text:
                     queryset = queryset.search(query, queryset.BOOLEAN).extra(order_by=['-relevance'])
                 else:
                     queryset = queryset.filter(
@@ -416,7 +417,7 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, ListView
         if self.show_types:
             context['selected_types'] = self.selected_types
             context['problem_types'] = ProblemType.objects.all()
-        context['has_fts'] = settings.ENABLE_FTS
+        context['has_fts'] = SitePreferences.enable_fts
         context['search_query'] = self.search_query
         context['completed_problem_ids'] = self.get_completed_problems()
         context['attempted_problems'] = self.get_attempted_problems()

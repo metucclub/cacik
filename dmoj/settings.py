@@ -305,8 +305,6 @@ DATABASES = {
     },
 }
 
-ENABLE_FTS = False
-
 # Bridged configuration
 BRIDGED_JUDGE_ADDRESS = [('localhost', 9999)]
 BRIDGED_DJANGO_ADDRESS = [('localhost', 9998)]

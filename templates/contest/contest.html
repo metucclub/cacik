@@ -118,14 +118,18 @@
         </div>
     {% endif %}
 
-    <hr>
-    <span class="social">
-        {{ post_to_gplus(request, contest, '<i class="fa fa-google-plus-square"></i>') }}
-        {{ post_to_facebook(request, contest, '<i class="fa fa-facebook-official"></i>') }}
-        {{ post_to_twitter(request, preferences.SitePreferences.site_name + ':', contest, '<i class="fa fa-twitter"></i>') }}
-    </span>
+    {% if not contest.no_social_share %}
+        <hr>
+        <span class="social">
+            {{ post_to_gplus(request, contest, '<i class="fa fa-google-plus-square"></i>') }}
+            {{ post_to_facebook(request, contest, '<i class="fa fa-facebook-official"></i>') }}
+            {{ post_to_twitter(request, preferences.SitePreferences.site_name + ':', contest, '<i class="fa fa-twitter"></i>') }}
+        </span>
+    {% endif %}
 
-    {% include "comments/list.html" %}
+    {% if not contest.no_comments %}
+        {% include "comments/list.html" %}
+    {% endif %}
 {% endblock %}
 
 {% block description_end %}{% endblock %}

@@ -5,7 +5,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 
 from dmoj import settings
-from judge.models import Contest, ContestParticipation, ContestTag, Problem, Profile, Submission
+from judge.models import Contest, ContestParticipation, ContestTag, Problem, Profile, SitePreferences, Submission
 
 
 def sane_time_repr(delta):
@@ -81,7 +81,7 @@ def api_v1_contest_detail(request, contest):
 
 def api_v1_problem_list(request):
     queryset = Problem.objects.filter(is_public=True, is_organization_private=False)
-    if settings.ENABLE_FTS and 'search' in request.GET:
+    if SitePreferences.enable_fts and 'search' in request.GET:
         query = ' '.join(request.GET.getlist('search')).strip()
         if query:
             queryset = queryset.search(query)
