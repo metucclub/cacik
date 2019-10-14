@@ -38,14 +38,14 @@
 
 {% block before_point_head %}
     {% for problem in problems %}
-        <th class="points header"><a href="{{ url('contest_ranked_submissions', contest.key, problem.problem.code) }}">
+        <th class="points header"><a href="{{ url('problem_detail', problem.problem.code) }}">
             {% if problem.letter %}
               {{ problem.letter }}
             {% else %}
               {{- loop.index }}
             {% endif %}
 
-            {% if not contest.hide_points_on_scoreboard %}
+            {% if not contest.hide_points %}
               <div class="point-denominator">{{ problem.points }}</div>
             {% endif %}
         </a></th>

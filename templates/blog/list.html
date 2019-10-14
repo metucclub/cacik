@@ -3,12 +3,15 @@
 {% block title_ruler %}{% endblock %}
 
 {% block media %}
-    <link rel="alternate" type="application/atom+xml" href="{{ url('blog_atom') }}" title="Atom Blog Feed">
-    <link rel="alternate" type="application/rss+xml" href="{{ url('blog_rss') }}" title="RSS Blog Feed">
-    <link rel="alternate" type="application/atom+xml" href="{{ url('comment_atom') }}" title="Atom Comment Feed">
-    <link rel="alternate" type="application/rss+xml" href="{{ url('comment_rss') }}" title="RSS Comment Feed">
-    <link rel="alternate" type="application/atom+xml" href="{{ url('problem_atom') }}" title="Atom Problem Feed">
-    <link rel="alternate" type="application/rss+xml" href="{{ url('problem_rss') }}" title="RSS Problem Feed">
+    {% if preferences.SitePreferences.enable_rss %}
+        <link rel="alternate" type="application/atom+xml" href="{{ url('blog_atom') }}" title="Atom Blog Feed">
+        <link rel="alternate" type="application/rss+xml" href="{{ url('blog_rss') }}" title="RSS Blog Feed">
+        <link rel="alternate" type="application/atom+xml" href="{{ url('comment_atom') }}" title="Atom Comment Feed">
+        <link rel="alternate" type="application/rss+xml" href="{{ url('comment_rss') }}" title="RSS Comment Feed">
+        <link rel="alternate" type="application/atom+xml" href="{{ url('problem_atom') }}" title="Atom Problem Feed">
+        <link rel="alternate" type="application/rss+xml" href="{{ url('problem_rss') }}" title="RSS Problem Feed">
+    {% endif %}
+
     {% include "blog/media-css.html" %}
     <style>
         .post {
@@ -84,7 +87,9 @@
             <li id="blog-tab" class="tab active"><a href="#">
                 <i class="tab-icon fa fa-info-circle"></i> {{ _('Blog') }}
             </a></li>
-            <li id="event-tab" class="tab"><a href="#"><i class="tab-icon fa fa-rss"></i> {{ _('Events') }}</a></li>
+            {% if preferences.SitePreferences.enable_rss %}
+                <li id="event-tab" class="tab"><a href="#"><i class="tab-icon fa fa-rss"></i> {{ _('Events') }}</a></li>
+            {% endif %}
         </ul>
     </div>
     <div id="blog-container">
@@ -149,11 +154,30 @@
                     </div>
                 </div>
             {% endif %}
+
             {% if current_contests %}
                 <div class="blog-sidebox sidebox">
                     <h3>{{ _('Ongoing contests') }} <i class="fa fa-trophy"></i></h3>
                     <div class="sidebox-content">
                         {% for contest in current_contests %}
+                            <div class="contest">
+                                <div class="contest-list-title">
+                                    <a href="{{ url('contest_view', contest.key) }}">{{ contest.name }}</a>
+                                </div>
+                                <div class="time">
+                                    {{ _('Ends in %(countdown)s.', countdown=contest.time_before_end|as_countdown) }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if past_contests %}
+                <div class="blog-sidebox sidebox">
+                    <h3>{{ _('Past contests') }} <i class="fa fa-trophy"></i></h3>
+                    <div class="sidebox-content">
+                        {% for contest in past_contests %}
                             <div class="contest">
                                 <div class="contest-list-title">
                                     <a href="{{ url('contest_view', contest.key) }}">{{ contest.name }}</a>
@@ -185,41 +209,6 @@
                 </div>
             {% endif %}
 
-            <div class="blog-sidebox sidebox">
-                <h3>{{ _('Comment stream') }} <i class="fa fa-comments"></i></h3>
-                <div class="sidebox-content">
-                    <ul>
-                        {% for comment in comments %}
-                            <li>
-                                <span style="padding-left:0.25em" class="poster">
-                                    {{ link_user(comment.author) }}
-                                </span> &rarr;
-                                <a href="{{ comment.link }}#comment-{{ comment.id }}">{{ page_titles[comment.page] }}</a>
-                            </li>{% endfor %}
-                    </ul>
-                    <span class="rssatom">
-                        <a href="{{ url('comment_rss') }}"><span><i class="fa fa-rss"></i></span> RSS</a>
-                        /
-                        <a href="{{ url('comment_atom') }}">Atom</a>
-                    </span>
-                </div>
-            </div>
-            <div class="blog-sidebox sidebox">
-                <h3>{{ _('New problems') }} <i class="fa fa-puzzle-piece"></i>
-                </h3>
-                <div class="sidebox-content">
-                    <ul class="problem-list">
-                        {% for problem in new_problems %}
-                            <li><a href="{{ url('problem_detail', problem.code) }}">{{ problem.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                    <span class="rssatom">
-                        <a href="{{ url('problem_rss') }}"><span><i class="fa fa-rss"></i></span> RSS</a>
-                        /
-                        <a href="{{ url('problem_atom') }}">Atom</a>
-                    </span>
-                </div>
-            </div>
             {% if perms.judge.test_site and own_open_tickets %}
                 <div class="blog-sidebox sidebox">
                     <h3>{{ _('My open tickets') }} <i class="fa fa-question-circle"></i></h3>

@@ -1,9 +1,7 @@
 <h3 style="color:red;font-weight:bold">
     {% if request.user == submission.user.user %}
-        {% trans trimmed %}
-            An internal error occurred while grading, and the {{ preferences.SitePreferences.site_name }} administrators have been notified.<br>
-            In the meantime, try resubmitting in a few seconds.
-        {% endtrans %}
+        An internal error occurred while grading, and the {{ preferences.SitePreferences.site_name }} administrators have been notified.<br>
+        In the meantime, try resubmitting in a few seconds.
     {% else %}
         {{ _('An internal error occurred while grading.') }}
     {% endif %}

@@ -13,6 +13,7 @@ class SitePreferences(Preferences):
     active_contest = models.ForeignKey(Contest, on_delete=models.SET_NULL, blank=True, null=True)
 
     enable_fts = models.BooleanField(default=False)
+    enable_rss = models.BooleanField(default=False)
 
     no_comments = models.BooleanField(default=False)
     enable_filters = models.BooleanField(default=False)

@@ -72,8 +72,8 @@ class Contest(models.Model):
     no_social_share = models.BooleanField(verbose_name=_('disable social share buttons'),
                                             help_text=_('Disable social share buttons on contest page'),
                                              default=False)
-    hide_points_on_scoreboard = models.BooleanField(verbose_name=_('hide points on scoreboard'),
-                                            help_text=_('Hide points on scoreboard page'),
+    hide_points = models.BooleanField(verbose_name=_('hide points'),
+                                            help_text=_('Hide points on all pages'),
                                              default=False)
     hide_participation_tab = models.BooleanField(verbose_name=_('hide participation tab'),
                                             help_text=_('Hide participation tab on contest page'),

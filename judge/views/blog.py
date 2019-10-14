@@ -79,8 +79,9 @@ class PostList(ListView):
             q |= Q(is_organization_private=True, organizations__in=user.organizations.all())
             q |= Q(is_private=True, private_contestants=user)
         visible_contests = visible_contests.filter(q)
-        context['current_contests'] = visible_contests.filter(start_time__lte=now, end_time__gt=now)
-        context['future_contests'] = visible_contests.filter(start_time__gt=now)
+        context['past_contests'] = visible_contests.filter(end_time__lt=now)[:5]
+        context['current_contests'] = visible_contests.filter(start_time__lte=now, end_time__gt=now)[:3]
+        context['future_contests'] = visible_contests.filter(start_time__gte=now)[:5]
 
         if self.request.user.is_authenticated:
             profile = self.request.profile

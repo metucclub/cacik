@@ -26,7 +26,7 @@ from django.views.generic.detail import BaseDetailView, DetailView
 from judge import event_poster as event
 from judge.comments import CommentedDetailView
 from judge.forms import ContestCloneForm
-from judge.models import Contest, ContestParticipation, ContestProblem, ContestTag, Problem, Profile
+from judge.models import Contest, ContestParticipation, ContestProblem, ContestTag, Problem, ProblemClarification, Profile, Ticket
 from judge.utils.opengraph import generate_opengraph
 from judge.utils.ranker import ranker
 from judge.utils.views import DiggPaginatorMixin, SingleObjectFormView, TitleMixin, generic_message
@@ -221,6 +221,15 @@ class ContestDetail(ContestMixin, TitleMixin, CommentedDetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ContestDetail, self).get_context_data(**kwargs)
+
+        clarifications = ProblemClarification.objects.filter(problem__in=self.object.problems.all())
+        context['has_clarifications'] = clarifications.count() > 0
+        context['clarifications'] = clarifications.order_by('-date')
+
+        if self.request.user.is_authenticated:
+            context['own_open_tickets'] = (Ticket.objects.filter(user=self.request.profile, is_open=True).order_by('-id')
+                                           .prefetch_related('linked_item').select_related('user__user'))
+
         context['contest_problems'] = Problem.objects.filter(contests__contest=self.object) \
             .order_by('contests__order').defer('description') \
             .annotate(has_public_editorial=Sum(Case(When(solution__is_public=True, then=1),
