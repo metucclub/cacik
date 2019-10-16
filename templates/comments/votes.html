@@ -1,17 +1,19 @@
-<h2>Votes</h2>
-<table class="table">
-    <thead>
-    <tr>
-        <th>Voter</th>
-        <th>Score</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for vote in votes %}
+{% if not preferences.SitePreferences.no_comments %}
+    <h2>Votes</h2>
+    <table class="table">
+        <thead>
         <tr>
-            <td>{{ link_user(vote.voter) }}</td>
-            <td>{{ vote.score }}</td>
+            <th>Voter</th>
+            <th>Score</th>
         </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        {% for vote in votes %}
+            <tr>
+                <td>{{ link_user(vote.voter) }}</td>
+                <td>{{ vote.score }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

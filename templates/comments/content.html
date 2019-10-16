@@ -1,1 +1,3 @@
-{{ comment.body|markdown('comment', MATH_ENGINE)|reference|str|safe }}
+{% if not preferences.SitePreferences.no_comments %}
+    {{ comment.body|markdown('comment', MATH_ENGINE)|reference|str|safe }}
+{% endif %}

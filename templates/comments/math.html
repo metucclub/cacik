@@ -1,3 +1,5 @@
-{% compress js, inline %}
-    <script src="{{ static('js/pagedown_math.js') }}"></script>
-{% endcompress %}
+{% if not preferences.SitePreferences.no_comments %}
+    {% compress js, inline %}
+        <script src="{{ static('js/pagedown_math.js') }}"></script>
+    {% endcompress %}
+{% endif %}
