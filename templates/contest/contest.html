@@ -16,6 +16,7 @@
             });
         });
     </script>
+
     {% include "contest/media-js.html" %}
     {% include "comments/media-js.html" %}
 {% endblock %}
@@ -76,9 +77,10 @@
                 {% endcache %}
             </div>
 
-            <hr>
 
-            {% if request.user.is_authenticated and (contest.can_join or contest.ended) %}
+            {% if request.user.is_superuser or contest.is_in_contest(request.user) or contest.ended %}
+                <hr>
+
                 <div class="contest-problems">
                     <h2 style="margin-bottom: 0.2em"><i class="fa fa-fw fa-question-circle"></i>{{ _('Problems') }} </h2>
                     <table id="contest-problems" class="table">
@@ -94,7 +96,7 @@
                             <th>{{ _('AC Rate') }}</th>
                             <th>{{ _('Users') }}</th>
 
-                            {% if not contest.is_in_contest(request.user) %}
+                            {% if contest.ended %}
                                 <th></th>
                             {% endif %}
                         </tr>
@@ -103,7 +105,7 @@
                         {% for problem in contest_problems %}
                             <tr>
                                 <td>
-                                    {% if request.user.is_superuser or problem.is_public or contest.is_in_contest(request.user) %}
+                                    {% if problem.is_public or request.user.is_superuser or contest.is_in_contest(request.user) %}
                                         <a href="{{ url('problem_detail', problem.code) }}">
                                             {{ contest.contest_problems.get(problem=problem).letter }}
                                         </a>
@@ -113,7 +115,7 @@
                                 </td>
 
                                 <td>
-                                    {% if request.user.is_superuser or problem.is_public or contest.is_in_contest(request.user) %}
+                                    {% if problem.is_public or request.user.is_superuser or contest.is_in_contest(request.user) %}
                                         <a href="{{ url('problem_detail', problem.code) }}">{{ problem.i18n_name }}</a>
                                     {% else %}
                                         {{ problem.i18n_name }}
@@ -127,13 +129,14 @@
                                 <td>{{ problem.ac_rate|floatformat(1) }}%</td>
 
                                 <td>
-                                    {% if request.user.is_superuser or problem.is_public or contest.is_in_contest(request.user) %}
+                                    {% if problem.is_public or request.user.is_superuser or contest.is_in_contest(request.user) %}
                                         <a href="{{ url('ranked_submissions', problem.code) }}">{{ problem.user_count }}</a>
                                     {% else %}
                                         {{ problem.user_count }}
                                     {% endif %}
                                 </td>
-                                {% if not contest.is_in_contest(request.user) %}
+
+                                {% if contest.ended %}
                                     <td>
                                         {% if problem.is_public and problem.has_public_editorial %}
                                             <a href="{{ url('problem_editorial', problem.code) }}">{{ _('Editorial') }}</a>
@@ -157,7 +160,7 @@
             {% endif %}
         </div>
 
-        {% if request.in_contest and contest.is_in_contest(request.user) %}
+        {% if contest.is_in_contest(request.user) %}
             <div class="sidebox contest-detail-sidebar">
                 {% if perms.judge.test_site %}
                     <div>
