@@ -13,6 +13,12 @@ from judge.contest_format.registry import register_contest_format
 from judge.utils.timedelta import nice_repr
 
 
+class ContestParticipationData:
+    def __init__(self):
+        self.cumtime = 0
+        self.points = 0
+        self.format_data = {}
+
 @register_contest_format('default')
 class DefaultContestFormat(BaseContestFormat):
     name = gettext_lazy('default')
@@ -28,7 +34,7 @@ class DefaultContestFormat(BaseContestFormat):
             return
 
         if not isinstance(config, dict):
-            raise ValidationError('CClub-styled contest expects no config or dict as config')
+            raise ValidationError('Default contest format expects no config or dict as config')
 
         for key, value in config.items():
             if key not in cls.config_defaults:
@@ -44,68 +50,42 @@ class DefaultContestFormat(BaseContestFormat):
         self.contest = contest
 
     def update_participation(self, participation):
-        cumtime = 0
-        points = 0
-        penalty = 0
-        format_data = {}
-
-        frozen_cumtime = 0
-        frozen_points = 0
-        frozen_penalty = 0
-        frozen_format_data = {}
-
+        querysets = None
 
         if self.contest.freeze_scoreboard_after:
-            queryset1 = participation.submissions.filter(submission__date__lt=self.contest.freeze_scoreboard_after)
-            queryset2 = participation.submissions
+            querysets = [
+                participation.submissions.filter(submission__date__lt=self.contest.freeze_scoreboard_after),
+                participation.submissions
+            ]
         else:
-            queryset1 = participation.submissions
-            queryset2 = None
+            querysets = [participation.submissions]
+
+        data = [ContestParticipationData() for _ in range(len(querysets))]
 
 
-
-        for result in queryset1.values('problem_id').annotate(
-                time=Max('submission__date'), points=Max('points')
-        ):
-            wrong_submission_count = participation.submissions.filter(
-                problem_id=result['problem_id'], submission__result__in=['WA', 'TLE', 'MLE', 'OLE', 'IR', 'RTE']
-            ).count()
-
-            dt = (result['time'] - participation.start).total_seconds()
-            if result['points']:
-                frozen_cumtime += dt
-                frozen_cumtime += wrong_submission_count*self.config['penalty']*60
-            frozen_format_data[str(result['problem_id'])] = {'time': dt, 'points': result['points'], 'penalty': wrong_submission_count}
-            frozen_points += result['points']
-
-
-        if queryset2:
-            for result in queryset2.values('problem_id').annotate(
-                    time=Max('submission__date'), points=Max('points')
-            ):
-                wrong_submission_count = participation.submissions.filter(
-                    problem_id=result['problem_id'], submission__result__in=['WA', 'TLE', 'MLE', 'OLE', 'IR', 'RTE']
-                ).count()
+        for i, queryset in enumerate(querysets):
+            for result in queryset.values('problem_id').annotate(time=Max('submission__date'), points=Max('points')):
+                ws_count = queryset.filter(problem_id=result['problem_id'],
+                    submission__result__in=['WA', 'TLE', 'MLE', 'OLE', 'IR', 'RTE']).count()
 
                 dt = (result['time'] - participation.start).total_seconds()
+
                 if result['points']:
-                    cumtime += dt
-                    cumtime += wrong_submission_count*self.config['penalty']*60
-                format_data[str(result['problem_id'])] = {'time': dt, 'points': result['points'], 'penalty': wrong_submission_count}
-                points += result['points']
-        else:
-            cumtime = frozen_cumtime
-            score = frozen_score
-            format_data = frozen_format_data
+                    data[i].cumtime += dt + (ws_count * self.config['penalty'] * 60)
 
+                print(i, id(data[i]), data[i].format_data)
 
-        participation.cumtime = max(cumtime, 0)
-        participation.score = points
-        participation.format_data = format_data
+                data[i].format_data[str(result['problem_id'])] = {'time': dt, 'points': result['points'], 'penalty': ws_count}
 
-        participation.frozen_cumtime = max(frozen_cumtime, 0)
-        participation.frozen_score = frozen_points
-        participation.frozen_format_data = frozen_format_data
+                data[i].points += result['points']
+
+        participation.cumtime = max(data[-1].cumtime, 0)
+        participation.score = data[-1].points
+        participation.format_data = data[-1].format_data
+
+        participation.frozen_cumtime = max(data[0].cumtime, 0)
+        participation.frozen_score = data[0].points
+        participation.frozen_format_data = data[0].format_data
 
         participation.save()
 

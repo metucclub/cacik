@@ -273,7 +273,7 @@ class ContestParticipation(models.Model):
 
     frozen_score = models.IntegerField(verbose_name=_('frozen score'), default=0, db_index=True)
     frozen_cumtime = models.PositiveIntegerField(verbose_name=_('frozen cumulative time'), default=0)
-    frozen_format_data = JSONField(verbose_name=_('contest format specific data'), null=True, blank=True)
+    frozen_format_data = JSONField(verbose_name=_('frozen contest format specific data'), null=True, blank=True)
 
     def recompute_results(self):
         self.contest.format.update_participation(self)
