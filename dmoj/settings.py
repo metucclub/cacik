@@ -125,7 +125,6 @@ INSTALLED_APPS = (
     'sass_processor',
     'django_ace',
     'pagedown',
-    'sortedm2m',
     'statici18n',
     'impersonate',
     'django_jinja',
