@@ -8,12 +8,13 @@ from django.contrib.auth.password_validation import get_default_password_validat
 from django.forms import ChoiceField, ModelChoiceField
 from django.shortcuts import render
 from django.utils.translation import gettext, gettext_lazy as _
+from django.http import Http404
 from registration.backends.default.views import (ActivationView as OldActivationView,
                                                  RegistrationView as OldRegistrationView)
 from registration.forms import RegistrationForm
 from sortedm2m.forms import SortedMultipleChoiceField
 
-from judge.models import Language, Organization, Profile, TIMEZONE
+from judge.models import Language, Organization, SitePreferences, Profile, TIMEZONE
 from judge.utils.recaptcha import ReCaptchaField, ReCaptchaWidget
 from judge.utils.subscription import Subscription, newsletter_id
 from judge.widgets import Select2MultipleWidget, Select2Widget
@@ -59,6 +60,9 @@ class RegistrationView(OldRegistrationView):
     template_name = 'registration/registration_form.html'
 
     def get_context_data(self, **kwargs):
+        if SitePreferences.disable_registration:
+            raise Http404()
+
         if 'title' not in kwargs:
             kwargs['title'] = self.title
         tzmap = getattr(settings, 'TIMEZONE_MAP', None)
@@ -96,6 +100,9 @@ class ActivationView(OldActivationView):
     template_name = 'registration/activate.html'
 
     def get_context_data(self, **kwargs):
+        if SitePreferences.disable_registration:
+            raise Http404()
+
         if 'title' not in kwargs:
             kwargs['title'] = self.title
         return super(ActivationView, self).get_context_data(**kwargs)

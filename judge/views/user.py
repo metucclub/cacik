@@ -20,6 +20,7 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _, gettext_lazy
 from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic.base import View
 from reversion import revisions
 
 from judge.forms import ProfileForm, newsletter_id
@@ -312,12 +313,3 @@ def user_ranking_redirect(request):
     ).count()
     page = rank // UserList.paginate_by
     return HttpResponseRedirect('%s%s#!%s' % (reverse('user_list'), '?page=%d' % (page + 1) if page else '', username))
-
-
-class UserLogoutView(TitleMixin, TemplateView):
-    template_name = 'registration/logout.html'
-    title = 'You have been successfully logged out.'
-
-    def post(self, request, *args, **kwargs):
-        auth_logout(request)
-        return HttpResponseRedirect(request.get_full_path())

@@ -18,3 +18,7 @@ class SitePreferences(Preferences):
     no_comments = models.BooleanField(default=False)
     enable_filters = models.BooleanField(default=False)
     hide_best_solutions = models.BooleanField(default=False)
+
+    disable_registration = models.BooleanField(default=False)
+    disable_forgot_password = models.BooleanField(default=False)
+    disable_password_change = models.BooleanField(default=False)
