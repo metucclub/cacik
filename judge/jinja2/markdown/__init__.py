@@ -13,7 +13,6 @@ from judge.highlight_code import highlight_code
 from judge.jinja2.markdown.lazy_load import lazy_load as lazy_load_processor
 from judge.jinja2.markdown.math import MathInlineGrammar, MathInlineLexer, MathRenderer
 from judge.utils.camo import client as camo_client
-from judge.utils.texoid import TEXOID_ENABLED, TexoidRenderer
 from .. import registry
 
 logger = logging.getLogger('judge.html')
@@ -37,7 +36,6 @@ class AwesomeInlineLexer(MathInlineLexer, mistune.InlineLexer):
 class AwesomeRenderer(MathRenderer, mistune.Renderer):
     def __init__(self, *args, **kwargs):
         self.nofollow = kwargs.pop('nofollow', True)
-        self.texoid = TexoidRenderer() if kwargs.pop('texoid', False) else None
         self.parser = HTMLParser()
         super(AwesomeRenderer, self).__init__(*args, **kwargs)
 
@@ -103,22 +101,18 @@ class AwesomeRenderer(MathRenderer, mistune.Renderer):
         return super(AwesomeRenderer, self).header(text, level + 2, *args, **kwargs)
 
 
+
 @registry.filter
 def markdown(value, style, math_engine=None, lazy_load=False):
     styles = getattr(settings, 'MARKDOWN_STYLES', {}).get(style, getattr(settings, 'MARKDOWN_DEFAULT_STYLE', {}))
     escape = styles.get('safe_mode', True)
     nofollow = styles.get('nofollow', True)
-    texoid = TEXOID_ENABLED and styles.get('texoid', False)
-    math = hasattr(settings, 'MATHOID_URL') and styles.get('math', False)
 
     post_processors = []
-    if styles.get('use_camo', False) and camo_client is not None:
-        post_processors.append(camo_client.update_tree)
     if lazy_load:
         post_processors.append(lazy_load_processor)
 
-    renderer = AwesomeRenderer(escape=escape, nofollow=nofollow, texoid=texoid,
-                               math=math and math_engine is not None, math_engine=math_engine)
+    renderer = AwesomeRenderer(escape=escape, nofollow=nofollow, math_engine=math_engine)
     markdown = mistune.Markdown(renderer=renderer, inline=AwesomeInlineLexer,
                                 parse_block_html=1, parse_inline_html=1)
     result = markdown(value)

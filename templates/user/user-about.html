@@ -31,8 +31,8 @@
 
         {% if user.about %}
             <h4>{{ _('About') }}</h4>
-            {% cache 86400 'user_about' user.id MATH_ENGINE %}
-                {{ user.about|markdown('self-description', MATH_ENGINE)|reference|str|safe }}
+            {% cache 86400 'user_about' user.id %}
+                {{ user.about|markdown('self-description')|reference|str|safe }}
             {% endcache %}
         {% else %}
             <i>
@@ -63,9 +63,7 @@
 {% endblock %}
 
 {% block bodyend %}
-    {% if REQUIRE_JAX %}
-        {% include "mathjax-load.html" %}
-    {% endif %}
+    {% include "mathjax-load.html" %}
 
     {% if ratings %}
         <script type="text/javascript" src="{{ static('libs/chart.js/Chart.js') }}"></script>

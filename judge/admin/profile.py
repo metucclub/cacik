@@ -21,7 +21,6 @@ class ProfileForm(ModelForm):
         widgets = {
             'timezone': Select2Widget,
             'language': Select2Widget,
-            'ace_theme': Select2Widget,
             'current_contest': Select2Widget,
         }
         if AdminPagedownWidget is not None:
@@ -42,8 +41,8 @@ class TimezoneFilter(admin.SimpleListFilter):
 
 
 class ProfileAdmin(VersionAdmin):
-    fields = ('user', 'display_rank', 'about', 'organizations', 'timezone', 'language', 'ace_theme',
-              'math_engine', 'last_access', 'ip', 'mute', 'is_unlisted', 'notes', 'is_totp_enabled', 'user_script',
+    fields = ('user', 'display_rank', 'about', 'organizations', 'timezone', 'language',
+              'last_access', 'ip', 'mute', 'is_unlisted', 'notes', 'is_totp_enabled',
               'current_contest')
     readonly_fields = ('user',)
     list_display = ('admin_user_admin', 'email', 'is_totp_enabled', 'timezone_full',
@@ -107,8 +106,3 @@ class ProfileAdmin(VersionAdmin):
                                              '%d users have scores recalculated.',
                                              count) % count)
     recalculate_points.short_description = _('Recalculate scores')
-
-    def get_form(self, request, obj=None, **kwargs):
-        form = super(ProfileAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['user_script'].widget = AceWidget('javascript', request.profile.ace_theme)
-        return form

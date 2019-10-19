@@ -11,7 +11,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from fernet_fields import EncryptedCharField
 
-from judge.models.choices import ACE_THEMES, MATH_ENGINES_CHOICES, TIMEZONE
+from judge.models.choices import TIMEZONE
 from judge.ratings import rating_class
 
 __all__ = ['Organization', 'Profile', 'OrganizationRequest']
@@ -80,7 +80,6 @@ class Profile(models.Model):
     points = models.FloatField(default=0, db_index=True)
     performance_points = models.FloatField(default=0, db_index=True)
     problem_count = models.IntegerField(default=0, db_index=True)
-    ace_theme = models.CharField(max_length=30, choices=ACE_THEMES, default='github')
     last_access = models.DateTimeField(verbose_name=_('last access time'), default=now)
     ip = models.GenericIPAddressField(verbose_name=_('last IP'), blank=True, null=True)
     organizations = models.ManyToManyField(Organization, verbose_name=_('organization'), blank=True,
@@ -92,13 +91,8 @@ class Profile(models.Model):
     is_unlisted = models.BooleanField(verbose_name=_('unlisted user'), help_text=_('User will not be ranked.'),
                                       default=False)
     rating = models.IntegerField(null=True, default=None)
-    user_script = models.TextField(verbose_name=_('user script'), default='', blank=True, max_length=65536,
-                                   help_text=_('User-defined JavaScript for site customization.'))
     current_contest = models.OneToOneField('ContestParticipation', verbose_name=_('current contest'),
                                            null=True, blank=True, related_name='+', on_delete=models.SET_NULL)
-    math_engine = models.CharField(verbose_name=_('math engine'), choices=MATH_ENGINES_CHOICES, max_length=4,
-                                   default=getattr(settings, 'MATHOID_DEFAULT_TYPE', 'auto'),
-                                   help_text=_('the rendering engine used to render math'))
     is_totp_enabled = models.BooleanField(verbose_name=_('2FA enabled'), default=False,
                                           help_text=_('check to enable TOTP-based two factor authentication'))
     totp_key = EncryptedNullCharField(max_length=32, null=True, blank=True, verbose_name=_('TOTP key'),

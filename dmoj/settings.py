@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 SITE_ID = 1
 
 PYGMENT_THEME = 'pygment-github.css'
+ACE_THEME = 'github'
 
 
 WPADMIN = {
@@ -198,7 +199,6 @@ TEMPLATES = [
                 'judge.template_context.general_info',
                 'judge.template_context.site',
                 'judge.template_context.misc_config',
-                'judge.template_context.math_setting',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
                 'preferences.context_processors.preferences_cp',

@@ -80,18 +80,16 @@
 </div>
 <hr style="clear: both;">
 <div class="content-description printing">
-    {{ description|markdown('problem', 'tex' if math_engine == 'jax' else math_engine)|reference|absolutify(url)|str|safe }}
+    {{ description|markdown('problem', 'jax')|reference|absolutify(url)|str|safe }}
 </div>
-{% if math_engine == 'jax' %} {# TODO #}
-    <script type="text/javascript" src="js/mathjax_config.js"></script>
-    <script type="text/javascript" src="libs/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
-    <script type="text/javascript">
-        MathJax.Hub.Register.StartupHook("End", function () {
-            if (typeof window.callPhantom === 'function')
-                window.callPhantom({'action': 'snapshot'});
-            document.body.classList.add('math-loaded');
-        });
-    </script>
-{% endif %}
+<script type="text/javascript" src="js/mathjax_config.js"></script>
+<script type="text/javascript" src="libs/mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+<script type="text/javascript">
+    MathJax.Hub.Register.StartupHook("End", function () {
+        if (typeof window.callPhantom === 'function')
+            window.callPhantom({'action': 'snapshot'});
+        document.body.classList.add('math-loaded');
+    });
+</script>
 </body>
 </html>

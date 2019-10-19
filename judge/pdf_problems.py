@@ -28,7 +28,6 @@ logger = logging.getLogger('judge.problem.pdf')
 
 
 class BasePdfMaker(object):
-    math_engine = 'jax'
     title = None
 
     def __init__(self, dir=None, clean_up=True):
@@ -143,128 +142,7 @@ page.open(param.input, function (status) {
         self.proc = subprocess.Popen(cmdline, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.dir)
         self.log = self.proc.communicate()[0]
 
-
-class SlimerJSPdfMaker(BasePdfMaker):
-    math_engine = 'mml'
-
-    template = '''\
-"use strict";
-try {
-    var param = {params};
-
-    var {Cc, Ci} = require('chrome');
-    var prefs = Cc['@mozilla.org/preferences-service;1'].getService(Ci.nsIPrefService);
-    // Changing the serif font so that printed footers show up as Segoe UI.
-    var branch = prefs.getBranch('font.name.serif.');
-    branch.setCharPref('x-western', 'Segoe UI');
-
-    var page = require('webpage').create();
-
-    page.paperSize = {
-        format: param.paper, orientation: 'portrait', margin: '1cm', edge: '0.5cm',
-        footerStr: { left: '', right: '', center: param.footer }
-    };
-
-    page.open(param.input, function (status) {
-        if (status !== 'success') {
-            console.log('Unable to load the address!');
-            slimer.exit(1);
-        } else {
-            page.render(param.output, { ratio: param.zoom });
-            slimer.exit();
-        }
-    });
-} catch (e) {
-    console.error(e);
-    slimer.exit(1);
-}
-'''
-
-    def get_render_script(self):
-        return self.template.replace('{params}', json.dumps({
-            'zoom': getattr(settings, 'SLIMERJS_PDF_ZOOM', 0.75),
-            'input': 'input.html', 'output': 'output.pdf',
-            'paper': getattr(settings, 'SLIMERJS_PAPER_SIZE', 'Letter'),
-            'footer': gettext('Page [page] of [topage]').replace('[page]', '&P').replace('[topage]', '&L'),
-        }))
-
-    def _make(self, debug):
-        with io.open(os.path.join(self.dir, '_render.js'), 'w', encoding='utf-8') as f:
-            f.write(self.get_render_script())
-
-        env = None
-        firefox = getattr(settings, 'SLIMERJS_FIREFOX_PATH', '')
-        if firefox:
-            env = os.environ.copy()
-            env['SLIMERJSLAUNCHER'] = firefox
-
-        cmdline = [settings.SLIMERJS, '--headless', '_render.js']
-        self.proc = subprocess.Popen(cmdline, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.dir, env=env)
-        self.log = self.proc.communicate()[0]
-
-
-class PuppeteerPDFRender(BasePdfMaker):
-    template = '''\
-"use strict";
-const param = {params};
-const puppeteer = require('puppeteer');
-
-puppeteer.launch().then(browser => Promise.resolve()
-    .then(async () => {
-        const page = await browser.newPage();
-        await page.goto(param.input, { waitUntil: 'load' });
-        await page.waitForSelector('.math-loaded', { timeout: 15000 });
-        await page.pdf({
-            path: param.output,
-            format: param.paper,
-            margin: {
-                top: '1cm',
-                bottom: '1cm',
-                left: '1cm',
-                right: '1cm',
-            },
-            printBackground: true,
-            displayHeaderFooter: true,
-            headerTemplate: '<div></div>',
-            footerTemplate: '<center style="margin: 0 auto; font-family: Segoe UI; font-size: 10px">' +
-                param.footer.replace('[page]', '<span class="pageNumber"></span>')
-                            .replace('[topage]', '<span class="totalPages"></span>')
-                + '</center>',
-        });
-        await browser.close();
-    })
-    .catch(e => browser.close().then(() => {throw e}))
-).catch(e => {
-    console.error(e);
-    process.exit(1);
-});
-'''
-
-    def get_render_script(self):
-        return self.template.replace('{params}', json.dumps({
-            'input': 'file://' + os.path.abspath(os.path.join(self.dir, 'input.html')),
-            'output': os.path.abspath(os.path.join(self.dir, 'output.pdf')),
-            'paper': getattr(settings, 'PUPPETEER_PAPER_SIZE', 'Letter'),
-            'footer': gettext('Page [page] of [topage]'),
-        }))
-
-    def _make(self, debug):
-        with io.open(os.path.join(self.dir, '_render.js'), 'w', encoding='utf-8') as f:
-            f.write(self.get_render_script())
-
-        env = os.environ.copy()
-        env['NODE_PATH'] = os.path.dirname(PUPPETEER_MODULE)
-
-        cmdline = [NODE_PATH, '_render.js']
-        self.proc = subprocess.Popen(cmdline, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.dir, env=env)
-        self.log = self.proc.communicate()[0]
-
-
-if HAS_PUPPETEER:
-    DefaultPdfMaker = PuppeteerPDFRender
-elif HAS_SLIMERJS:
-    DefaultPdfMaker = SlimerJSPdfMaker
-elif HAS_PHANTOMJS:
+if HAS_PHANTOMJS:
     DefaultPdfMaker = PhantomJSPdfMaker
 else:
     DefaultPdfMaker = None

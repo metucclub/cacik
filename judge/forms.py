@@ -29,18 +29,11 @@ class ProfileForm(ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['about', 'organizations', 'timezone', 'language', 'ace_theme', 'user_script']
+        fields = ['about', 'organizations', 'timezone', 'language']
         widgets = {
-            'user_script': AceWidget(theme='github'),
             'timezone': Select2Widget(attrs={'style': 'width:200px'}),
             'language': Select2Widget(attrs={'style': 'width:200px'}),
-            'ace_theme': Select2Widget(attrs={'style': 'width:200px'}),
         }
-
-        has_math_config = bool(getattr(settings, 'MATHOID_URL', False))
-        if has_math_config:
-            fields.append('math_engine')
-            widgets['math_engine'] = Select2Widget(attrs={'style': 'width:200px'})
 
         if HeavyPreviewPageDownWidget is not None:
             widgets['about'] = HeavyPreviewPageDownWidget(

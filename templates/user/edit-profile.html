@@ -43,13 +43,6 @@
 {% block js_media %}
     {% include "timezone/media-js.html" %}
     {{ form.media.js }}
-    <script type="text/javascript">
-        $(function () {
-            $('#ace_user_script').on('ace_load', function (e, editor) {
-                editor.getSession().setMode("ace/mode/javascript");
-            });
-        });
-    </script>
 {% endblock %}
 
 {% block title_ruler %}{% endblock %}
@@ -73,7 +66,7 @@
             {% csrf_token %}
 
             <div style="padding-top:0.5em" class="block-header">{{ _('Self-description') }}:</div>
-            {{ form.about }}
+                {{ form.about }}
             <hr>
 
             <table border="0" style="padding-top:0.7em">
@@ -88,16 +81,7 @@
                                 <td><label class="inline-header grayed">{{ _('Preferred language') }}:</label></td>
                                 <td><span class="fullwidth">{{ form.language }}</span></td>
                             </tr>
-                            <tr>
-                                <td><label class="inline-header grayed">{{ _('Editor theme') }}:</label></td>
-                                <td><span class="fullwidth">{{ form.ace_theme }}</span></td>
-                            </tr>
-                            {% if has_math_config %}
-                                <tr>
-                                    <td><label class="inline-header grayed">{{ _('Math engine') }}:</label></td>
-                                    <td><span class="fullwidth">{{ form.math_engine }}</span></td>
-                                </tr>
-                            {% endif %}
+
                             {% if form.newsletter %}
                                 <tr>
                                     <td colspan="2">
@@ -108,27 +92,24 @@
                                     </td>
                                 </tr>
                             {% endif %}
-                            <tr>
-                                <td colspan="2">
-                                    {{ form.test_site }}
-                                    <label for="id_test_site" style="float: unset" class="inline-header grayed">
-                                        {{- form.test_site.label -}}
-                                    </label>
-                                </td>
-                            </tr>
+
                             <tr>
                                 <td colspan="2">
                                     <a href="http://www.gravatar.com/" title="{{ _('Change your avatar') }}"
                                        target="_blank" class="inline-header">{{ _('Change your avatar') }}</a>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <a href="{{ url('password_change') }}" class="inline-header">
-                                        {{ _('Change your password') }}
-                                    </a>
-                                </td>
-                            </tr>
+
+                            {% if not preferences.SitePreferences.disable_change_password %}
+                                <tr>
+                                    <td colspan="2">
+                                        <a href="{{ url('password_change') }}" class="inline-header">
+                                            {{ _('Change your password') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+
                             <tr>
                                 <td colspan="2"><span class="inline-header">
                                     {% if profile.is_totp_enabled %}
@@ -150,11 +131,6 @@
                     </td>
                 </tr>
             </table>
-
-            <hr>
-            <div class="block-header">{{ _('User-script') }}:</div>
-            {{ form.user_script }}
-            <hr>
 
             <input type="submit" style="float:right" value="{{ _('Update profile') }}">
         </form>

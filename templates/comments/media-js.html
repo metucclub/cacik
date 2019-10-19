@@ -2,33 +2,6 @@
     <script src="{{ static('libs/featherlight/featherlight.min.js') }}" type="text/javascript"></script>
     {% compress js %}
         {{ comment_form.media.js }}
-        {% if not REQUIRE_JAX %}
-            <script type="text/javascript">
-                $(function () {
-                    $('#id_body').keypress(function () {
-                        if (!("MathJax" in window)) {
-                            $.ajax({
-                                type: "GET",
-                                url: "{{ static('js/mathjax_config.js') }}",
-                                dataType: "script",
-                                cache: true,
-                                success: function () {
-                                    $.ajax({
-                                        type: "GET",
-                                        url: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config=TeX-AMS_HTML',
-                                        dataType: "script",
-                                        cache: true,
-                                        success: function () {
-                                            mathjax_pagedown($);
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                });
-            </script>
-        {% endif %}
         <script type="text/javascript">
             $(document).ready(function () {
                 window.comment_set_parent = function (parent) {

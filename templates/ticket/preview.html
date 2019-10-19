@@ -1,4 +1,2 @@
-{{ preview_data|markdown('ticket', MATH_ENGINE)|reference|str|safe }}
-{% if REQUIRE_JAX %}
-    <div data-config="{{ static('js/mathjax_config.js') }}" class="require-mathjax-support"></div>
-{% endif %}
+{{ preview_data|markdown('ticket')|reference|str|safe }}
+<div data-config="{{ static('js/mathjax_config.js') }}" class="require-mathjax-support"></div>

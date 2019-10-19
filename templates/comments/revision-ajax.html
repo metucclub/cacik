@@ -1,5 +1,5 @@
 {% if not preferences.SitePreferences.no_comments %}
     {% with node=revision.field_dict %}
-        <div class="comment-body">{{ node.body|markdown('comment', MATH_ENGINE)|reference|str|safe }}</div>
+        <div class="comment-body">{{ node.body|markdown('comment')|reference|str|safe }}</div>
     {% endwith %}
 {% endif %}

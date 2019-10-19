@@ -21,7 +21,7 @@ class PasswordChangeView(views.PasswordChangeView):
     template_name='registration/password_change_form.html'
 
     def get_context_data(self, **kwargs):
-        if SitePreferences.disable_password_change:
+        if SitePreferences.disable_change_password:
             raise Http404()
 
         return super(views.PasswordChangeView).get_context_data(**kwargs)
@@ -31,7 +31,7 @@ class PasswordChangeDoneView(views.PasswordChangeDoneView):
     template_name='registration/password_change_done.html'
 
     def get_context_data(self, **kwargs):
-        if SitePreferences.disable_password_change:
+        if SitePreferences.disable_change_password:
             raise Http404()
 
         return super(views.PasswordChangeView).get_context_data(**kwargs)

@@ -41,8 +41,6 @@ class LanguageAdmin(VersionAdmin):
         self.form.base_fields['problems'].initial = \
             Problem.objects.exclude(id__in=obj.problem_set.values('id')).values_list('pk', flat=True) if obj else []
         form = super(LanguageAdmin, self).get_form(request, obj, **kwargs)
-        if obj is not None:
-            form.base_fields['template'].widget = AceWidget(obj.ace, request.profile.ace_theme)
         return form
 
 

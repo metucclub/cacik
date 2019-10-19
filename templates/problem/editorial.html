@@ -26,15 +26,13 @@
                 <p>Authors: {{ link_users(authors) }}</p>
             {% endif %}
         {% endwith %}
-        {{ solution.content|markdown('solution', MATH_ENGINE)|reference|str|safe }}
+        {{ solution.content|markdown('solution')|reference|str|safe }}
     </div>
     <hr>
     {% include "comments/list.html" %}
 {% endblock %}
 
 {% block bodyend %}
-    {% if REQUIRE_JAX %}
-        {% include "mathjax-load.html" %}
-    {% endif %}
+    {% include "mathjax-load.html" %}
     {% include "comments/math.html" %}
 {% endblock %}

@@ -95,12 +95,3 @@ def misc_config(request):
     domain = get_current_site(request).domain
     return {'misc_config': MiscConfigDict(domain=domain),
             'i18n_config': MiscConfigDict(language=request.LANGUAGE_CODE, domain=domain)}
-
-
-def math_setting(request):
-    if request.user.is_authenticated:
-        engine = request.profile.math_engine
-    else:
-        engine = getattr(settings, 'MATHOID_DEFAULT_TYPE', 'jax')
-
-    return {'MATH_ENGINE': engine, 'REQUIRE_JAX': engine == 'jax'}

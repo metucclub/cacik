@@ -256,14 +256,12 @@ class ProblemPdfView(ProblemMixin, SingleObjectMixin, View):
                     'problem_name': problem_name,
                     'description': problem.description if trans is None else trans.description,
                     'url': request.build_absolute_uri(),
-                    'math_engine': maker.math_engine,
                 }).replace('"//', '"https://').replace("'//", "'https://")
                 maker.title = problem_name
 
-                maker.load(file, os.path.join(settings.STATIC_ROOT, 'css', 'style.css'))
-                maker.load(file, os.path.join(settings.STATIC_ROOT, 'css', 'pygment-github.css'))
-                if maker.math_engine == 'jax':
-                    maker.load(file, os.path.join(settings.STATIC_ROOT, 'js', 'mathjax_config.js'))
+                maker.load('style.css', os.path.join(settings.STATIC_ROOT, 'css', 'style.css'))
+                maker.load('pygment-github.css', os.path.join(settings.STATIC_ROOT, 'css', 'pygment-github.css'))
+                maker.load('mathjax_config.js', os.path.join(settings.STATIC_ROOT, 'js', 'mathjax_config.js'))
 
                 maker.make()
                 if not maker.success:
@@ -612,7 +610,7 @@ def problem_submit(request, problem=None, submission=None):
         problem_object = form_data['problem']
     if 'language' in form_data:
         form.fields['source'].widget.mode = form_data['language'].ace
-    form.fields['source'].widget.theme = profile.ace_theme
+    form.fields['source'].widget.theme = getattr(settings, 'ACE_THEME', 'github')
 
     if submission is not None:
         default_lang = sub.language

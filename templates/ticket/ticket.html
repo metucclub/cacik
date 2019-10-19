@@ -351,7 +351,7 @@
                                 <div class="message-time">{{ message.time|time('TIME_FORMAT') }}</div>
                             </div>
                             <div class="content content-description">
-                                {{ message.body|markdown('ticket', MATH_ENGINE)|reference|str|safe }}
+                                {{ message.body|markdown('ticket')|reference|str|safe }}
                             </div>
                         </div>
                     </section>
