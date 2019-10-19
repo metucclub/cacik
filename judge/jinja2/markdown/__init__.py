@@ -12,7 +12,6 @@ from lxml.etree import ParserError, XMLSyntaxError
 from judge.highlight_code import highlight_code
 from judge.jinja2.markdown.lazy_load import lazy_load as lazy_load_processor
 from judge.jinja2.markdown.math import MathInlineGrammar, MathInlineLexer, MathRenderer
-from judge.utils.camo import client as camo_client
 from .. import registry
 
 logger = logging.getLogger('judge.html')
@@ -68,38 +67,8 @@ class AwesomeRenderer(MathRenderer, mistune.Renderer):
             return '\n<pre><code>%s</code></pre>\n' % mistune.escape(code).rstrip()
         return highlight_code(code, lang)
 
-    def block_html(self, html):
-        if self.texoid and html.startswith('<latex'):
-            attr = html[6:html.index('>')]
-            latex = html[html.index('>') + 1:html.rindex('<')]
-            latex = self.parser.unescape(latex)
-            result = self.texoid.get_result(latex)
-            if not result:
-                return '<pre>%s</pre>' % mistune.escape(latex, smart_amp=False)
-            elif 'error' not in result:
-                img = ('''<img src="%(svg)s" onerror="this.src='%(png)s';this.onerror=null"'''
-                       'width="%(width)s" height="%(height)s"%(tail)s>') % {
-                    'svg': result['svg'], 'png': result['png'],
-                    'width': result['meta']['width'], 'height': result['meta']['height'],
-                    'tail': ' /' if self.options.get('use_xhtml') else '',
-                }
-                style = ['max-width: 100%',
-                         'height: %s' % result['meta']['height'],
-                         'max-height: %s' % result['meta']['height'],
-                         'width: %s' % result['meta']['height']]
-                if 'inline' in attr:
-                    tag = 'span'
-                else:
-                    tag = 'div'
-                    style += ['text-align: center']
-                return '<%s style="%s">%s</%s>' % (tag, ';'.join(style), img, tag)
-            else:
-                return '<pre>%s</pre>' % mistune.escape(result['error'], smart_amp=False)
-        return super(AwesomeRenderer, self).block_html(html)
-
     def header(self, text, level, *args, **kwargs):
         return super(AwesomeRenderer, self).header(text, level + 2, *args, **kwargs)
-
 
 
 @registry.filter

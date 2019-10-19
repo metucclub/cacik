@@ -56,11 +56,9 @@ ACE_THEMES = (
 )
 
 MATH_ENGINES_CHOICES = (
-    ('tex', _('Leave as LaTeX')),
     ('svg', _('SVG with PNG fallback')),
-    ('mml', _('MathML only')),
     ('jax', _('MathJax with SVG/PNG fallback')),
     ('auto', _('Detect best quality')),
 )
 
-EFFECTIVE_MATH_ENGINES = ('svg', 'mml', 'tex', 'jax')
+EFFECTIVE_MATH_ENGINES = ('svg', 'jax')

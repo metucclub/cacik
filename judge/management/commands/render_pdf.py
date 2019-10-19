@@ -8,7 +8,7 @@ from django.template.loader import get_template
 from django.utils import translation
 
 from judge.models import Problem, ProblemTranslation
-from judge.pdf_problems import DefaultPdfMaker, PhantomJSPdfMaker
+from judge.pdf_problems import DefaultPdfMaker
 
 
 class Command(BaseCommand):
@@ -33,7 +33,7 @@ class Command(BaseCommand):
             trans = None
 
         directory = options['directory']
-        with options['engine'](directory, clean_up=directory is None) as maker, \
+        with DefaultPdfMaker() as maker, \
                 translation.override(options['language']):
             problem_name = problem.name if trans is None else trans.name
             maker.html = get_template('problem/raw.html').render({
@@ -44,9 +44,11 @@ class Command(BaseCommand):
             }).replace('"//', '"https://').replace("'//", "'https://")
             maker.title = problem_name
 
-            maker.load(file, os.path.join(settings.STATIC_ROOT, 'css', 'style.css'))
-            maker.load(file, os.path.join(settings.STATIC_ROOT, 'css', 'pygment-github.css'))
-            maker.load(file, os.path.join(settings.STATIC_ROOT, 'js', 'mathjax_config.js'))
+            maker.load('style.css', os.path.join(settings.STATIC_ROOT, 'css', 'style.css'))
+            maker.load('pygment-github.css', os.path.join(settings.STATIC_ROOT, 'css', 'pygment-github.css'))
+            maker.load('mathjax_config.js', os.path.join(settings.STATIC_ROOT, 'js', 'mathjax_config.js'))
+            maker.load('mathjax_config.MathJax', os.path.join(settings.STATIC_ROOT, 'libs', 'mathjax', 'MathJax.js'))
+
 
             maker.make(debug=True)
             if not maker.success:

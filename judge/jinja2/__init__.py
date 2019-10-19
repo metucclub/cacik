@@ -9,7 +9,7 @@ from sass_processor.processor import sass_processor
 
 from judge.highlight_code import highlight_code
 from judge.user_translations import gettext
-from . import (camo, datetime, filesize, gravatar, language, markdown, rating, reference, render, social,
+from . import (datetime, filesize, gravatar, language, markdown, rating, reference, render, social,
                spaceless, submission, timedelta)
 from . import registry
 

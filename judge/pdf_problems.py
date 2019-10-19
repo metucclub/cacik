@@ -12,14 +12,8 @@ from django.conf import settings
 from django.utils.translation import gettext
 
 HAS_PHANTOMJS = os.access(getattr(settings, 'PHANTOMJS', ''), os.X_OK)
-HAS_SLIMERJS = os.access(getattr(settings, 'SLIMERJS', ''), os.X_OK)
 
-NODE_PATH = getattr(settings, 'NODEJS', '/usr/bin/node')
-PUPPETEER_MODULE = getattr(settings, 'PUPPETEER_MODULE', '/usr/lib/node_modules/puppeteer')
-HAS_PUPPETEER = os.access(NODE_PATH, os.X_OK) and os.path.isdir(PUPPETEER_MODULE)
-
-HAS_PDF = (os.path.isdir(getattr(settings, 'DMOJ_PDF_PROBLEM_CACHE', '')) and
-           (HAS_PHANTOMJS or HAS_SLIMERJS or HAS_PUPPETEER))
+HAS_PDF = (os.path.isdir(getattr(settings, 'DMOJ_PDF_PROBLEM_CACHE', '')) and HAS_PHANTOMJS)
 
 EXIFTOOL = getattr(settings, 'EXIFTOOL', '/usr/bin/exiftool')
 HAS_EXIFTOOL = os.access(EXIFTOOL, os.X_OK)
