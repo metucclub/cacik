@@ -9,10 +9,20 @@ class Command(BaseCommand):
     help = 'Checks for duplicate code using MOSS'
 
     LANG_MAPPING = {
-        ('C++', MOSS_LANG_CC),
         ('C', MOSS_LANG_C),
+        ('C++', MOSS_LANG_CC),
         ('Java', MOSS_LANG_JAVA),
+        ('Lisp', MOSS_LANG_LISP),
+        ('Haskell', MOSS_LANG_HASKELL),
+        ('Fortran', MOSS_LANG_FORTRAN),
+        ('Perl', MOSS_LANG_PERL),
         ('Python', MOSS_LANG_PYTHON),
+        ('Pypy', MOSS_LANG_PYTHON),
+        ('Prolog', MOSS_LANG_PROLOG),
+        ('VB', MOSS_LANG_VB),
+        ('CSHARP', MOSS_LANG_CSHARP),
+        ('JavaScript', MOSS_LANG_JAVASCRIPT),
+        ('Verilog', MOSS_LANG_VERILOG),
     }
 
     def add_arguments(self, parser):
