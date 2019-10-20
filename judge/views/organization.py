@@ -13,7 +13,6 @@ from django.urls import reverse
 from django.utils.translation import gettext as _, gettext_lazy, ungettext
 from django.views.generic import DetailView, FormView, ListView, UpdateView, View
 from django.views.generic.detail import SingleObjectMixin, SingleObjectTemplateResponseMixin
-from reversion import revisions
 
 from judge.forms import EditOrganizationForm
 from judge.models import Organization, OrganizationRequest, Profile

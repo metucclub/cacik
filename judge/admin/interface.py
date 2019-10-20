@@ -5,7 +5,6 @@ from django.urls import NoReverseMatch, reverse, reverse_lazy
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from mptt.admin import DraggableMPTTAdmin
-from reversion.admin import VersionAdmin
 
 from judge.dblock import LockModel
 from judge.models import NavigationBar
@@ -56,7 +55,7 @@ class BlogPostForm(ModelForm):
             widgets['summary'] = HeavyPreviewAdminPageDownWidget(preview=reverse_lazy('blog_preview'))
 
 
-class BlogPostAdmin(VersionAdmin):
+class BlogPostAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('title', 'slug', 'authors', 'visible', 'sticky', 'publish_on')}),
         (_('Content'), {'fields': ('content', 'og_image')}),

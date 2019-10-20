@@ -3,7 +3,6 @@ django_compressor
 django-mptt
 django-pagedown<2
 django-registration-redux
-django-reversion
 django-social-share
 django-impersonate
 django-anymail
@@ -14,7 +13,6 @@ mistune
 social-auth-app-django
 pytz
 django-statici18n
-pika
 ua-parser
 pyyaml
 jinja2
@@ -30,7 +28,6 @@ packaging
 celery
 ansi2html
 libsass
-django-compressor
 django-sass-processor
 django-preferences
 celery

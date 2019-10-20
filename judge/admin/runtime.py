@@ -1,3 +1,4 @@
+from django.contrib import admin
 from django.conf.urls import url
 from django.db.models import TextField
 from django.forms import ModelForm, ModelMultipleChoiceField, TextInput
@@ -7,7 +8,6 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from reversion.admin import VersionAdmin
 
 from django_ace import AceWidget
 from judge.models import Judge, Problem
@@ -27,7 +27,7 @@ class LanguageForm(ModelForm):
             widgets = {'description': AdminPagedownWidget}
 
 
-class LanguageAdmin(VersionAdmin):
+class LanguageAdmin(admin.ModelAdmin):
     fields = ('key', 'name', 'short_name', 'common_name', 'ace', 'pygments', 'info', 'description',
               'template', 'problems')
     list_display = ('key', 'name', 'common_name', 'info')
@@ -73,7 +73,7 @@ class JudgeAdminForm(ModelForm):
             widgets['description'] = AdminPagedownWidget
 
 
-class JudgeAdmin(VersionAdmin):
+class JudgeAdmin(admin.ModelAdmin):
     form = JudgeAdminForm
     readonly_fields = ('created', 'online', 'start_time', 'ping', 'load', 'last_ip', 'runtimes', 'problems')
     fieldsets = (

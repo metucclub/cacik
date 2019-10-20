@@ -14,8 +14,6 @@ from django.utils.translation import gettext as _
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import SingleObjectMixin
-from reversion import revisions
-from reversion.models import Revision, Version
 
 from judge.dblock import LockModel
 from judge.models import Comment, CommentLock, CommentVote
@@ -87,10 +85,8 @@ class CommentedDetailView(TemplateResponseMixin, SingleObjectMixin, View):
             comment = form.save(commit=False)
             comment.author = request.profile
             comment.page = page
-            with LockModel(write=(Comment, Revision, Version), read=(ContentType,)), revisions.create_revision():
-                revisions.set_user(request.user)
-                revisions.set_comment(_('Posted comment'))
-                comment.save()
+            comment.save()
+
             return HttpResponseRedirect(request.path)
 
         context = self.get_context_data(object=self.object, comment_form=form)
@@ -108,7 +104,7 @@ class CommentedDetailView(TemplateResponseMixin, SingleObjectMixin, View):
         queryset = Comment.objects.filter(hidden=False, page=self.get_comment_page())
         context['has_comments'] = queryset.exists()
         context['comment_lock'] = self.is_comment_locked()
-        queryset = queryset.select_related('author__user').defer('author__about').annotate(revisions=Count('versions'))
+        queryset = queryset.select_related('author__user').defer('author__about')
 
         if self.request.user.is_authenticated:
             queryset = queryset.annotate(vote_score=Coalesce(RawSQLColumn(CommentVote, 'score'), Value(0)))

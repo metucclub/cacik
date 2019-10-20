@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.forms import ModelForm
 from django.utils.html import format_html
 from django.utils.translation import gettext, gettext_lazy as _, ungettext
-from reversion.admin import VersionAdmin
 
 from django_ace import AceWidget
 from judge.models import Profile
@@ -40,7 +39,7 @@ class TimezoneFilter(admin.SimpleListFilter):
         return queryset.filter(timezone=self.value())
 
 
-class ProfileAdmin(VersionAdmin):
+class ProfileAdmin(admin.ModelAdmin):
     fields = ('user', 'display_rank', 'about', 'organizations', 'timezone', 'language',
               'last_access', 'ip', 'mute', 'is_unlisted', 'notes', 'is_totp_enabled',
               'current_contest')

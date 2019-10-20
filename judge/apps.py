@@ -18,13 +18,8 @@ class JudgeAppConfig(AppConfig):
         from django.contrib.flatpages.admin import FlatPageAdmin
         from django.contrib import admin
 
-        from reversion.admin import VersionAdmin
-
-        class FlatPageVersionAdmin(VersionAdmin, FlatPageAdmin):
-            pass
-
         admin.site.unregister(FlatPage)
-        admin.site.register(FlatPage, FlatPageVersionAdmin)
+        admin.site.register(FlatPage, FlatPageAdmin)
 
         from judge.models import Language, Profile
         from django.contrib.auth.models import User

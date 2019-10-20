@@ -1,8 +1,8 @@
+from django.contrib import admin
 from django.forms import ModelForm
 from django.urls import reverse_lazy
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _, ungettext
-from reversion.admin import VersionAdmin
 
 from judge.models import Comment
 from judge.widgets import HeavyPreviewAdminPageDownWidget, HeavySelect2Widget
@@ -18,7 +18,7 @@ class CommentForm(ModelForm):
             widgets['body'] = HeavyPreviewAdminPageDownWidget(preview=reverse_lazy('comment_preview'))
 
 
-class CommentAdmin(VersionAdmin):
+class CommentAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('author', 'page', 'parent', 'score', 'hidden')}),
         ('Content', {'fields': ('body',)}),

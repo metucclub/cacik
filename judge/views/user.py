@@ -21,7 +21,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _, gettext_lazy
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.base import View
-from reversion import revisions
 
 from judge.forms import ProfileForm, newsletter_id
 from judge.models import Profile, Rating, Submission

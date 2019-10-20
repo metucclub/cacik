@@ -119,7 +119,6 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'registration',
     'mptt',
-    'reversion',
     'django_social_share',
     'social_django',
     'compressor',
@@ -391,8 +390,6 @@ SOCIAL_AUTH_GITHUB_SECURE_SCOPE = ['user:email']
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_SLUGIFY_USERNAMES = True
 SOCIAL_AUTH_SLUGIFY_FUNCTION = 'judge.social_auth.slugify_username'
-
-JUDGE_AMQP_PATH = None
 
 MOSS_API_KEY = None
 
