@@ -61,7 +61,7 @@ class ProfileForm(ModelForm):
 
 
 class ProblemSubmitForm(ModelForm):
-    source = CharField(max_length=65536, widget=AceWidget(theme='twilight', no_ace_media=True))
+    source = CharField(max_length=65536, widget=AceWidget(theme=getattr(settings, 'ACE_THEME', 'chrome'), no_ace_media=True))
 
     def __init__(self, *args, **kwargs):
         super(ProblemSubmitForm, self).__init__(*args, **kwargs)

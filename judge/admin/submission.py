@@ -103,7 +103,7 @@ class SubmissionSourceInline(admin.StackedInline):
 
     def get_formset(self, request, obj=None, **kwargs):
         kwargs.setdefault('widgets', {})['source'] = AceWidget(mode=obj and obj.language.ace,
-                                                               theme=getattr(settings, 'ACE_THEME', 'github'))
+                                                               theme=getattr(settings, 'ACE_THEME', 'chrome'))
         return super().get_formset(request, obj, **kwargs)
 
 

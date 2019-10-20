@@ -26,6 +26,8 @@
         {% endif %}
         <br>
         {% set test_case_id = counter() %}
+        {% set hide_submission_feedback = submission.contest.participation.contest.hide_submission_feedback %}
+
         {% for batch in batches %}
             {% if batch.id %}
                 <b>{{ _('Batch ') }}#{{ test_case_id() }}</b>
@@ -33,73 +35,75 @@
                 <br>
                 <div class="batch-cases">
             {% endif %}
-        <table>{% for case in batch.cases %}
-            <tr id="{{ case.id }}" class="case-row toggle closed">
-                <td>
-                    {%- if case.status != 'AC' and case.output and (prefix_length is none or prefix_length > 0) -%}
-                        <i class="fa fa-chevron-right fa-fw"></i>
-                    {%- endif -%}
-                    {%- if batch.id -%}
-                        <b>{{ _('Case') }} #{{ loop.index }}:</b>
-                    {%- elif is_pretest -%}
-                        <b>{{ _('Pretest') }} #{{ test_case_id() }}:</b>
-                    {%- else -%}
-                        <b>{{ _('Test case') }} #{{ test_case_id() }}:</b>
-                    {%- endif -%}
-                </td>
-
-                <td>
-                    <span title="{{ case.long_status }}" class="case-{{ case.status }}">
-                        {%- if case.status == 'SC' %}&mdash;{% else %}{{ case.status }}{% endif -%}
-                    </span>
-                    {%- if case.feedback %}&nbsp;({{ case.feedback }}){% endif -%}
-                </td>
-
-                <td>
-                    {%- if case.status != 'SC' -%}
-                        {%- if case.status == 'TLE' -%}
-                            [&gt;<span>{{ time_limit|floatformat(3) }}s,</span>
-                        {%- else -%}
-                            [<span title="{{ case.time }}s">{{ case.time|floatformat(3) }}s,</span>
-                        {%- endif -%}
-                    {%- endif -%}
-                </td>
-
-                <td>{% if case.status != 'SC' %}{{ case.memory|kbdetailformat }}]{% endif %}</td>
-
-                {% if not batch.id %}
-                    <td>({{ case.points|floatformat(0) }}/{{ case.total|floatformat(0) }})</td>
-                {% endif %}
-            </tr>
-
-            {% if case.status != 'AC' and case.output and (prefix_length is none or prefix_length > 0) %}
-                <tr id="{{ case.id }}-output" style="display:none" class="case-feedback toggled">
-                    <td colspan="5">
-                        <div class="case-info">
-                            <strong>{{ _('Your output (clipped)') }}</strong>
-                            {% if prefix_length is none %}
-                                <pre class="case-output">{{ case.output|linebreaksbr }}</pre>
-                            {% else %}
-                                <pre class="case-output">{{ case.output[:prefix_length]|linebreaksbr }}</pre>
-                            {% endif %}
-                        </div>
-                    </td>
-                    {% if case.extended_feedback %}
-                        <td colspan="5" class="case-ext-feedback">
-                            <div class="case-info">
-                                <strong>{{ _('Judge feedback') }}</strong>
-                                <pre class="case-output">{{ case.extended_feedback|linebreaksbr }}</pre>
-                            </div>
+            <table>
+                {% for case in batch.cases %}
+                    <tr id="{{ case.id }}" class="case-row toggle closed">
+                        <td>
+                            {%- if not hide_submission_feedback and case.status != 'AC' and case.output and (prefix_length is none or prefix_length > 0) -%}
+                                <i class="fa fa-chevron-right fa-fw"></i>
+                            {%- endif -%}
+                            {%- if batch.id -%}
+                                <b>{{ _('Case') }} #{{ loop.index }}:</b>
+                            {%- elif is_pretest -%}
+                                <b>{{ _('Pretest') }} #{{ test_case_id() }}:</b>
+                            {%- else -%}
+                                <b>{{ _('Test case') }} #{{ test_case_id() }}:</b>
+                            {%- endif -%}
                         </td>
-                    {% endif %}
-                </tr>
-            {% endif %}
-        {% endfor %}
-        </table>
 
-        {% if batch.id %}</div>{% endif %}
+                        <td>
+                            <span title="{{ case.long_status }}" class="case-{{ case.status }}">
+                                {%- if case.status == 'SC' %}&mdash;{% else %}{{ case.status }}{% endif -%}
+                            </span>
+                            {%- if case.feedback %}&nbsp;({{ case.feedback }}){% endif -%}
+                        </td>
+
+                        <td>
+                            {%- if case.status != 'SC' -%}
+                                {%- if case.status == 'TLE' -%}
+                                    [&gt;<span>{{ time_limit|floatformat(3) }}s,</span>
+                                {%- else -%}
+                                    [<span title="{{ case.time }}s">{{ case.time|floatformat(3) }}s,</span>
+                                {%- endif -%}
+                            {%- endif -%}
+                        </td>
+
+                        <td>{% if case.status != 'SC' %}{{ case.memory|kbdetailformat }}]{% endif %}</td>
+
+                        {% if not batch.id %}
+                            <td>({{ case.points|floatformat(0) }}/{{ case.total|floatformat(0) }})</td>
+                        {% endif %}
+                    </tr>
+
+                    {% if not hide_submission_feedback and case.status != 'AC' and case.output and (prefix_length is none or prefix_length > 0) %}
+                        <tr id="{{ case.id }}-output" style="display:none" class="case-feedback toggled">
+                            <td colspan="5">
+                                <div class="case-info">
+                                    <strong>{{ _('Your output (clipped)') }}</strong>
+                                    {% if prefix_length is none %}
+                                        <pre class="case-output">{{ case.output|linebreaksbr }}</pre>
+                                    {% else %}
+                                        <pre class="case-output">{{ case.output[:prefix_length]|linebreaksbr }}</pre>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            {% if case.extended_feedback %}
+                                <td colspan="5" class="case-ext-feedback">
+                                    <div class="case-info">
+                                        <strong>{{ _('Judge feedback') }}</strong>
+                                        <pre class="case-output">{{ case.extended_feedback|linebreaksbr }}</pre>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+
+            {% if batch.id %}</div>{% endif %}
             <br>
         {% endfor %}
+
         {% if submission.is_graded %}
             <br>
             {% if submission.result != "AB" %}

@@ -610,7 +610,7 @@ def problem_submit(request, problem=None, submission=None):
         problem_object = form_data['problem']
     if 'language' in form_data:
         form.fields['source'].widget.mode = form_data['language'].ace
-    form.fields['source'].widget.theme = getattr(settings, 'ACE_THEME', 'github')
+    form.fields['source'].widget.theme = getattr(settings, 'ACE_THEME', 'chrome')
 
     if submission is not None:
         default_lang = sub.language

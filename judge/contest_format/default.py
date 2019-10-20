@@ -96,8 +96,12 @@ class DefaultContestFormat(BaseContestFormat):
             format_data = (participation.format_data or {}).get(str(contest_problem.id))
 
         if format_data:
-            penalty = format_html('<small style="color:red"> ({penalty})</small>',
-                                  penalty=floatformat(format_data['penalty'])) if format_data['penalty'] else ''
+            if format_data['points'] == 0:
+                penalty = ''
+            else:
+                penalty = format_html('<small style="color:red"> ({penalty})</small>',
+                                    penalty=floatformat(format_data['penalty'])) if format_data['penalty'] else ''
+
             return format_html(
                 u'<td class="{state}">{points}{penalty}<div class="solving-time">{time}</div></td>',
                 state=('pretest-' if self.contest.run_pretests_only and contest_problem.is_pretested else '') +

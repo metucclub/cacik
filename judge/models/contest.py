@@ -72,13 +72,16 @@ class Contest(models.Model):
                                              help_text=_('Use clarification system instead of comments.'),
                                              default=True)
     no_social_share = models.BooleanField(verbose_name=_('disable social share buttons'),
-                                            help_text=_('Disable social share buttons on contest page'),
+                                            help_text=_('Disable social share buttons on contest page.'),
                                              default=False)
     hide_points = models.BooleanField(verbose_name=_('hide points'),
-                                            help_text=_('Hide points on all pages'),
+                                            help_text=_('Hide problem points on all pages'),
                                              default=False)
+    hide_submission_feedback = models.BooleanField(verbose_name=_('hide submission feedback'),
+                                            help_text=_('Hide submission feedback on submssion page.'),
+                                             default=True)
     hide_participation_tab = models.BooleanField(verbose_name=_('hide participation tab'),
-                                            help_text=_('Hide participation tab on contest page'),
+                                            help_text=_('Hide participation tab on contest page.'),
                                              default=False)
     rating_floor = models.IntegerField(verbose_name=('rating floor'), help_text=_('Rating floor for contest'),
                                        null=True, blank=True)

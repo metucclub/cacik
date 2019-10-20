@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 SITE_ID = 1
 
 PYGMENT_THEME = 'pygment-github.css'
-ACE_THEME = 'github'
+ACE_THEME = 'chrome'
 
 
 WPADMIN = {
