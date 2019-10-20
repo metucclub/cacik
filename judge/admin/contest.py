@@ -115,10 +115,10 @@ class ContestAdmin(admin.ModelAdmin):
                         'hide_participation_tab')}),
         (_('Details'), {'fields': ('description', 'og_image', 'logo_override_image', 'tags', 'summary')}),
         (_('Format'), {'fields': ('format_name', 'format_config')}),
-        (_('Rating'), {'fields': ('is_rated', 'rate_all', 'rating_floor', 'rating_ceiling', 'rate_exclude')}),
-        (_('Access'), {'fields': ('access_code', 'is_private', 'private_contestants', 'is_organization_private',
+        (_('Rating'), {'classes': ('collapse',), 'fields': ('is_rated', 'rate_all', 'rating_floor', 'rating_ceiling', 'rate_exclude')}),
+        (_('Access'), {'classes': ('collapse',), 'fields': ('access_code', 'is_private', 'private_contestants', 'is_organization_private',
                                   'organizations')}),
-        (_('Justice'), {'fields': ('banned_users',)}),
+        (_('Justice'), {'classes': ('collapse',), 'fields': ('banned_users',)}),
     )
     list_display = ('key', 'name', 'is_visible', 'is_rated', 'start_time', 'end_time', 'time_limit', 'user_count')
     actions = ['make_visible', 'make_hidden']
@@ -126,7 +126,6 @@ class ContestAdmin(admin.ModelAdmin):
     actions_on_top = True
     actions_on_bottom = True
     form = ContestForm
-    change_list_template = 'admin/judge/contest/change_list.html'
     filter_horizontal = ['rate_exclude']
     date_hierarchy = 'start_time'
 
