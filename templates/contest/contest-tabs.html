@@ -19,6 +19,10 @@
     {% if perms.judge.clone_contest %}
         {{ make_tab('clone', 'fa-copy', url('contest_clone', contest.key), _('Clone')) }}
     {% endif %}
+     {% if perms.judge.share_message %}
+        {{ make_tab('message', 'fa-share', url('contest_share_message', contest.key), _('Share Message')) }}
+    {% endif %}
+
 
     {% if request.user.is_authenticated %}
         {% if contest.can_join or participating or is_organizer %}

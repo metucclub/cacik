@@ -25,7 +25,7 @@ from django.views.generic.detail import BaseDetailView, DetailView
 
 from judge import event_poster as event
 from judge.comments import CommentedDetailView
-from judge.forms import ContestCloneForm
+from judge.forms import ContestCloneForm, ContestShareMessageForm
 from judge.models import Contest, ContestParticipation, ContestProblem, ContestTag, Problem, ProblemClarification, Profile, Ticket
 from judge.utils.opengraph import generate_opengraph
 from judge.utils.ranker import ranker
@@ -269,6 +269,24 @@ class ContestClone(ContestMixin, PermissionRequiredMixin, TitleMixin, SingleObje
         ContestProblem.objects.bulk_create(contest_problems)
 
         return HttpResponseRedirect(reverse('admin:judge_contest_change', args=(contest.id,)))
+
+class ContestShareMessage(ContestMixin, PermissionRequiredMixin, TitleMixin, SingleObjectFormView):
+    title = _('Share Contest Wide Message')
+    template_name = 'contest/message.html'
+    form_class = ContestShareMessageForm
+    permission_required = 'judge.share_contest_message'
+
+    def form_valid(self, form):
+        contest = self.object
+
+        message = form.cleaned_data['message']
+
+        event.post('contest-message-{}'.format(contest.key), {
+            'type': 'contest-message',
+            'message': message,
+        })
+
+        return HttpResponseRedirect(reverse('contest_view', args=(contest.key,)))
 
 
 class ContestAccessDenied(Exception):
@@ -535,11 +553,12 @@ def get_contest_ranking_list(request, contest, participation=None, ranking_list=
                              show_current_virtual=True, ranker=ranker):
     problems = list(contest.contest_problems.select_related('problem').defer('problem__description').order_by('order'))
 
+    is_scoreboard_frozen = not contest.can_see_real_scoreboard(request.user)
+
     if contest.hide_scoreboard and contest.is_in_contest(request.user):
-        return ([(_('???'), make_contest_ranking_profile(contest, request.profile.current_contest, problems))],
+        return ([(_('???'), make_contest_ranking_profile(contest, is_scoreboard_frozen, request.profile.current_contest, problems))],
                 problems)
 
-    is_scoreboard_frozen = not contest.can_see_real_scoreboard(request.user)
     users = ranker(ranking_list(contest, is_scoreboard_frozen, problems), key=attrgetter('points', 'cumtime'))
 
     if show_current_virtual:
@@ -548,7 +567,7 @@ def get_contest_ranking_list(request, contest, participation=None, ranking_list=
             if participation is None or participation.contest_id != contest.id:
                 participation = None
         if participation is not None and participation.virtual:
-            users = chain([('-', make_contest_ranking_profile(contest, participation, problems))], users)
+            users = chain([('-', make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, problems))], users)
     return users, problems
 
 
@@ -591,7 +610,6 @@ class ContestRankingBase(ContestMixin, TitleMixin, DetailView):
         users, problems = self.get_ranking_list()
         context['users'] = users
         context['problems'] = problems
-        context['last_msg'] = event.last()
         context['tab'] = self.tab
         return context
 

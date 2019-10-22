@@ -72,7 +72,6 @@
         window.filter_own_id = {{filter_status.own_id}};
         window.filter_assignee_ids = {{filter_status.assignee_id}};
     </script>
-    <script type="text/javascript" src="{{ static('js/event.js') }}"></script>
     <script type="text/javascript">
         $(function () {
             $('input#own').click(function () {
@@ -143,6 +142,7 @@
             window.load_dynamic_update = function (last_msg) {
                 var $assignees = $(filter_assignee_ids);
 
+                console.log('tickets');
                 return new EventReceiver(
                     "{{ EVENT_DAEMON_LOCATION }}", "{{ EVENT_DAEMON_POLL_LOCATION }}",
                     ['tickets'], last_msg, function (message) {

@@ -198,6 +198,7 @@ TEMPLATES = [
                 'judge.template_context.general_info',
                 'judge.template_context.site',
                 'judge.template_context.misc_config',
+                'judge.template_context.event_config',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
                 'preferences.context_processors.preferences_cp',

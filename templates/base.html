@@ -88,6 +88,7 @@
 
         {% include "extra_js.html" %}
 
+        <script src="{{ static('js/event.js') }}"></script>
         <script src="{{ static('js/common.js') }}"></script>
         <script>
             moment.locale('{{ LANGUAGE_CODE }}');
@@ -95,6 +96,19 @@
                 $('img.unveil').unveil(200);
             });
         </script>
+
+        {% if last_msg and request.in_contest %}
+            <script>
+                console.log('contest-message-{{ request.participation.contest.key }}');
+                var receiver = new EventReceiver(
+                    "{{ EVENT_DAEMON_LOCATION }}", "{{ EVENT_DAEMON_POLL_LOCATION }}", ['contest-message-{{ request.participation.contest.key }}'], {{last_msg}}, function (message) {
+                        if (message.message != undefined) {
+                            alert(message.message);
+                        }
+                    }
+                );
+            </script>
+        {% endif %}
     {% endcompress %}
     {% block js_media %}{% endblock %}
 

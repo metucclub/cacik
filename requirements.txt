@@ -1,4 +1,4 @@
-Django>=2.1,<2.2
+Django
 django_compressor
 django-mptt
 django-pagedown<2

@@ -6,6 +6,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
 from django.utils.functional import SimpleLazyObject, new_method_proxy
 
+from judge import event_poster as event
+
 from .models import MiscConfig, NavigationBar, Profile
 
 class FixedSimpleLazyObject(SimpleLazyObject):
@@ -95,3 +97,7 @@ def misc_config(request):
     domain = get_current_site(request).domain
     return {'misc_config': MiscConfigDict(domain=domain),
             'i18n_config': MiscConfigDict(language=request.LANGUAGE_CODE, domain=domain)}
+
+def event_config(request):
+    return {'last_msg': event.last()}
+

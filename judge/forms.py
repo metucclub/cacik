@@ -150,3 +150,6 @@ class ContestCloneForm(Form):
         if Contest.objects.filter(key=key).exists():
             raise ValidationError(_('Contest with key already exists.'))
         return key
+
+class ContestShareMessageForm(Form):
+    message = CharField(max_length=1000)
