@@ -78,8 +78,6 @@ WPADMIN = {
                 'model': 'judge.Profile',
                 'icon': 'fa-user-plus',
                 'children': [
-                    'judge.Organization',
-                    'judge.OrganizationRequest',
                 ],
             },
             {
@@ -277,7 +275,6 @@ MARKDOWN_STYLES = {
     'blog': MARKDOWN_ADMIN_EDITABLE_STYLE,
     'solution': MARKDOWN_ADMIN_EDITABLE_STYLE,
     'contest_tag': MARKDOWN_ADMIN_EDITABLE_STYLE,
-    'organization-about': MARKDOWN_USER_LARGE_STYLE,
     'ticket': MARKDOWN_USER_LARGE_STYLE,
 }
 

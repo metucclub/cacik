@@ -38,7 +38,7 @@ class PostList(ListView):
         context['first_page_href'] = reverse('home')
         context['page_prefix'] = reverse('blog_post_list')
         context['comments'] = Comment.most_recent(self.request.user, 10)
-        context['new_problems'] = Problem.objects.filter(is_public=True, is_organization_private=False) \
+        context['new_problems'] = Problem.objects.filter(is_public=True) \
                                          .order_by('-date', '-id')[:7]
         context['page_titles'] = CacheDict(lambda page: Comment.get_page_title(page))
 
@@ -74,9 +74,8 @@ class PostList(ListView):
                                                       .order_by('-latest'))[:7]
 
         visible_contests = Contest.objects.filter(is_visible=True).order_by('start_time')
-        q = Q(is_private=False, is_organization_private=False)
+        q = Q(is_private=False)
         if self.request.user.is_authenticated:
-            q |= Q(is_organization_private=True, organizations__in=user.organizations.all())
             q |= Q(is_private=True, private_contestants=user)
         visible_contests = visible_contests.filter(q)
         context['past_contests'] = visible_contests.filter(end_time__lt=now)[:5]

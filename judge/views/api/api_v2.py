@@ -18,7 +18,6 @@ def api_v2_user_info(request):
         "points": 100.0,
         "rating": 2452,
         "rank": "user",
-        "organizations": [],
         "solved_problems": ["ccc14s4", ...],
         "attempted_problems": [
             {
@@ -60,7 +59,6 @@ def api_v2_user_info(request):
 
     resp = {
         "rank": profile.display_rank,
-        "organizations": list(profile.organizations.values_list('key', flat=True)),
     }
 
     contest_history = []
@@ -98,8 +96,7 @@ def api_v2_user_info(request):
     solved_problems = []
     attempted_problems = []
 
-    problem_data = (Submission.objects.filter(points__gt=0, user=profile, problem__is_public=True,
-                                              problem__is_organization_private=False)
+    problem_data = (Submission.objects.filter(points__gt=0, user=profile, problem__is_public=True)
                     .annotate(max_pts=Max('points'))
                     .values_list('max_pts', 'problem__points', 'problem__code')
                     .distinct())
@@ -117,7 +114,7 @@ def api_v2_user_info(request):
         'points': profile.points,
         'solved': solved_problems,
         'attempted': attempted_problems,
-        'authored': list(Problem.objects.filter(is_public=True, is_organization_private=False, authors=profile)
+        'authored': list(Problem.objects.filter(is_public=True, authors=profile)
                          .values_list('code', flat=True)),
     }
 

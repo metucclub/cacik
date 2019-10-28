@@ -33,8 +33,6 @@ class ProblemForm(ModelForm):
             'curators': HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
             'testers': HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
             'banned_users': HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
-            'organizations': HeavySelect2MultipleWidget(data_view='organization_select2',
-                                                        attrs={'style': 'width: 100%'}),
             'types': Select2MultipleWidget,
             'group': Select2Widget,
         }
@@ -118,7 +116,7 @@ class ProblemAdmin(admin.ModelAdmin):
         (None, {
             'fields': (
                 'code', 'name', 'is_public', 'is_manually_managed', 'date', 'authors', 'curators', 'testers',
-                'is_organization_private', 'organizations', 'description', 'license',
+                'description', 'license',
             ),
         }),
         (_('Social Media'), {'classes': ('collapse',), 'fields': ('og_image', 'summary')}),

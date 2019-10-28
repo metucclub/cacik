@@ -19,8 +19,7 @@ def sane_time_repr(delta):
 
 
 def api_v1_contest_list(request):
-    queryset = Contest.objects.filter(is_visible=True, is_private=False,
-                                      is_organization_private=False).prefetch_related(
+    queryset = Contest.objects.filter(is_visible=True, is_private=False).prefetch_related(
         Prefetch('tags', queryset=ContestTag.objects.only('name'), to_attr='tag_list')).defer('description')
 
     return JsonResponse({c.key: {
@@ -43,7 +42,6 @@ def api_v1_contest_detail(request, contest):
     problems = list(contest.contest_problems.select_related('problem')
                     .defer('problem__description').order_by('order'))
     participations = (contest.users.filter(virtual=0, user__is_unlisted=False)
-                      .prefetch_related('user__organizations')
                       .annotate(username=F('user__user__username'))
                       .order_by('-score', 'cumtime') if can_see_rankings else [])
 
@@ -83,7 +81,7 @@ def api_v1_contest_detail(request, contest):
 
 
 def api_v1_problem_list(request):
-    queryset = Problem.objects.filter(is_public=True, is_organization_private=False)
+    queryset = Problem.objects.filter(is_public=True)
     if preferences.SitePreferences.enable_fts and 'search' in request.GET:
         query = ' '.join(request.GET.getlist('search')).strip()
         if query:
@@ -128,15 +126,13 @@ def api_v1_user_list(request):
 
 def api_v1_user_info(request, user):
     profile = get_object_or_404(Profile, user__username=user)
-    submissions = list(Submission.objects.filter(case_points=F('case_total'), user=profile, problem__is_public=True,
-                                                 problem__is_organization_private=False)
+    submissions = list(Submission.objects.filter(case_points=F('case_total'), user=profile, problem__is_public=True)
                        .values('problem').distinct().values_list('problem__code', flat=True))
     resp = {
         'points': profile.points,
         'performance_points': profile.performance_points,
         'rank': profile.display_rank,
         'solved_problems': submissions,
-        'organizations': list(profile.organizations.values_list('id', flat=True)),
     }
 
     last_rating = profile.ratings.last()
@@ -144,8 +140,7 @@ def api_v1_user_info(request, user):
     contest_history = {}
     if not profile.is_unlisted:
         participations = ContestParticipation.objects.filter(user=profile, virtual=0, contest__is_visible=True,
-                                                             contest__is_private=False,
-                                                             contest__is_organization_private=False)
+                                                             contest__is_private=False)
         for contest_key, rating, volatility in participations.values_list('contest__key', 'rating__rating',
                                                                           'rating__volatility'):
             contest_history[contest_key] = {
@@ -164,7 +159,7 @@ def api_v1_user_info(request, user):
 
 def api_v1_user_submissions(request, user):
     profile = get_object_or_404(Profile, user__username=user)
-    subs = Submission.objects.filter(user=profile, problem__is_public=True, problem__is_organization_private=False)
+    subs = Submission.objects.filter(user=profile, problem__is_public=True)
 
     return JsonResponse({sub['id']: {
         'problem': sub['problem__code'],

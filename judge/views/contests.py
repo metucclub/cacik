@@ -56,9 +56,8 @@ class ContestListMixin(object):
                 q |= Q(organizers=self.request.profile)
             queryset = queryset.filter(q)
         if not self.request.user.has_perm('judge.edit_all_contest'):
-            q = Q(is_private=False, is_organization_private=False)
+            q = Q(is_private=False)
             if self.request.user.is_authenticated:
-                q |= Q(is_organization_private=True, organizations__in=self.request.profile.organizations.all())
                 q |= Q(is_private=True, private_contestants=self.request.profile)
             queryset = queryset.filter(q)
         return queryset.distinct()
@@ -77,7 +76,7 @@ class ContestList(DiggPaginatorMixin, TitleMixin, ContestListMixin, ListView):
 
     def _get_queryset(self):
         return super(ContestList, self).get_queryset() \
-            .order_by('-start_time', 'key').prefetch_related('tags', 'organizations', 'organizers')
+            .order_by('-start_time', 'key').prefetch_related('tags', 'organizers')
 
     def get_queryset(self):
         return self._get_queryset().filter(end_time__lt=self._now)
@@ -179,16 +178,14 @@ class ContestMixin(object):
                 not self.check_organizer(contest, profile)):
             raise Http404()
 
-        if contest.is_private or contest.is_organization_private:
-            private_contest_error = PrivateContestError(contest.name, contest.private_contestants.all(),
-                                                        contest.organizations.all())
+        if contest.is_private:
+            private_contest_error = PrivateContestError(contest.name, contest.private_contestants.all())
+
             if profile is None:
                 raise private_contest_error
             if user.has_perm('judge.edit_all_contest'):
                 return contest
-            if not (contest.is_organization_private and
-                    contest.organizations.filter(id__in=profile.organizations.all()).exists()) and \
-                    not (contest.is_private and contest.private_contestants.filter(id=profile.id).exists()):
+            if not (contest.is_private and contest.private_contestants.filter(id=profile.id).exists()):
                 raise private_contest_error
 
         return contest
@@ -248,7 +245,6 @@ class ContestClone(ContestMixin, PermissionRequiredMixin, TitleMixin, SingleObje
         contest = self.object
 
         tags = contest.tags.all()
-        organizations = contest.organizations.all()
         private_contestants = contest.private_contestants.all()
         contest_problems = contest.contest_problems.all()
 
@@ -259,7 +255,6 @@ class ContestClone(ContestMixin, PermissionRequiredMixin, TitleMixin, SingleObje
         contest.save()
 
         contest.tags.set(tags)
-        contest.organizations.set(organizations)
         contest.private_contestants.set(private_contestants)
         contest.organizers.add(self.request.profile)
 
@@ -506,7 +501,7 @@ class CachedContestCalendar(ContestCalendar):
 
 ContestRankingProfile = namedtuple(
     'ContestRankingProfile',
-    'id user css_class username points cumtime organization participation '
+    'id user css_class username points cumtime participation '
     'participation_rating problem_cells result_cell',
 )
 
@@ -523,7 +518,6 @@ def make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, c
         username=user.username,
         points=participation.frozen_score if is_scoreboard_frozen else participation.score,
         cumtime=participation.frozen_cumtime if is_scoreboard_frozen else participation.cumtime,
-        organization=user.organization,
         participation_rating=participation.rating.rating if hasattr(participation, 'rating') else None,
         problem_cells=[contest.format.display_user_problem(is_scoreboard_frozen, participation, contest_problem)
                     for contest_problem in contest_problems],
@@ -534,18 +528,16 @@ def make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, c
 
 def base_contest_ranking_list(contest, is_scoreboard_frozen, problems, queryset):
     return [make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, problems)
-        for participation in queryset.select_related('user__user', 'rating').defer('user__about', 'user__organizations__about')]
+        for participation in queryset.select_related('user__user', 'rating').defer('user__about')]
 
 
 def contest_ranking_list(contest, is_scoreboard_frozen, problems):
     if is_scoreboard_frozen:
         return base_contest_ranking_list(contest, is_scoreboard_frozen, problems, contest.users.filter(virtual=0, user__is_unlisted=False)
-                                     .prefetch_related('user__organizations')
                                      .order_by('-frozen_score', 'frozen_cumtime'))
 
 
     return base_contest_ranking_list(contest, is_scoreboard_frozen, problems, contest.users.filter(virtual=0, user__is_unlisted=False)
-                                     .prefetch_related('user__organizations')
                                      .order_by('-score', 'cumtime'))
 
 

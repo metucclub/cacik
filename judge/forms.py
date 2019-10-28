@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 from django_ace import AceWidget
-from judge.models import Contest, Language, Organization, PrivateMessage, Problem, Profile, Submission
+from judge.models import Contest, Language, PrivateMessage, Problem, Profile, Submission
 from judge.utils.subscription import newsletter_id
 from judge.widgets import HeavyPreviewPageDownWidget, MathJaxPagedownWidget, PagedownWidget, Select2MultipleWidget, \
     Select2Widget
@@ -29,7 +29,7 @@ class ProfileForm(ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['about', 'organizations', 'timezone', 'language']
+        fields = ['about', 'timezone', 'language']
         widgets = {
             'timezone': Select2Widget(attrs={'style': 'width:200px'}),
             'language': Select2Widget(attrs={'style': 'width:200px'}),
@@ -42,22 +42,11 @@ class ProfileForm(ModelForm):
             )
 
     def clean(self):
-        organizations = self.cleaned_data.get('organizations') or []
-        max_orgs = getattr(settings, 'DMOJ_USER_MAX_ORGANIZATION_COUNT', 3)
-
-        if sum(org.is_open for org in organizations) > max_orgs:
-            raise ValidationError(
-                _('You may not be part of more than {count} public organizations.').format(count=max_orgs))
-
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(ProfileForm, self).__init__(*args, **kwargs)
-        if not user.has_perm('judge.edit_all_organization'):
-            self.fields['organizations'].queryset = Organization.objects.filter(
-                Q(is_open=True) | Q(id__in=user.profile.organizations.all()),
-            )
 
 
 class ProblemSubmitForm(ModelForm):
@@ -74,16 +63,6 @@ class ProblemSubmitForm(ModelForm):
     class Meta:
         model = Submission
         fields = ['problem', 'language']
-
-
-class EditOrganizationForm(ModelForm):
-    class Meta:
-        model = Organization
-        fields = ['about', 'admins']
-        widgets = {'admins': Select2MultipleWidget()}
-        if HeavyPreviewPageDownWidget is not None:
-            widgets['about'] = HeavyPreviewPageDownWidget(preview=reverse_lazy('organization_preview'))
-
 
 class NewMessageForm(ModelForm):
     class Meta:

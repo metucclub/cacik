@@ -40,7 +40,7 @@ class TimezoneFilter(admin.SimpleListFilter):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    fields = ('user', 'display_rank', 'about', 'organizations', 'timezone', 'language',
+    fields = ('user', 'display_rank', 'about', 'timezone', 'language',
               'last_access', 'ip', 'mute', 'is_unlisted', 'notes', 'is_totp_enabled',
               'current_contest')
     readonly_fields = ('user',)

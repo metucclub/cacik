@@ -10,7 +10,7 @@ from jsonfield import JSONField
 
 from judge import contest_format
 from judge.models.problem import Problem
-from judge.models.profile import Organization, Profile
+from judge.models.profile import Profile
 from judge.models.submission import Submission
 
 __all__ = ['Contest', 'ContestTag', 'ContestParticipation', 'ContestProblem', 'ContestSubmission', 'Rating']
@@ -57,9 +57,7 @@ class Contest(models.Model):
     end_time = models.DateTimeField(verbose_name=_('end time'), db_index=True)
     time_limit = models.DurationField(verbose_name=_('time limit'), blank=True, null=True)
     is_visible = models.BooleanField(verbose_name=_('publicly visible'), default=False,
-                                     help_text=_('Should be set even for organization-private contests, where it '
-                                                 'determines whether the contest is visible to members of the '
-                                                 'specified organizations.'))
+                                     help_text=_('it determines whether the contest is visible'))
     is_rated = models.BooleanField(verbose_name=_('contest rated'), help_text=_('Whether this contest can be rated.'),
                                    default=False)
     hide_scoreboard = models.BooleanField(verbose_name=_('hide scoreboard'),
@@ -102,9 +100,6 @@ class Contest(models.Model):
                                                         'testcases. Commonly set during a contest, then unset '
                                                         'prior to rejudging user submissions when the contest ends.'),
                                             default=False)
-    is_organization_private = models.BooleanField(verbose_name=_('private to organizations'), default=False)
-    organizations = models.ManyToManyField(Organization, blank=True, verbose_name=_('organizations'),
-                                           help_text=_('If private, only these organizations may see the contest'))
     og_image = models.CharField(verbose_name=_('OpenGraph image'), default='', max_length=150, blank=True)
     logo_override_image = models.CharField(verbose_name=_('Logo override image'), default='', max_length=150,
                                            blank=True,
@@ -224,12 +219,9 @@ class Contest(models.Model):
         # Contest is publicly visible
         if self.is_visible:
             # Contest is not private
-            if not self.is_private and not self.is_organization_private:
+            if not self.is_private:
                 return True
             if user.is_authenticated:
-                # User is in the organizations it is private to
-                if self.organizations.filter(id__in=user.profile.organizations.all()).exists():
-                    return True
                 # User is in the group of private contestants
                 if self.private_contestants.filter(id=user.profile.id).exists():
                     return True

@@ -5,7 +5,7 @@ from django.utils.encoding import smart_text
 from django.views.generic.list import BaseListView
 
 from judge.jinja2.gravatar import gravatar
-from judge.models import Comment, Contest, Organization, Problem, Profile
+from judge.models import Comment, Contest, Problem, Profile
 
 
 def _get_user_queryset(term):
@@ -46,12 +46,6 @@ class UserSelect2View(Select2View):
     def get_name(self, obj):
         return obj.username
 
-
-class OrganizationSelect2View(Select2View):
-    def get_queryset(self):
-        return Organization.objects.filter(name__icontains=self.term)
-
-
 class ProblemSelect2View(Select2View):
     def get_queryset(self):
         queryset = Problem.objects.filter(Q(code__icontains=self.term) | Q(name__icontains=self.term))
@@ -69,10 +63,8 @@ class ContestSelect2View(Select2View):
         if not self.request.user.has_perm('judge.see_private_contest'):
             queryset = queryset.filter(is_visible=True)
         if not self.request.user.has_perm('judge.edit_all_contest'):
-            q = Q(is_private=False, is_organization_private=False)
+            q = Q(is_private=False)
             if self.request.user.is_authenticated:
-                q |= Q(is_organization_private=True,
-                       organizations__in=self.request.profile.organizations.all())
                 q |= Q(is_private=True, private_contestants=self.request.profile)
             queryset = queryset.filter(q)
         return queryset

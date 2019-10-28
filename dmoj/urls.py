@@ -10,9 +10,9 @@ from django.utils.functional import lazystr
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import RedirectView
 
-from judge.sitemap import BlogPostSitemap, ContestSitemap, HomePageSitemap, OrganizationSitemap, ProblemSitemap, \
+from judge.sitemap import BlogPostSitemap, ContestSitemap, HomePageSitemap, ProblemSitemap, \
     SolutionSitemap, UrlSitemap, UserSitemap
-from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, mailgun, organization, \
+from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, mailgun, \
     preview, problem, problem_manage, ranked_submission, register, stats, status, submission, tasks, ticket, totp, \
     user, widgets
 from judge.views import auth as auth_views
@@ -20,7 +20,7 @@ from judge.views.problem_data import ProblemDataView, ProblemSubmissionDiff, \
     problem_data_file, problem_init_view
 from judge.views.register import ActivationView, RegistrationView
 from judge.views.select2 import AssigneeSelect2View, CommentSelect2View, ContestSelect2View, \
-    ContestUserSearchSelect2View, OrganizationSelect2View, ProblemSelect2View, TicketUserSelect2View, \
+    ContestUserSearchSelect2View, ProblemSelect2View, TicketUserSelect2View, \
     UserSearchSelect2View, UserSelect2View
 
 admin.autodiscover()
@@ -200,30 +200,6 @@ urlpatterns = [
         url(r'^/$', lambda _, contest: HttpResponsePermanentRedirect(reverse('contest_view', args=[contest]))),
     ])),
 
-    url(r'^organizations/$', organization.OrganizationList.as_view(), name='organization_list'),
-    url(r'^organization/(?P<pk>\d+)-(?P<slug>[\w-]*)', include([
-        url(r'^$', organization.OrganizationHome.as_view(), name='organization_home'),
-        url(r'^/users$', organization.OrganizationUsers.as_view(), name='organization_users'),
-        url(r'^/join$', organization.JoinOrganization.as_view(), name='join_organization'),
-        url(r'^/leave$', organization.LeaveOrganization.as_view(), name='leave_organization'),
-        url(r'^/edit$', organization.EditOrganization.as_view(), name='edit_organization'),
-        url(r'^/kick$', organization.KickUserWidgetView.as_view(), name='organization_user_kick'),
-
-        url(r'^/request$', organization.RequestJoinOrganization.as_view(), name='request_organization'),
-        url(r'^/request/(?P<rpk>\d+)$', organization.OrganizationRequestDetail.as_view(),
-            name='request_organization_detail'),
-        url(r'^/requests/', include([
-            url(r'^pending$', organization.OrganizationRequestView.as_view(), name='organization_requests_pending'),
-            url(r'^log$', organization.OrganizationRequestLog.as_view(), name='organization_requests_log'),
-            url(r'^approved$', organization.OrganizationRequestLog.as_view(states=('A',), tab='approved'),
-                name='organization_requests_approved'),
-            url(r'^rejected$', organization.OrganizationRequestLog.as_view(states=('R',), tab='rejected'),
-                name='organization_requests_rejected'),
-        ])),
-
-        url(r'^/$', lambda _, pk, slug: HttpResponsePermanentRedirect(reverse('organization_home', args=[pk, slug]))),
-    ])),
-
     url(r'^runtimes/$', language.LanguageList.as_view(), name='runtime_list'),
     url(r'^runtimes/matrix/$', status.version_matrix, name='version_matrix'),
     url(r'^status/$', status.status_all, name='status_all'),
@@ -268,7 +244,6 @@ urlpatterns = [
             url(r'^contest$', preview.ContestMarkdownPreviewView.as_view(), name='contest_preview'),
             url(r'^comment$', preview.CommentMarkdownPreviewView.as_view(), name='comment_preview'),
             url(r'^profile$', preview.ProfileMarkdownPreviewView.as_view(), name='profile_preview'),
-            url(r'^organization$', preview.OrganizationMarkdownPreviewView.as_view(), name='organization_preview'),
             url(r'^solution$', preview.SolutionMarkdownPreviewView.as_view(), name='solution_preview'),
             url(r'^license$', preview.LicenseMarkdownPreviewView.as_view(), name='license_preview'),
             url(r'^ticket$', preview.TicketMarkdownPreviewView.as_view(), name='ticket_preview'),
@@ -302,7 +277,6 @@ urlpatterns = [
         'user': UserSitemap,
         'home': HomePageSitemap,
         'contest': ContestSitemap,
-        'organization': OrganizationSitemap,
         'blog': BlogPostSitemap,
         'solutions': SolutionSitemap,
         'pages': UrlSitemap([
@@ -312,7 +286,6 @@ urlpatterns = [
 
     url(r'^judge-select2/', include([
         url(r'^profile/$', UserSelect2View.as_view(), name='profile_select2'),
-        url(r'^organization/$', OrganizationSelect2View.as_view(), name='organization_select2'),
         url(r'^problem/$', ProblemSelect2View.as_view(), name='problem_select2'),
         url(r'^contest/$', ContestSelect2View.as_view(), name='contest_select2'),
         url(r'^comment/$', CommentSelect2View.as_view(), name='comment_select2'),

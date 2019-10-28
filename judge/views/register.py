@@ -15,7 +15,7 @@ from registration.forms import RegistrationForm
 
 from preferences import preferences
 
-from judge.models import Language, Organization, Profile, TIMEZONE
+from judge.models import Language, Profile, TIMEZONE
 from judge.utils.recaptcha import ReCaptchaField, ReCaptchaWidget
 from judge.utils.subscription import Subscription, newsletter_id
 from judge.widgets import Select2MultipleWidget, Select2Widget
@@ -32,11 +32,6 @@ class CustomRegistrationForm(RegistrationForm):
                            widget=Select2Widget(attrs={'style': 'width:100%'}))
     language = ModelChoiceField(queryset=Language.objects.all(), label=_('Preferred language'), empty_label=None,
                                 widget=Select2Widget(attrs={'style': 'width:100%'}))
-
-    if not preferences.SitePreferences.disable_registration:
-        organizations = ModelChoiceField(queryset=Organization.objects.filter(is_open=True),
-                                              label=_('Organizations'), required=False,
-                                              widget=Select2MultipleWidget(attrs={'style': 'width:100%'}))
 
     if newsletter_id is not None:
         newsletter = forms.BooleanField(label=_('Subscribe to newsletter?'), initial=True, required=False)
@@ -86,9 +81,6 @@ class RegistrationView(OldRegistrationView):
         cleaned_data = form.cleaned_data
         profile.timezone = cleaned_data['timezone']
         profile.language = cleaned_data['language']
-
-        if cleaned_data['organizations']:
-            profile.organizations.add(*cleaned_data['organizations'])
 
         profile.save()
 

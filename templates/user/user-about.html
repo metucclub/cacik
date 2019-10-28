@@ -9,16 +9,6 @@
 
 {% block user_content %}
     <div class="content-description">
-        {% with orgs=user.organizations.all() %}
-            {% if orgs %}
-                <p style="margin-top: 0"><b>{{ _('From') }}</b>
-                    {% for org in orgs -%}
-                        <a href="{{ org.get_absolute_url() }}">{{ org.name }}</a>
-                        {%- if not loop.last %}, {% endif %}
-                    {% endfor %}
-                </p>
-            {% endif %}
-        {% endwith %}
         {% if perms.judge.change_profile %}
             {% with notes=user.notes %}
                 {% if notes %}

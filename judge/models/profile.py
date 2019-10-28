@@ -14,7 +14,7 @@ from fernet_fields import EncryptedCharField
 from judge.models.choices import TIMEZONE
 from judge.ratings import rating_class
 
-__all__ = ['Organization', 'Profile', 'OrganizationRequest']
+__all__ = ['Profile']
 
 
 class EncryptedNullCharField(EncryptedCharField):
@@ -22,54 +22,6 @@ class EncryptedNullCharField(EncryptedCharField):
         if not value:
             return None
         return super(EncryptedNullCharField, self).get_prep_value(value)
-
-
-class Organization(models.Model):
-    name = models.CharField(max_length=128, verbose_name=_('organization title'))
-    slug = models.SlugField(max_length=128, verbose_name=_('organization slug'),
-                            help_text=_('Organization name shown in URL'))
-    short_name = models.CharField(max_length=20, verbose_name=_('short name'),
-                                  help_text=_('Displayed beside user name during contests'))
-    about = models.TextField(verbose_name=_('organization description'))
-    registrant = models.ForeignKey('Profile', verbose_name=_('registrant'), on_delete=models.CASCADE,
-                                   related_name='registrant+', help_text=_('User who registered this organization'))
-    admins = models.ManyToManyField('Profile', verbose_name=_('administrators'), related_name='admin_of',
-                                    help_text=_('Those who can edit this organization'))
-    creation_date = models.DateTimeField(verbose_name=_('creation date'), auto_now_add=True)
-    is_open = models.BooleanField(verbose_name=_('is open organization?'),
-                                  help_text=_('Allow joining organization'), default=True)
-    slots = models.IntegerField(verbose_name=_('maximum size'), null=True, blank=True,
-                                help_text=_('Maximum amount of users in this organization, '
-                                            'only applicable to private organizations'))
-    access_code = models.CharField(max_length=7, help_text=_('Student access code'),
-                                   verbose_name=_('access code'), null=True, blank=True)
-
-    def __contains__(self, item):
-        if isinstance(item, int):
-            return self.members.filter(id=item).exists()
-        elif isinstance(item, Profile):
-            return self.members.filter(id=item.id).exists()
-        else:
-            raise TypeError('Organization membership test must be Profile or primany key')
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('organization_home', args=(self.id, self.slug))
-
-    def get_users_url(self):
-        return reverse('organization_users', args=(self.id, self.slug))
-
-    class Meta:
-        ordering = ['name']
-        permissions = (
-            ('organization_admin', 'Administer organizations'),
-            ('edit_all_organization', 'Edit all organizations'),
-        )
-        verbose_name = _('organization')
-        verbose_name_plural = _('organizations')
-
 
 class Profile(models.Model):
     user = models.OneToOneField(User, verbose_name=_('user associated'), on_delete=models.CASCADE)
@@ -82,8 +34,6 @@ class Profile(models.Model):
     problem_count = models.IntegerField(default=0, db_index=True)
     last_access = models.DateTimeField(verbose_name=_('last access time'), default=now)
     ip = models.GenericIPAddressField(verbose_name=_('last IP'), blank=True, null=True)
-    organizations = models.ManyToManyField(Organization, verbose_name=_('organization'), blank=True,
-                                          related_name='members', related_query_name='member')
     display_rank = models.CharField(max_length=10, default='user', verbose_name=_('display rank'),
                                     choices=(('user', 'Normal User'), ('setter', 'Problem Setter'), ('admin', 'Admin')))
     mute = models.BooleanField(verbose_name=_('comment mute'), help_text=_('Some users are at their best when silent.'),
@@ -101,13 +51,6 @@ class Profile(models.Model):
                                                                  _('TOTP key must be empty or base32'))])
     notes = models.TextField(verbose_name=_('internal notes'), null=True, blank=True,
                              help_text=_('Notes for administrators regarding this user.'))
-
-    @cached_property
-    def organization(self):
-        # We do this to take advantage of prefetch_related
-        orgs = self.organizations.all()
-        return orgs[0] if orgs else None
-
     @cached_property
     def username(self):
         return self.user.username
@@ -117,8 +60,7 @@ class Profile(models.Model):
 
     def calculate_points(self, table=_pp_table):
         from judge.models import Problem
-        data = (Problem.objects.filter(submission__user=self, submission__points__isnull=False, is_public=True,
-                                       is_organization_private=False)
+        data = (Problem.objects.filter(submission__user=self, submission__points__isnull=False, is_public=True)
                        .annotate(max_points=Max('submission__points')).order_by('-max_points')
                        .values_list('max_points', flat=True).filter(max_points__gt=0))
         extradata = Problem.objects.filter(submission__user=self, submission__result='AC', is_public=True) \
@@ -173,20 +115,3 @@ class Profile(models.Model):
         )
         verbose_name = _('user profile')
         verbose_name_plural = _('user profiles')
-
-
-class OrganizationRequest(models.Model):
-    user = models.ForeignKey(Profile, verbose_name=_('user'), related_name='requests', on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization, verbose_name=_('organization'), related_name='requests',
-                                     on_delete=models.CASCADE)
-    time = models.DateTimeField(verbose_name=_('request time'), auto_now_add=True)
-    state = models.CharField(max_length=1, verbose_name=_('state'), choices=(
-        ('P', 'Pending'),
-        ('A', 'Approved'),
-        ('R', 'Rejected'),
-    ))
-    reason = models.TextField(verbose_name=_('reason'))
-
-    class Meta:
-        verbose_name = _('organization join request')
-        verbose_name_plural = _('organization join requests')

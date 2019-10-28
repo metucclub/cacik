@@ -7,9 +7,6 @@
       "language": 1,
       "last_access": "2017-12-02T08:57:10.093Z",
       "mute": false,
-      "organizations": [
-        1
-      ],
       "performance_points": 0.0,
       "points": 0.0,
       "problem_count": 0,
@@ -40,24 +37,6 @@
       "username": "admin"
     },
     "model": "auth.user",
-    "pk": 1
-  },
-  {
-    "fields": {
-      "about": "This is a sample organization. You can use organizations to split up your user base, host private contests, and more.",
-      "access_code": null,
-      "admins": [
-        1
-      ],
-      "creation_date": "2017-12-02T08:50:25.199Z",
-      "is_open": true,
-      "slug": "dmoj",
-      "name": "DMOJ: Modern Online Judge",
-      "registrant": 1,
-      "short_name": "DMOJ",
-      "slots": null
-    },
-    "model": "judge.organization",
     "pk": 1
   },
   {

@@ -96,7 +96,6 @@ class ContestForm(ModelForm):
             'organizers': HeavySelect2MultipleWidget(data_view='profile_select2'),
             'private_contestants': HeavySelect2MultipleWidget(data_view='profile_select2',
                                                               attrs={'style': 'width: 100%'}),
-            'organizations': HeavySelect2MultipleWidget(data_view='organization_select2'),
             'tags': Select2MultipleWidget,
             'banned_users': HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
         }
@@ -116,8 +115,7 @@ class ContestAdmin(admin.ModelAdmin):
         (_('Details'), {'fields': ('description', 'og_image', 'logo_override_image', 'tags', 'summary')}),
         (_('Format'), {'fields': ('format_name', 'format_config')}),
         (_('Rating'), {'classes': ('collapse',), 'fields': ('is_rated', 'rate_all', 'rating_floor', 'rating_ceiling', 'rate_exclude')}),
-        (_('Access'), {'classes': ('collapse',), 'fields': ('access_code', 'is_private', 'private_contestants', 'is_organization_private',
-                                  'organizations')}),
+        (_('Access'), {'classes': ('collapse',), 'fields': ('access_code', 'is_private', 'private_contestants')}),
         (_('Justice'), {'classes': ('collapse',), 'fields': ('banned_users',)}),
     )
     list_display = ('key', 'name', 'is_visible', 'is_rated', 'start_time', 'end_time', 'time_limit', 'user_count')
@@ -143,7 +141,7 @@ class ContestAdmin(admin.ModelAdmin):
         if not request.user.has_perm('judge.contest_access_code'):
             readonly += ['access_code']
         if not request.user.has_perm('judge.create_private_contest'):
-            readonly += ['is_private', 'private_contestants', 'is_organization_private', 'organizations']
+            readonly += ['is_private', 'private_contestants']
         return readonly
 
     def has_change_permission(self, request, obj=None):
