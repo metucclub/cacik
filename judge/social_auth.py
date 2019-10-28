@@ -91,11 +91,10 @@ def make_profile(backend, user, response, is_new=False, *args, **kwargs):
             logger.info(data)
             form = ProfileForm(data, instance=user.profile, user=user)
             if form.is_valid():
-                with transaction.atomic(), revisions.create_revision():
+                with transaction.atomic():
                     form.save()
-                    revisions.set_user(user)
-                    revisions.set_comment('Updated on registration')
                     return
+
         return render(backend.strategy.request, 'registration/profile_creation.html', {
             'title': 'Create your profile', 'form': form,
         })

@@ -215,10 +215,8 @@ def edit_profile(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=profile, user=request.user)
         if form.is_valid():
-            with transaction.atomic(), revisions.create_revision():
+            with transaction.atomic():
                 form.save()
-                revisions.set_user(request.user)
-                revisions.set_comment(_('Updated on site'))
 
             if newsletter_id is not None:
                 try:

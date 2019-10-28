@@ -25,10 +25,12 @@ from django.views.generic import ListView, View
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import SingleObjectMixin
 
+from preferences import preferences
+
 from judge.comments import CommentedDetailView
 from judge.forms import ProblemCloneForm, ProblemSubmitForm
 from judge.models import ContestProblem, ContestSubmission, Judge, Language, Problem, ProblemGroup, \
-    ProblemTranslation, ProblemType, RuntimeVersion, SitePreferences, \
+    ProblemTranslation, ProblemType, RuntimeVersion, \
     Solution, Submission, SubmissionSource, \
     TranslatedProblemForeignKeyQuerySet
 from judge.pdf_problems import DefaultPdfMaker, HAS_PDF
@@ -386,7 +388,7 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, ListView
         if 'search' in self.request.GET:
             self.search_query = query = ' '.join(self.request.GET.getlist('search')).strip()
             if query:
-                if SitePreferences.enable_fts and self.full_text:
+                if preferences.SitePreferences.enable_fts and self.full_text:
                     queryset = queryset.search(query, queryset.BOOLEAN).extra(order_by=['-relevance'])
                 else:
                     queryset = queryset.filter(

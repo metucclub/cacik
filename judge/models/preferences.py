@@ -22,3 +22,5 @@ class SitePreferences(Preferences):
     disable_registration = models.BooleanField(default=False)
     disable_forgot_password = models.BooleanField(default=False)
     disable_change_password = models.BooleanField(default=False)
+    disable_organizations = models.BooleanField(default=False)
+    disable_mail_verification = models.BooleanField(default=False)

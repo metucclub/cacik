@@ -12,10 +12,10 @@ from django.utils.http import is_safe_url
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 
+from preferences import preferences
+
 from judge.forms import TOTPForm
 from judge.utils.views import TitleMixin
-
-from judge.models import SitePreferences
 
 class TOTPView(TitleMixin, LoginRequiredMixin, FormView):
     form_class = TOTPForm
@@ -74,7 +74,7 @@ class TOTPEnableView(TOTPView):
     @classmethod
     def render_qr_code(cls, username, key):
         totp = pyotp.TOTP(key)
-        uri = totp.provisioning_uri(username, SitePreferences.site_name)
+        uri = totp.provisioning_uri(username, preferences.SitePreferences.site_name)
 
         qr = qrcode.QRCode(box_size=1)
         qr.add_data(uri)

@@ -284,9 +284,7 @@ class EditOrganization(LoginRequiredMixin, TitleMixin, OrganizationMixin, Update
         return form
 
     def form_valid(self, form):
-        with transaction.atomic(), revisions.create_revision():
-            revisions.set_comment(_('Edited from site'))
-            revisions.set_user(self.request.user)
+        with transaction.atomic():
             return super(EditOrganization, self).form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):

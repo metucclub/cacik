@@ -59,6 +59,10 @@ class Select2Mixin(object):
     form media.
     """
 
+    class Media:
+        js=('libs/select2/select2.js', 'js/django_select2.js')
+        css={'screen': ('libs/select2/select2.css',)}
+
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""
         attrs = super(Select2Mixin, self).build_attrs(base_attrs, extra_attrs)
@@ -80,21 +84,6 @@ class Select2Mixin(object):
         if not self.is_required and not self.allow_multiple_selected:
             self.choices = list(chain([('', '')], self.choices))
         return super(Select2Mixin, self).optgroups(name, value, attrs=attrs)
-
-    def _get_media(self):
-        """
-        Construct Media as a dynamic property.
-
-        .. Note:: For more information visit
-            https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
-        """
-        return forms.Media(
-            js=('libs/select2/select2.js', 'js/django_select2.js'),
-            css={'screen': ('libs/select2/select2.css',)},
-        )
-
-    media = property(_get_media)
-
 
 class Select2TagMixin(object):
     """Mixin to add select2 tag functionality."""

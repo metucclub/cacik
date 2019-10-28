@@ -13,7 +13,9 @@ from registration.backends.default.views import (ActivationView as OldActivation
                                                  RegistrationView as OldRegistrationView)
 from registration.forms import RegistrationForm
 
-from judge.models import Language, Organization, SitePreferences, Profile, TIMEZONE
+from preferences import preferences
+
+from judge.models import Language, Organization, Profile, TIMEZONE
 from judge.utils.recaptcha import ReCaptchaField, ReCaptchaWidget
 from judge.utils.subscription import Subscription, newsletter_id
 from judge.widgets import Select2MultipleWidget, Select2Widget
@@ -30,7 +32,9 @@ class CustomRegistrationForm(RegistrationForm):
                            widget=Select2Widget(attrs={'style': 'width:100%'}))
     language = ModelChoiceField(queryset=Language.objects.all(), label=_('Preferred language'), empty_label=None,
                                 widget=Select2Widget(attrs={'style': 'width:100%'}))
-    organizations = ModelChoiceField(queryset=Organization.objects.filter(is_open=True),
+
+    if not preferences.SitePreferences.disable_registration:
+        organizations = ModelChoiceField(queryset=Organization.objects.filter(is_open=True),
                                               label=_('Organizations'), required=False,
                                               widget=Select2MultipleWidget(attrs={'style': 'width:100%'}))
 
@@ -58,10 +62,9 @@ class RegistrationView(OldRegistrationView):
     form_class = CustomRegistrationForm
     template_name = 'registration/registration_form.html'
 
-    def get_context_data(self, **kwargs):
-        if SitePreferences.disable_registration:
-            raise Http404()
+    SEND_ACTIVATION_EMAIL = not preferences.SitePreferences.disable_mail_verification
 
+    def get_context_data(self, **kwargs):
         if 'title' not in kwargs:
             kwargs['title'] = self.title
         tzmap = getattr(settings, 'TIMEZONE_MAP', None)
@@ -70,6 +73,9 @@ class RegistrationView(OldRegistrationView):
         kwargs['password_validators'] = get_default_password_validators()
         kwargs['tos_url'] = getattr(settings, 'TERMS_OF_SERVICE_URL', None)
         return super(RegistrationView, self).get_context_data(**kwargs)
+
+    def registration_allowed(self):
+        return not preferences.SitePreferences.disable_registration
 
     def register(self, form):
         user = super(RegistrationView, self).register(form)
@@ -80,7 +86,10 @@ class RegistrationView(OldRegistrationView):
         cleaned_data = form.cleaned_data
         profile.timezone = cleaned_data['timezone']
         profile.language = cleaned_data['language']
-        profile.organizations.add(*cleaned_data['organizations'])
+
+        if cleaned_data['organizations']:
+            profile.organizations.add(*cleaned_data['organizations'])
+
         profile.save()
 
         if newsletter_id is not None and cleaned_data['newsletter']:
@@ -99,9 +108,6 @@ class ActivationView(OldActivationView):
     template_name = 'registration/activate.html'
 
     def get_context_data(self, **kwargs):
-        if SitePreferences.disable_registration:
-            raise Http404()
-
         if 'title' not in kwargs:
             kwargs['title'] = self.title
         return super(ActivationView, self).get_context_data(**kwargs)

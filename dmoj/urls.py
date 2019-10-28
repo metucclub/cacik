@@ -10,7 +10,6 @@ from django.utils.functional import lazystr
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import RedirectView
 
-from judge.feed import AtomBlogFeed, AtomCommentFeed, AtomProblemFeed, BlogFeed, CommentFeed, ProblemFeed
 from judge.sitemap import BlogPostSitemap, ContestSitemap, HomePageSitemap, OrganizationSitemap, ProblemSitemap, \
     SolutionSitemap, UrlSitemap, UserSitemap
 from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, mailgun, organization, \
@@ -167,7 +166,6 @@ urlpatterns = [
     url(r'^comments/hide/$', comment.comment_hide, name='comment_hide'),
     url(r'^comments/(?P<id>\d+)/', include([
         url(r'^edit$', comment.CommentEdit.as_view(), name='comment_edit'),
-        url(r'^history/ajax$', comment.CommentRevisionAjax.as_view(), name='comment_revision_ajax'),
         url(r'^edit/ajax$', comment.CommentEditAjax.as_view(), name='comment_edit_ajax'),
         url(r'^votes/ajax$', comment.CommentVotesAjax.as_view(), name='comment_votes_ajax'),
         url(r'^render$', comment.CommentContent.as_view(), name='comment_content'),
@@ -275,15 +273,6 @@ urlpatterns = [
             url(r'^license$', preview.LicenseMarkdownPreviewView.as_view(), name='license_preview'),
             url(r'^ticket$', preview.TicketMarkdownPreviewView.as_view(), name='ticket_preview'),
         ])),
-    ])),
-
-    url(r'^feed/', include([
-        url(r'^problems/rss/$', ProblemFeed(), name='problem_rss'),
-        url(r'^problems/atom/$', AtomProblemFeed(), name='problem_atom'),
-        url(r'^comment/rss/$', CommentFeed(), name='comment_rss'),
-        url(r'^comment/atom/$', AtomCommentFeed(), name='comment_atom'),
-        url(r'^blog/rss/$', BlogFeed(), name='blog_rss'),
-        url(r'^blog/atom/$', AtomBlogFeed(), name='blog_atom'),
     ])),
 
     url(r'^stats/', include([

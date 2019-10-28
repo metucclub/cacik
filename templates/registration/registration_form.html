@@ -154,8 +154,10 @@
             <div class="block-header">{{ _('Default language') }}</div>
             <span class="fullwidth">{{ form.language }}</span>
 
-            <div class="block-header">{{ _('Affiliated organizations') }}</div>
-            {{ form.organizations }}
+            {% if not preferences.SitePreferences.disable_organizations %}
+                <div class="block-header">{{ _('Affiliated organizations') }}</div>
+                {{ form.organizations }}
+            {% endif %}
 
             {% if form.newsletter %}
                 <div style="padding-top: 0.5em;">{{ form.newsletter }}

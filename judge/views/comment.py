@@ -80,27 +80,6 @@ class CommentMixin(object):
     pk_url_kwarg = 'id'
     context_object_name = 'comment'
 
-
-class CommentRevisionAjax(CommentMixin, DetailView):
-    template_name = 'comments/revision-ajax.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(CommentRevisionAjax, self).get_context_data(**kwargs)
-        revisions = Version.objects.get_for_object(self.object).order_by('-revision')
-        try:
-            wanted = min(max(int(self.request.GET.get('revision', 0)), 0), len(revisions) - 1)
-        except ValueError:
-            raise Http404
-        context['revision'] = revisions[wanted]
-        return context
-
-    def get_object(self, queryset=None):
-        comment = super(CommentRevisionAjax, self).get_object(queryset)
-        if comment.hidden and not self.request.user.has_perm('judge.change_comment'):
-            raise Http404()
-        return comment
-
-
 class CommentEditForm(ModelForm):
     class Meta:
         model = Comment
@@ -114,9 +93,7 @@ class CommentEditAjax(LoginRequiredMixin, CommentMixin, UpdateView):
     form_class = CommentEditForm
 
     def form_valid(self, form):
-        with transaction.atomic(), revisions.create_revision():
-            revisions.set_comment(_('Edited from site'))
-            revisions.set_user(self.request.user)
+        with transaction.atomic():
             return super(CommentEditAjax, self).form_valid(form)
 
     def get_success_url(self):
