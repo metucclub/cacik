@@ -1,8 +1,12 @@
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.urls import Resolver404, resolve, reverse
+from django.utils import timezone
 from django.utils.http import urlquote
 
+from preferences import preferences
+
+from judge.models import Contest, ContestParticipation
 
 class ShortCircuitMiddleware:
     def __init__(self, get_response):
@@ -52,10 +56,41 @@ class ContestMiddleware(object):
 
     def __call__(self, request):
         profile = request.profile
+
         if profile:
-            profile.update_contest()
-            request.participation = profile.current_contest
-            request.in_contest = request.participation is not None
+            if not request.user.is_superuser and preferences.SitePreferences.active_contest and not preferences.SitePreferences.active_contest.ended:
+                active_contest = preferences.SitePreferences.active_contest
+
+                is_organizer = active_contest.organizers.filter(id=profile.id).exists()
+
+                requires_access_code = (not is_organizer and active_contest.access_code)
+
+                try:
+                    participation = ContestParticipation.objects.get(
+                        contest=active_contest, user=profile, virtual=(-1 if is_organizer else 0),
+                    )
+                except ContestParticipation.DoesNotExist:
+                    if requires_access_code:
+                        raise Exception()
+
+                    participation = ContestParticipation.objects.create(
+                        contest=contest, user=profile, virtual=(-1 if is_organizer else 0),
+                        real_start=timezone.now(),
+                    )
+
+                profile.current_contest = participation
+                profile.save()
+
+                request.participation = participation
+                request.in_contest = True
+
+                active_contest._updating_stats_only = True
+                active_contest.update_user_count()
+
+            else:
+                profile.update_contest()
+                request.participation = profile.current_contest
+                request.in_contest = request.participation is not None
         else:
             request.in_contest = False
             request.participation = None

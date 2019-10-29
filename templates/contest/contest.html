@@ -150,20 +150,36 @@
                 </div>
             {% endif %}
 
-            {% if not contest.no_social_share %}
+            {% if contest.is_in_contest(request.user) %}
                 <hr>
-                <span class="social">
-                    {{ post_to_gplus(request, contest, '<i class="fa fa-google-plus-square"></i>') }}
-                    {{ post_to_facebook(request, contest, '<i class="fa fa-facebook-official"></i>') }}
-                    {{ post_to_twitter(request, preferences.SitePreferences.site_name + ':', contest, '<i class="fa fa-twitter"></i>') }}
-                </span>
-            {% endif %}
-        </div>
 
-        {% if contest.is_in_contest(request.user) %}
-            <div class="sidebox contest-detail-sidebar">
-                {% if perms.judge.test_site %}
-                    <div>
+                <div style="margin-top: 20px">
+                    {% if request.participation.contest.use_clarifications %}
+                        <div>
+                            <h3>{{ _('Clarifications') }} <i class="fa fa-question-circle"></i></h3>
+                            <div class="sidebox-content">
+                                {% if has_clarifications %}
+                                    <ul>
+                                        {% for clarification in clarifications %}
+                                            <li class="clarification">
+                                                <a href="{{ url('problem_detail', clarification.problem.code) }}"
+                                                    class="problem">
+                                                    {{ clarification.problem.name }}
+                                                </a>
+                                                <span class="time">{{ relative_time(clarification.date) }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p class="no-clarifications-message">
+                                        {{ _('No clarifications have been made at this time.') }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div style="margin-top: 20px">
                         <h3>{{ _('My open tickets') }} <i class="fa fa-question-circle"></i></h3>
                         <div class="sidebox-content">
                             {% if own_open_tickets %}
@@ -187,34 +203,18 @@
                             {% endif %}
                         </div>
                     </div>
-                {% endif %}
+                </div>
+            {% endif %}
 
-                {% if request.participation.contest.use_clarifications %}
-                    <div>
-                        <h3>{{ _('Clarifications') }} <i class="fa fa-question-circle"></i></h3>
-                        <div class="sidebox-content">
-                            {% if has_clarifications %}
-                                <ul>
-                                    {% for clarification in clarifications %}
-                                        <li class="clarification">
-                                            <a href="{{ url('problem_detail', clarification.problem.code) }}"
-                                                class="problem">
-                                                {{ clarification.problem.name }}
-                                            </a>
-                                            <span class="time">{{ relative_time(clarification.date) }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% else %}
-                                <p class="no-clarifications-message">
-                                    {{ _('No clarifications have been made at this time.') }}
-                                </p>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        {% endif %}
+            {% if not contest.no_social_share %}
+                <hr>
+                <span class="social">
+                    {{ post_to_gplus(request, contest, '<i class="fa fa-google-plus-square"></i>') }}
+                    {{ post_to_facebook(request, contest, '<i class="fa fa-facebook-official"></i>') }}
+                    {{ post_to_twitter(request, preferences.SitePreferences.site_name + ':', contest, '<i class="fa fa-twitter"></i>') }}
+                </span>
+            {% endif %}
+        </div>
     </div>
 
     {% include "comments/list.html" %}

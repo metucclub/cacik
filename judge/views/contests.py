@@ -23,6 +23,8 @@ from django.utils.translation import gettext as _, gettext_lazy
 from django.views.generic import ListView, TemplateView
 from django.views.generic.detail import BaseDetailView, DetailView
 
+from preferences import preferences
+
 from judge import event_poster as event
 from judge.comments import CommentedDetailView
 from judge.forms import ContestCloneForm, ContestShareMessageForm
@@ -106,6 +108,12 @@ class ContestList(DiggPaginatorMixin, TitleMixin, ContestListMixin, ListView):
         context['now'] = self._now
         context['first_page_href'] = '.'
         return context
+
+    def get(self, request, *args, **kwargs):
+        if preferences.SitePreferences.active_contest:
+            raise Http404()
+
+        return super(ContestList, self).get(request, *args, **kwargs)
 
 
 class PrivateContestError(Exception):
@@ -205,7 +213,6 @@ class ContestMixin(object):
             return render(request, 'contest/private.html', {
                 'orgs': e.orgs, 'title': _('Access to contest "%s" denied') % escape(e.name),
             }, status=403)
-
 
 class ContestDetail(ContestMixin, TitleMixin, CommentedDetailView):
     template_name = 'contest/contest.html'
@@ -412,6 +419,9 @@ class ContestCalendar(TitleMixin, ContestListMixin, TemplateView):
     template_name = 'contest/calendar.html'
 
     def get(self, request, *args, **kwargs):
+        if preferences.SitePreferences.active_contest:
+            raise Http404()
+
         try:
             self.year = int(kwargs['year'])
             self.month = int(kwargs['month'])

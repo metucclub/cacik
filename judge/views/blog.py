@@ -1,5 +1,5 @@
 from django.db.models import Count, Max, Q
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import lazy
@@ -15,6 +15,7 @@ from judge.utils.problems import user_completed_ids
 from judge.utils.tickets import filter_visible_tickets
 from judge.utils.views import TitleMixin
 
+from preferences import preferences
 
 class PostList(ListView):
     model = BlogPost
@@ -98,6 +99,12 @@ class PostList(ListView):
         else:
             context['open_tickets'] = []
         return context
+
+    def get(self, request, *args, **kwargs):
+        if preferences.SitePreferences.active_contest:
+            return HttpResponseRedirect(reverse('contest_view', args=(preferences.SitePreferences.active_contest.key,)))
+
+        return super(PostList, self).get(request, *args, **kwargs)
 
 
 class PostView(TitleMixin, CommentedDetailView):

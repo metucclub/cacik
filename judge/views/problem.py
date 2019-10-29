@@ -479,6 +479,9 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, ListView
     def get(self, request, *args, **kwargs):
         self.setup(request)
 
+        if preferences.SitePreferences.active_contest:
+            raise Http404()
+
         try:
             return super(ProblemList, self).get(request, *args, **kwargs)
         except ProgrammingError as e:

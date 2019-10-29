@@ -22,6 +22,8 @@ from django.utils.translation import gettext as _, gettext_lazy
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.base import View
 
+from preferences import preferences
+
 from judge.forms import ProfileForm, newsletter_id
 from judge.models import Profile, Rating, Submission
 from judge.performance_points import PP_ENTRIES, get_pp_breakdown
@@ -112,6 +114,9 @@ class UserPage(TitleMixin, UserMixin, DetailView):
         return context
 
     def get(self, request, *args, **kwargs):
+        if preferences.SitePreferences.active_contest:
+            raise Http404()
+
         self.hide_solved = request.GET.get('hide_solved') == '1' if 'hide_solved' in request.GET else False
         return super(UserPage, self).get(request, *args, **kwargs)
 
@@ -208,6 +213,9 @@ class UserPerformancePointsAjax(UserProblemsPage):
 
 @login_required
 def edit_profile(request):
+    if preferences.SitePreferences.active_contest:
+        raise Http404()
+
     profile = Profile.objects.get(user=request.user)
     if profile.mute:
         raise Http404()
@@ -276,6 +284,12 @@ class UserList(QueryStringSortMixin, DiggPaginatorMixin, TitleMixin, ListView):
         context.update(self.get_sort_paginate_context())
         return context
 
+    def get(self, request, *args, **kwargs):
+        if preferences.SitePreferences.active_contest:
+            raise Http404()
+
+        return super(UserList, self).get(request, *args, **kwargs)
+
 
 user_list_view = UserList.as_view()
 
@@ -288,6 +302,9 @@ class FixedContestRanking(ContestRanking):
 
 
 def users(request):
+    if preferences.SitePreferences.active_contest:
+            raise Http404()
+
     if request.user.is_authenticated:
         participation = request.profile.current_contest
         if participation is not None:
