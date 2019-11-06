@@ -26,7 +26,7 @@
         {% endif %}
         <br>
         {% set test_case_id = counter() %}
-        {% set hide_submission_feedback = submission.contest.participation.contest.hide_submission_feedback %}
+        {% set show_submission_feedback = submission.contest_object and submission.contest_object.show_submission_feedback %}
 
         {% for batch in batches %}
             {% if batch.id %}
@@ -39,7 +39,7 @@
                 {% for case in batch.cases %}
                     <tr id="{{ case.id }}" class="case-row toggle closed">
                         <td>
-                            {%- if not hide_submission_feedback and case.status != 'AC' and case.output and (prefix_length is none or prefix_length > 0) -%}
+                            {%- if show_submission_feedback and case.status != 'AC' and case.output and (prefix_length is none or prefix_length > 0) -%}
                                 <i class="fa fa-chevron-right fa-fw"></i>
                             {%- endif -%}
                             {%- if batch.id -%}
@@ -75,7 +75,7 @@
                         {% endif %}
                     </tr>
 
-                    {% if not hide_submission_feedback and case.status != 'AC' and case.output and (prefix_length is none or prefix_length > 0) %}
+                    {% if show_submission_feedback and case.status != 'AC' and case.output and (prefix_length is none or prefix_length > 0) %}
                         <tr id="{{ case.id }}-output" style="display:none" class="case-feedback toggled">
                             <td colspan="5">
                                 <div class="case-info">
