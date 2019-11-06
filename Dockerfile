@@ -49,6 +49,7 @@ COPY . .
 RUN git clone https://github.com/oznakn/docker-scripts && \
     mv docker-scripts/*.sh . && \
     rm -rf docker-scripts && \
-    mkdir -p ./db
+    mkdir -p ./db && \
+    mkdir -p ./pdfcache
 
 RUN chmod a+x backup-data.sh restore-data.sh docker-wait-for-it.sh
