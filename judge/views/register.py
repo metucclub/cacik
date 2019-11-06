@@ -57,8 +57,6 @@ class RegistrationView(OldRegistrationView):
     form_class = CustomRegistrationForm
     template_name = 'registration/registration_form.html'
 
-    SEND_ACTIVATION_EMAIL = not preferences.SitePreferences.disable_mail_verification
-
     def get_context_data(self, **kwargs):
         if 'title' not in kwargs:
             kwargs['title'] = self.title
@@ -73,6 +71,8 @@ class RegistrationView(OldRegistrationView):
         return not preferences.SitePreferences.disable_registration
 
     def register(self, form):
+        RegistrationView.SEND_ACTIVATION_EMAIL = not preferences.SitePreferences.disable_mail_verification
+
         user = super(RegistrationView, self).register(form)
         profile, _ = Profile.objects.get_or_create(user=user, defaults={
             'language': Language.get_python2(),
