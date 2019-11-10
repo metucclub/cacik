@@ -30,7 +30,7 @@
             </span>
         </div>
         <div class="body content-description">
-            {% cache 86400 'post_content' post.id %}
+            {% cache 86400 'post_content' post.id post.content %}
                 {{ post.content|markdown('blog')|reference|str|safe}}
             {% endcache %}
         </div>
