@@ -8,8 +8,7 @@ gevent.monkey.patch_all()
 try:
     import MySQLdb  # noqa: F401, imported for side effect
 except ImportError:
-    import pymysql
-    pymysql.install_as_MySQLdb()
+    pass
 else:
     from functools import wraps, partial
     import gevent.hub
