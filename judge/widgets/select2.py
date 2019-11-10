@@ -47,8 +47,9 @@ from django.forms.models import ModelChoiceIterator
 from django.urls import reverse_lazy
 
 __all__ = ['Select2Widget', 'Select2MultipleWidget', 'Select2TagWidget',
-           'HeavySelect2Widget', 'HeavySelect2MultipleWidget', 'HeavySelect2TagWidget']
-
+           'HeavySelect2Widget', 'HeavySelect2MultipleWidget', 'HeavySelect2TagWidget',
+           'AdminSelect2Widget', 'AdminSelect2MultipleWidget', 'AdminHeavySelect2Widget',
+           'AdminHeavySelect2MultipleWidget']
 
 class Select2Mixin(object):
     """
@@ -59,9 +60,13 @@ class Select2Mixin(object):
     form media.
     """
 
-    class Media:
-        js=('libs/select2/select2.js', 'js/django_select2.js')
-        css={'screen': ('libs/select2/select2.css',)}
+    @property
+    def media(self):
+        return forms.Media(
+            js=['libs/select2/select2.js', 'js/django_select2.js'],
+            css={'screen': ['libs/select2/select2.css']}
+        )
+
 
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""
@@ -84,6 +89,14 @@ class Select2Mixin(object):
         if not self.is_required and not self.allow_multiple_selected:
             self.choices = list(chain([('', '')], self.choices))
         return super(Select2Mixin, self).optgroups(name, value, attrs=attrs)
+
+class AdminSelect2Mixin(Select2Mixin):
+    @property
+    def media(self):
+        return forms.Media(
+            js=['admin/js/jquery.init.js', 'libs/select2/select2.js', 'js/django_select2.js'],
+            css={'screen': ['libs/select2/select2.css']}
+        )
 
 class Select2TagMixin(object):
     """Mixin to add select2 tag functionality."""
@@ -229,4 +242,19 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, forms.SelectMultiple):
 class HeavySelect2TagWidget(Select2TagMixin, HeavySelect2MultipleWidget):
     """Select2 tag widget."""
 
+    pass
+
+class AdminSelect2Widget(AdminSelect2Mixin, Select2Widget):
+    pass
+
+
+class AdminSelect2MultipleWidget(AdminSelect2Mixin, Select2MultipleWidget):
+    pass
+
+
+class AdminHeavySelect2Widget(AdminSelect2Mixin, HeavySelect2Widget):
+    pass
+
+
+class AdminHeavySelect2MultipleWidget(AdminSelect2Mixin, HeavySelect2MultipleWidget):
     pass

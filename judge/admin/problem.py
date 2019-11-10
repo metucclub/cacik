@@ -10,8 +10,8 @@ from django.utils.html import format_html
 from django.utils.translation import gettext, gettext_lazy as _, ungettext
 
 from judge.models import LanguageLimit, Problem, ProblemClarification, ProblemTranslation, Profile, Solution
-from judge.widgets import CheckboxSelectMultipleWithSelectAll, HeavyPreviewAdminPageDownWidget, \
-    HeavyPreviewPageDownWidget, HeavySelect2MultipleWidget, Select2MultipleWidget, Select2Widget
+from judge.widgets import AdminHeavySelect2MultipleWidget, AdminSelect2MultipleWidget, AdminSelect2Widget, \
+    CheckboxSelectMultipleWithSelectAll, HeavyPreviewAdminPageDownWidget, HeavyPreviewPageDownWidget
 
 
 class ProblemForm(ModelForm):
@@ -29,12 +29,12 @@ class ProblemForm(ModelForm):
 
     class Meta:
         widgets = {
-            'authors': HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
-            'curators': HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
-            'testers': HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
-            'banned_users': HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
-            'types': Select2MultipleWidget,
-            'group': Select2Widget,
+            'authors': AdminHeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
+            'curators': AdminHeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
+            'testers': AdminHeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
+            'banned_users': AdminHeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
+            'types': AdminSelect2MultipleWidget,
+            'group': AdminSelect2Widget,
         }
         if HeavyPreviewAdminPageDownWidget is not None:
             widgets['description'] = HeavyPreviewAdminPageDownWidget(preview=reverse_lazy('problem_preview'))
@@ -55,7 +55,7 @@ class ProblemCreatorListFilter(admin.SimpleListFilter):
 
 class LanguageLimitInlineForm(ModelForm):
     class Meta:
-        widgets = {'language': Select2Widget}
+        widgets = {'language': AdminSelect2Widget}
 
 
 class LanguageLimitInline(admin.TabularInline):
@@ -84,7 +84,7 @@ class ProblemSolutionForm(ModelForm):
 
     class Meta:
         widgets = {
-            'authors': HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
+            'authors': AdminHeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
         }
 
         if HeavyPreviewAdminPageDownWidget is not None:

@@ -452,7 +452,7 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, ListView
             return request.session.get(key, False)
         return request.GET.get(key, None) == '1'
 
-    def setup(self, request):
+    def setup_problem_list(self, request):
         self.hide_solved = self.GET_with_session(request, 'hide_solved')
         self.show_types = self.GET_with_session(request, 'show_types')
         self.full_text = self.GET_with_session(request, 'full_text')
@@ -477,7 +477,7 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, ListView
         self.point_end = safe_float_or_none(request.GET.get('point_end'))
 
     def get(self, request, *args, **kwargs):
-        self.setup(request)
+        self.setup_problem_list(request)
 
         if preferences.SitePreferences.active_contest:
             raise Http404()
@@ -509,7 +509,7 @@ class LanguageTemplateAjax(View):
 
 class RandomProblem(ProblemList):
     def get(self, request, *args, **kwargs):
-        self.setup(request)
+        self.setup_problem_list(request)
         if self.in_contest:
             raise Http404()
 
