@@ -26,7 +26,7 @@ jsonfield
 pymoss
 packaging
 celery
-ansi2html
+-e git://github.com/DMOJ/ansi2html.git#egg=ansi2html
 libsass
 django-sass-processor
 django-preferences
