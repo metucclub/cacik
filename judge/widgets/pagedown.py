@@ -50,7 +50,7 @@ else:
         class Media:
             js = [
                 'js/mathjax_config.js',
-                'libs/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+                'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
                 'js/pagedown_math.js',
             ]
 
@@ -102,3 +102,5 @@ else:
                 sass_processor('scss/table.scss'),
                 sass_processor('scss/ranks.scss'),
             ]}
+
+            js = ['https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML']

@@ -412,7 +412,7 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, ListView
         if self.show_types:
             context['selected_types'] = self.selected_types
             context['problem_types'] = ProblemType.objects.all()
-        context['has_fts'] = SitePreferences.enable_fts
+        context['has_fts'] = preferences.SitePreferences.enable_fts
         context['search_query'] = self.search_query
         context['completed_problem_ids'] = self.get_completed_problems()
         context['attempted_problems'] = self.get_attempted_problems()
