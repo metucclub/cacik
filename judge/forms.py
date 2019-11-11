@@ -131,4 +131,4 @@ class ContestCloneForm(Form):
         return key
 
 class ContestShareMessageForm(Form):
-    message = CharField(max_length=1000)
+    message = CharField(widget=forms.Textarea(attrs={"rows":4, "cols":27}), max_length=1000)
