@@ -184,4 +184,4 @@ def join(first, second, *rest):
 
 @registry.filter(name='ansi2html')
 def ansi2html(s):
-    return mark_safe(Ansi2HTMLConverter(inline=True).convert(s, full=False))
+    return mark_safe(Ansi2HTMLConverter(inline=True, escaped=False).convert(s, full=False))
