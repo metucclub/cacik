@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from mptt.admin import DraggableMPTTAdmin
 
 from judge.dblock import LockModel
+from judge.models import NavigationBar
 from judge.widgets import AdminHeavySelect2MultipleWidget, AdminHeavySelect2Widget, HeavyPreviewAdminPageDownWidget
 
 
