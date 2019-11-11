@@ -78,7 +78,7 @@
             </div>
 
 
-            {% if request.user.is_superuser or contest.is_in_contest(request.user) or contest.ended %}
+            {% if request.user.is_superuser or request.in_contest or contest.ended %}
                 <hr>
 
                 <div class="contest-problems">
@@ -86,6 +86,10 @@
                     <table id="contest-problems" class="table">
                         <thead>
                         <tr>
+                            {% if contest.is_in_contest(request.user) %}
+                                <th>{{ _('Status') }}</th>
+                            {% endif %}
+
                             <th>{{ _('Letter') }}</th>
                             <th>{{ _('Problem') }}</th>
 
@@ -95,15 +99,25 @@
 
                             <th>{{ _('AC Rate') }}</th>
                             <th>{{ _('Users') }}</th>
-
-                            {% if contest.ended %}
-                                <th></th>
-                            {% endif %}
                         </tr>
                         </thead>
                         <tbody>
                         {% for problem in contest_problems %}
                             <tr>
+                                {% if request.in_contest %}
+                                    <td>
+                                        {% if problem.id in completed_problem_ids %}
+                                            <a href="{{ url('user_submissions', problem.code, request.user.username) }}">
+                                                <i class="solved-problem-color title-state fa fa-check-circle"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url('user_submissions', problem.code, request.user.username) }}">
+                                                <i class="attempted-problem-color title-state fa fa-minus-circle"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+
                                 <td>
                                     {% if problem.is_public or request.user.is_superuser or contest.is_in_contest(request.user) %}
                                         <a href="{{ url('problem_detail', problem.code) }}">
@@ -135,14 +149,6 @@
                                         {{ problem.user_count }}
                                     {% endif %}
                                 </td>
-
-                                {% if contest.ended %}
-                                    <td>
-                                        {% if problem.is_public and problem.has_public_editorial %}
-                                            <a href="{{ url('problem_editorial', problem.code) }}">{{ _('Editorial') }}</a>
-                                        {% endif %}
-                                    </td>
-                                {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>

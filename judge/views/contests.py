@@ -32,6 +32,7 @@ from judge.models import Contest, ContestParticipation, ContestProblem, ContestT
 from judge.utils.opengraph import generate_opengraph
 from judge.utils.ranker import ranker
 from judge.utils.views import DiggPaginatorMixin, SingleObjectFormView, TitleMixin, generic_message
+from judge.utils.problems import contest_completed_ids
 
 __all__ = ['ContestList', 'ContestDetail', 'ContestRanking', 'ContestJoin', 'ContestLeave', 'ContestCalendar',
            'ContestClone', 'contest_ranking_ajax', 'ContestParticipationList', 'get_contest_ranking_list',
@@ -231,6 +232,9 @@ class ContestDetail(ContestMixin, TitleMixin, CommentedDetailView):
         context['clarifications'] = clarifications.order_by('-date')
 
         if self.request.user.is_authenticated:
+            if self.request.in_contest:
+                context['completed_problem_ids'] = contest_completed_ids(self.request.profile.current_contest)
+
             context['own_open_tickets'] = (Ticket.objects.filter(user=self.request.profile, is_open=True).order_by('-id')
                                            .prefetch_related('linked_item').select_related('user__user'))
 
@@ -628,6 +632,10 @@ class ContestRanking(ContestRankingBase):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['has_rating'] = self.object.ratings.exists()
+
+        if self.request.user.is_authenticated and self.request.in_contest:
+            context['completed_problem_ids'] = contest_completed_ids(self.request.profile.current_contest)
+
         return context
 
 

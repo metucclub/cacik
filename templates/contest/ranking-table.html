@@ -37,6 +37,10 @@
               {{- loop.index }}
             {% endif %}
 
+            {% if problem.id in completed_problem_ids %}
+                <i class="solved-problem-color title-state fa fa-check-circle"></i>
+            {% endif %}
+
             {% if not contest.hide_points %}
               <div class="point-denominator">{{ problem.points }}</div>
             {% endif %}
