@@ -74,7 +74,7 @@ class ContestMiddleware(object):
                         raise Exception()
 
                     participation = ContestParticipation.objects.create(
-                        contest=contest, user=profile, virtual=(-1 if is_organizer else 0),
+                        contest=active_contest, user=profile, virtual=(-1 if is_organizer else 0),
                         real_start=timezone.now(),
                     )
 
@@ -94,4 +94,5 @@ class ContestMiddleware(object):
         else:
             request.in_contest = False
             request.participation = None
+
         return self.get_response(request)
