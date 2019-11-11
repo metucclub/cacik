@@ -261,7 +261,7 @@ class ProblemPdfView(ProblemMixin, SingleObjectMixin, View):
                 }).replace('"//', '"https://').replace("'//", "'https://")
                 maker.title = problem_name
 
-                maker.load('style.css', os.path.join(settings.STATIC_ROOT, 'css', 'style.css'))
+                maker.load('style.css', os.path.join(settings.STATIC_ROOT, 'scss', 'style.css'))
                 maker.load('pygment-github.css', os.path.join(settings.STATIC_ROOT, 'css', 'pygment-github.css'))
                 maker.load('mathjax_config.js', os.path.join(settings.STATIC_ROOT, 'js', 'mathjax_config.js'))
 
