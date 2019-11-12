@@ -37,7 +37,7 @@ from judge.pdf_problems import DefaultPdfMaker, HAS_PDF
 from judge.utils.diggpaginator import DiggPaginator
 from judge.utils.opengraph import generate_opengraph
 from judge.utils.problems import contest_attempted_ids, contest_completed_ids, hot_problems, user_attempted_ids, \
-    user_completed_ids
+    user_completed_ids, get_preferred_language, get_not_allowed_common_names
 from judge.utils.strings import safe_float_or_none, safe_int_or_none
 from judge.utils.tickets import own_ticket_filter
 from judge.utils.views import QueryStringSortMixin, SingleObjectFormView, TitleMixin, generic_message
@@ -261,7 +261,7 @@ class ProblemPdfView(ProblemMixin, SingleObjectMixin, View):
                 }).replace('"//', '"https://').replace("'//", "'https://")
                 maker.title = problem_name
 
-                maker.load('style.css', os.path.join(settings.STATIC_ROOT, 'scss', 'style.css'))
+                maker.load('style.css', os.path.join(settings.STATIC_ROOT, 'css', 'style.css'))
                 maker.load('pygment-github.css', os.path.join(settings.STATIC_ROOT, 'css', 'pygment-github.css'))
                 maker.load('mathjax_config.js', os.path.join(settings.STATIC_ROOT, 'js', 'mathjax_config.js'))
 
@@ -534,12 +534,16 @@ def problem_submit(request, problem=None, submission=None):
     if request.method == 'POST':
         form = ProblemSubmitForm(request.POST, instance=Submission(user=profile))
         if form.is_valid():
+            exclude_lang_names = get_not_allowed_common_names(request, form.cleaned_data['problem'])
+
             if (not request.user.has_perm('judge.spam_submission') and
                     Submission.objects.filter(user=profile, was_rejudged=False)
                               .exclude(status__in=['D', 'IE', 'CE', 'AB']).count() > 2):
                 return HttpResponse('<h1>You submitted too many submissions.</h1>', status=429)
             if not form.cleaned_data['problem'].allowed_languages.filter(
                     id=form.cleaned_data['language'].id).exists():
+                raise PermissionDenied()
+            if form.cleaned_data['language'].common_name in exclude_lang_names:
                 raise PermissionDenied()
             if not form.cleaned_data['problem'].is_accessible_by(request.user):
                 user_logger.info('Naughty user %s wants to submit to %s without permission',
@@ -604,8 +608,10 @@ def problem_submit(request, problem=None, submission=None):
         form_data = initial
     if 'problem' in form_data:
         form.fields['language'].queryset = (
-            form_data['problem'].usable_languages.order_by('name', 'key')
-            .prefetch_related(Prefetch('runtimeversion_set', RuntimeVersion.objects.order_by('priority')))
+            form_data['problem'].usable_languages
+                .exclude(common_name__in=get_not_allowed_common_names(request, form_data['problem']))
+                .order_by('name', 'key')
+                .prefetch_related(Prefetch('runtimeversion_set', RuntimeVersion.objects.order_by('priority')))
         )
         problem_object = form_data['problem']
     if 'language' in form_data:
@@ -615,7 +621,7 @@ def problem_submit(request, problem=None, submission=None):
     if submission is not None:
         default_lang = sub.language
     else:
-        default_lang = request.profile.language
+        default_lang = get_preferred_language(request, form_data['problem'], form.fields['language'].queryset)
 
     submission_limit = submissions_left = None
     if profile.current_contest is not None:
@@ -636,7 +642,6 @@ def problem_submit(request, problem=None, submission=None):
                                    reverse('problem_detail', args=[problem_object.code]),
                                    problem_object.translated_name(request.LANGUAGE_CODE)),
         }),
-        'langs': Language.objects.all(),
         'no_judges': not form.fields['language'].queryset,
         'submission_limit': submission_limit,
         'submissions_left': submissions_left,

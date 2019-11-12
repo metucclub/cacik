@@ -75,11 +75,14 @@ class Contest(models.Model):
     hide_points = models.BooleanField(verbose_name=_('hide points'),
                                             help_text=_('Hide problem points on all pages'),
                                              default=False)
-    show_submission_feedback = models.BooleanField(verbose_name=_('hide submission feedback'),
-                                            help_text=_('Hide submission feedback on submssion page.'),
+    show_submission_feedback = models.BooleanField(verbose_name=_('show submission feedback'),
+                                            help_text=_('Show submission feedback on submssion page.'),
                                              default=False)
     hide_participation_tab = models.BooleanField(verbose_name=_('hide participation tab'),
                                             help_text=_('Hide participation tab on contest page.'),
+                                             default=False)
+    one_language_one_problem_mode = models.BooleanField(verbose_name=_('One language one problem mode'),
+                                            help_text=_('Mode for if a problem solved using a language, that language cannot be used again.'),
                                              default=False)
     rating_floor = models.IntegerField(verbose_name=('rating floor'), help_text=_('Rating floor for contest'),
                                        null=True, blank=True)

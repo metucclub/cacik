@@ -7,7 +7,7 @@ from django.db.models.fields import FloatField
 from django.utils import timezone
 from django.utils.translation import gettext as _, gettext_noop
 
-from judge.models import Problem, Submission
+from judge.models import ContestSubmission, Language, Problem, Submission
 
 __all__ = ['contest_completed_ids', 'get_result_data', 'user_completed_ids', 'user_authored_ids', 'user_editable_ids']
 
@@ -143,3 +143,37 @@ def hot_problems(duration, limit):
 
         cache.set(cache_key, qs, 900)
     return qs
+
+
+def get_preferred_language(request, problem, langs):
+    if problem is None or not langs:
+        return request.profile.language
+
+    sub = Submission.objects.filter(
+            user=request.profile,
+            problem=problem,
+            language__in=langs,
+        ).order_by('-date').first()
+
+    if sub is None:
+        sub = Submission.objects.filter(
+            user=request.profile,
+            language__in=langs,
+        ).order_by('-date').first()
+
+    if sub is None:
+        return request.profile.language
+
+    return sub.language
+
+def get_not_allowed_common_names(request, problem):
+    if request.user.is_superuser or not request.in_contest or not request.participation.contest.one_language_one_problem_mode:
+        return []
+
+    return ContestSubmission.objects.filter(
+            participation=request.participation,
+        ).exclude(
+            problem__problem=problem,
+        ).exclude(
+            submission__result__in=['WA', 'TLE', 'MLE', 'OLE', 'IR', 'RTE', 'CE', 'IE', 'SC', 'AB'],
+        ).values_list('submission__language__common_name', flat=True)

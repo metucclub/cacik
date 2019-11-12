@@ -107,7 +107,8 @@ class ContestForm(ModelForm):
 class ContestAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('key', 'name', 'organizers')}),
-        (_('Settings'), {'fields': ('is_visible', 'use_clarifications', 'run_pretests_only', 'show_submission_feedback')}),
+        (_('Settings'), {'fields': ('is_visible', 'use_clarifications', 'run_pretests_only',
+                        'show_submission_feedback', 'one_language_one_problem_mode')}),
         (_('Scheduling'), {'fields': ('start_time', 'end_time', 'time_limit')}),
         (_('Scoreboard'), {'fields': ('hide_scoreboard', 'freeze_scoreboard_after')}),
         (_('Visibility'), {'fields': ('no_social_share', 'hide_points', 'hide_problem_tags',

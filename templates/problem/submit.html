@@ -186,16 +186,6 @@
 {% block body %}
     <br>
     {% if not no_judges %}
-        {% if default_lang not in form.fields.language.queryset %}
-            <div class="alert alert-warning alert-dismissable">
-                <a class="close">x</a>
-                {% trans trimmed default_language=default_lang.name %}
-                    <b>Warning!</b> Your default language, <b>{{ default_language }}</b>,
-                    is unavailable for this problem and has been deselected.
-                {% endtrans %}
-            </div>
-        {% endif %}
-
         {% if request.in_contest and submission_limit %}
             {% if submissions_left > 0 %}
                 <div class="alert alert-warning alert-dismissable">
