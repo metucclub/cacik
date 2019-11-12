@@ -12,7 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, Max, Min
 from django.http import Http404, HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.formats import date_format
@@ -115,7 +115,10 @@ class UserPage(TitleMixin, UserMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         if preferences.SitePreferences.active_contest:
-            raise Http404()
+            if request.META.get('HTTP_REFERER'):
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                return redirect('/')
 
         self.hide_solved = request.GET.get('hide_solved') == '1' if 'hide_solved' in request.GET else False
         return super(UserPage, self).get(request, *args, **kwargs)

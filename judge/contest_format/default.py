@@ -73,8 +73,6 @@ class DefaultContestFormat(BaseContestFormat):
                 if result['points']:
                     data[i].cumtime += dt + (ws_count * self.config['penalty'] * 60)
 
-                print(i, id(data[i]), data[i].format_data)
-
                 data[i].format_data[str(result['problem_id'])] = {'time': dt, 'points': result['points'], 'penalty': ws_count}
 
                 data[i].points += result['points']

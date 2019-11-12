@@ -8,10 +8,13 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from lxml.html import Element
 
+from preferences import preferences
+
 from judge import lxml_tree
 from judge.models import Contest, Problem, Profile
 from judge.ratings import rating_class, rating_progress
 from . import registry
+
 
 rereference = re.compile(r'\[(r?user):(\w+)\]')
 
@@ -150,13 +153,13 @@ def link_user(user):
         user, profile = user.user, user
     else:
         raise ValueError('Expected profile or user, got %s' % (type(user),))
-    return {'user': user, 'profile': profile}
+    return {'preferences': preferences, 'user': user, 'profile': profile}
 
 
 @registry.function
 @registry.render_with('user/link-list.html')
 def link_users(users):
-    return {'users': users}
+    return {'preferences': preferences, 'users': users}
 
 
 @registry.function

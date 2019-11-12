@@ -16,7 +16,7 @@
 
 <tbody>
 {% for rank, user in users %}
-    <tr id="user-{{ user.user.username }}">
+    <tr>
         <td>{{ rank }}</td>
         {% block after_rank scoped %}{% endblock %}
         <td class="user-name">{{ link_user(user) }}</td>
