@@ -7,7 +7,7 @@ services:
   - docker
 
 before_script:
-  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+  - docker login "$REGISTRY" -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
 
 script:
   - docker pull "${IMAGE_NAME}" || true
