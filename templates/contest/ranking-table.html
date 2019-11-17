@@ -57,3 +57,7 @@
 {% block point %}
     {{ user.result_cell }}
 {% endblock %}
+
+{% block row_class %}
+    {% if request.user.is_authenticated and request.user.pk == user.user.pk %} current-user {% endif %}
+{% endblock %}

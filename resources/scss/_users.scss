@@ -76,6 +76,14 @@ th.header.rank {
         &.highlight {
             background: #fff897;
         }
+
+        &.current-user {
+            background: #ccead2;
+
+            &:hover {
+                background: #7fd190;
+            }
+        }
     }
 }
 
