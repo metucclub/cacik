@@ -71,7 +71,7 @@ def api_v2_user_info(request):
         problems = list(contest.contest_problems.select_related('problem').defer('problem__description')
                                .order_by('order'))
         rank, result = next(filter(lambda data: data[1].user == profile.user,
-                                   ranker(contest_ranking_list(contest, is_scoreboard_frozen, problems),
+                                   ranker(contest_ranking_list(contest, problems, is_scoreboard_frozen=is_scoreboard_frozen),
                                           key=attrgetter('points', 'cumtime'))))
 
         contest_history.append({

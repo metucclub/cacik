@@ -110,7 +110,7 @@ class ContestAdmin(admin.ModelAdmin):
         (_('Settings'), {'fields': ('is_visible', 'use_clarifications', 'run_pretests_only',
                         'show_submission_feedback', 'one_language_one_problem_mode')}),
         (_('Scheduling'), {'fields': ('start_time', 'end_time', 'time_limit')}),
-        (_('Scoreboard'), {'fields': ('hide_scoreboard', 'freeze_scoreboard_after')}),
+        (_('Scoreboard'), {'fields': ('hide_scoreboard', 'freeze_scoreboard_after', 'primary_group')}),
         (_('Visibility'), {'fields': ('no_social_share', 'hide_points', 'hide_problem_tags',
                         'hide_participation_tab')}),
         (_('Details'), {'fields': ('description', 'og_image', 'logo_override_image', 'tags', 'summary')}),

@@ -229,7 +229,10 @@
         <div>Contest frozen at {{ contest.freeze_scoreboard_after|date(_("F j, Y, G:i T")) }}</div>
     {% endif %}
 
-    <hr>
+    {% if contest.primary_group %}
+        <hr>
+        <div>To see the full scoreboard, click <a href="?all">here</a>
+    {% endif %}
 
     {% include "contest/ranking-table.html" %}
 {% endblock %}

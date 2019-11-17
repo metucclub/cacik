@@ -87,7 +87,7 @@ class DefaultContestFormat(BaseContestFormat):
 
         participation.save()
 
-    def display_user_problem(self, is_scoreboard_frozen, participation, contest_problem):
+    def display_user_problem(self, participation, contest_problem, is_scoreboard_frozen):
         if is_scoreboard_frozen:
             format_data = (participation.frozen_format_data or {}).get(str(contest_problem.id))
         else:
@@ -111,7 +111,7 @@ class DefaultContestFormat(BaseContestFormat):
         else:
             return mark_safe('<td></td>')
 
-    def display_participation_result(self, is_scoreboard_frozen, participation):
+    def display_participation_result(self, participation, is_scoreboard_frozen):
         cumtime = participation.frozen_cumtime if is_scoreboard_frozen else participation.cumtime
         score = participation.frozen_score if is_scoreboard_frozen else participation.score
 
@@ -121,7 +121,7 @@ class DefaultContestFormat(BaseContestFormat):
             cumtime=nice_repr(timedelta(seconds=cumtime), 'noday'),
         )
 
-    def get_problem_breakdown(self, is_scoreboard_frozen, participation, contest_problems):
+    def get_problem_breakdown(self, participation, contest_problems, is_scoreboard_frozen):
         if is_scoreboard_frozen:
             return [(participation.frozen_format_data or {}).get(str(contest_problem.id)) for contest_problem in contest_problems]
 

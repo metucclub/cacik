@@ -245,6 +245,14 @@ class ContestDetail(ContestMixin, TitleMixin, CommentedDetailView):
             .add_i18n_name(self.request.LANGUAGE_CODE)
         return context
 
+    def get(self, *args, **kwargs):
+        contest = self.get_object()
+
+        if preferences.SitePreferences.active_contest and preferences.SitePreferences.active_contest.pk != contest.pk:
+            return HttpResponseRedirect(reverse('contest_view', args=(preferences.SitePreferences.active_contest.key,)))
+
+        return super(ContestDetail, self).get(*args, **kwargs)
+
 
 class ContestClone(ContestMixin, PermissionRequiredMixin, TitleMixin, SingleObjectFormView):
     title = _('Clone Contest')
@@ -522,7 +530,7 @@ ContestRankingProfile = namedtuple(
 BestSolutionData = namedtuple('BestSolutionData', 'code points time state is_pretested')
 
 
-def make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, contest_problems):
+def make_contest_ranking_profile(contest, participation, contest_problems, is_scoreboard_frozen):
     user = participation.user
 
     return ContestRankingProfile(
@@ -533,26 +541,36 @@ def make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, c
         points=participation.frozen_score if is_scoreboard_frozen else participation.score,
         cumtime=participation.frozen_cumtime if is_scoreboard_frozen else participation.cumtime,
         participation_rating=participation.rating.rating if hasattr(participation, 'rating') else None,
-        problem_cells=[contest.format.display_user_problem(is_scoreboard_frozen, participation, contest_problem)
+        problem_cells=[contest.format.display_user_problem(participation, contest_problem, is_scoreboard_frozen)
                     for contest_problem in contest_problems],
-        result_cell=contest.format.display_participation_result(is_scoreboard_frozen, participation),
+        result_cell=contest.format.display_participation_result(participation, is_scoreboard_frozen),
         participation=participation,
     )
 
 
-def base_contest_ranking_list(contest, is_scoreboard_frozen, problems, queryset):
-    return [make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, problems)
-        for participation in queryset.select_related('user__user', 'rating').defer('user__about')]
+def base_contest_ranking_list(contest, problems, queryset, is_scoreboard_frozen, is_show_full_scoreboard):
+    participations = queryset.select_related('user__user', 'rating').defer('user__about')
 
+    if not is_show_full_scoreboard and contest.primary_group is not None:
+        group_users = contest.primary_group.user_set.all()
 
-def contest_ranking_list(contest, is_scoreboard_frozen, problems):
+        participations = filter(lambda participation: participation.user.user in group_users, participations)
+
+    return [make_contest_ranking_profile(contest, participation, problems, is_scoreboard_frozen=is_scoreboard_frozen)
+        for participation in participations]
+
+def contest_ranking_list(contest, problems, is_scoreboard_frozen, is_show_full_scoreboard=False):
     if is_scoreboard_frozen:
-        return base_contest_ranking_list(contest, is_scoreboard_frozen, problems, contest.users.filter(virtual=0, user__is_unlisted=False)
-                                     .order_by('-frozen_score', 'frozen_cumtime'))
+        return base_contest_ranking_list(contest, problems, contest.users.filter(virtual=0, user__is_unlisted=False)
+                                     .order_by('-frozen_score', 'frozen_cumtime'),
+                                     is_scoreboard_frozen=is_scoreboard_frozen,
+                                     is_show_full_scoreboard=is_show_full_scoreboard)
 
 
-    return base_contest_ranking_list(contest, is_scoreboard_frozen, problems, contest.users.filter(virtual=0, user__is_unlisted=False)
-                                     .order_by('-score', 'cumtime'))
+    return base_contest_ranking_list(contest, problems, contest.users.filter(virtual=0, user__is_unlisted=False)
+                                     .order_by('-score', 'cumtime'),
+                                     is_scoreboard_frozen=is_scoreboard_frozen,
+                                     is_show_full_scoreboard=is_show_full_scoreboard)
 
 
 def get_contest_ranking_list(request, contest, participation=None, ranking_list=contest_ranking_list,
@@ -560,12 +578,14 @@ def get_contest_ranking_list(request, contest, participation=None, ranking_list=
     problems = list(contest.contest_problems.select_related('problem').defer('problem__description').order_by('order'))
 
     is_scoreboard_frozen = not contest.can_see_real_scoreboard(request.user)
+    is_show_full_scoreboard = 'all' in request.GET
 
     if contest.hide_scoreboard and contest.is_in_contest(request.user):
-        return ([(_('???'), make_contest_ranking_profile(contest, is_scoreboard_frozen, request.profile.current_contest, problems))],
+        return ([(_('???'), make_contest_ranking_profile(contest, request.profile.current_contest, problems, is_scoreboard_frozen=is_scoreboard_frozen, is_show_full_scoreboard=is_show_full_scoreboard))],
                 problems)
 
-    users = ranker(ranking_list(contest, is_scoreboard_frozen, problems), key=attrgetter('points', 'cumtime'))
+    users = ranker(ranking_list(contest, problems, is_scoreboard_frozen=is_scoreboard_frozen, is_show_full_scoreboard=is_show_full_scoreboard),
+                key=attrgetter('points', 'cumtime'))
 
     if show_current_virtual:
         if participation is None and request.user.is_authenticated:
@@ -573,7 +593,7 @@ def get_contest_ranking_list(request, contest, participation=None, ranking_list=
             if participation is None or participation.contest_id != contest.id:
                 participation = None
         if participation is not None and participation.virtual:
-            users = chain([('-', make_contest_ranking_profile(contest, is_scoreboard_frozen, participation, problems))], users)
+            users = chain([('-', make_contest_ranking_profile(contest, participation, problems, is_scoreboard_frozen=is_scoreboard_frozen, is_show_full_scoreboard=is_show_full_scoreboard))], users)
     return users, problems
 
 

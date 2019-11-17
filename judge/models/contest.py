@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
@@ -84,6 +85,8 @@ class Contest(models.Model):
     one_language_one_problem_mode = models.BooleanField(verbose_name=_('One language one problem mode'),
                                             help_text=_('Mode for if a problem solved using a language, that language cannot be used again.'),
                                              default=False)
+    primary_group = models.ForeignKey(Group, on_delete=models.SET_NULL, verbose_name=_('Primary user group to show on scoreboard'),
+                                        null=True, blank=True)
     rating_floor = models.IntegerField(verbose_name=('rating floor'), help_text=_('Rating floor for contest'),
                                        null=True, blank=True)
     rating_ceiling = models.IntegerField(verbose_name=('rating ceiling'), help_text=_('Rating ceiling for contest'),
