@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from fernet_fields import EncryptedCharField
 
 from judge.models.choices import TIMEZONE
+from judge.models.runtime import Language
 from judge.ratings import rating_class
 
 __all__ = ['Profile']
@@ -30,7 +31,7 @@ class Profile(models.Model):
     about = models.TextField(verbose_name=_('self-description'), null=True, blank=True)
     timezone = models.CharField(max_length=50, verbose_name=_('location'), choices=TIMEZONE,
                                 default=getattr(settings, 'DEFAULT_USER_TIME_ZONE', 'America/Toronto'))
-    language = models.ForeignKey('Language', verbose_name=_('preferred language'), on_delete=models.CASCADE)
+    language = models.ForeignKey('Language', verbose_name=_('preferred language'), on_delete=models.SET_DEFAULT, default=Language.get_python2())
     points = models.FloatField(default=0, db_index=True)
     performance_points = models.FloatField(default=0, db_index=True)
     problem_count = models.IntegerField(default=0, db_index=True)
