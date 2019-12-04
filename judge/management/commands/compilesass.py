@@ -6,7 +6,7 @@ from django.utils.encoding import force_bytes
 from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
-    help = "Compile SASS into CSS outside of the request/response cycle"
+    help = 'Compile SASS into CSS outside of the request/response cycle'
     filenames = ['content-description', 'ranks', 'table', 'style']
 
     def __init__(self):
@@ -40,7 +40,11 @@ class Command(BaseCommand):
 
 
     def save_to_destination(self, content, sass_filename):
-        destination = os.path.join(settings.STATIC_ROOT, 'css', sass_filename + '.css')
+        destinations = [
+            os.path.join(settings.STATIC_ROOT, 'css', sass_filename + '.css'), # to work both in Debug False and True
+            os.path.join(settings.STATIC_ROOT, 'scss', sass_filename + '.css'),
+        ]
 
-        with open(destination, 'wb') as fh:
-            fh.write(force_bytes(content))
+        for destination in destinations:
+            with open(destination, 'wb') as fh:
+                fh.write(force_bytes(content))
