@@ -179,12 +179,12 @@ header {
     }
 
     .hello {
-        float: left;
         display: inline-block;
     }
 
     a,
     span {
+        text-align: right;
         display: block;
         color: $nav_link_color;
         height: $nav_height;

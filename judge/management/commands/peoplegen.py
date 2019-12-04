@@ -8,9 +8,13 @@ from judge.models import *
 import os, sys, string
 import json
 
+ERROR_TEXT = '\033[1m\033[91merror:\033[0m'
+
 slugs = []
 
 def create_slug(x):
+    global slugs
+
     slug = slugify(x)
 
     if slug == '':
@@ -44,11 +48,11 @@ class Command(BaseCommand):
 
             for team in teams:
                 username = team['email']
-                passwd = team['passwd']
+                password = team['password']
 
                 if username in usernames:
                     success = False
-                    print('error: duplicate email: "{}".'.format(username))
+                    print('{} duplicate email: "{}".'.format(ERROR_TEXT, username))
 
                     break
                 else:
@@ -57,7 +61,7 @@ class Command(BaseCommand):
                 if 'group' in team:
                     if Group.objects.filter(name=team['group']).count() == 0:
                         success = False
-                        print('error: group "{}" not found.'.format(team['group']))
+                        print('{} group "{}" not found.'.format(ERROR_TEXT, team['group']))
 
                         break
 
@@ -66,7 +70,7 @@ class Command(BaseCommand):
 
                 for team in teams:
                     username = team['email']
-                    passwd = team['passwd']
+                    password = team['password']
                     team_name = team['name']
                     members = team['members']
 
@@ -75,9 +79,9 @@ class Command(BaseCommand):
                     new_user = User.objects.get_or_create(username=username,
                         defaults={
                             'email': username,
-                            'is_active':True
+                            'is_active': True,
                         })[0]
-                    new_user.set_password(passwd)
+                    new_user.set_password(password)
                     new_user.save()
 
                     new_profile = Profile.objects.get_or_create(user=new_user)[0]
