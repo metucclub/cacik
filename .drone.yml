@@ -9,8 +9,6 @@ steps:
       - name: docker_sock
         path: /var/run/docker.sock
     environment:
-      REGISTRY:
-        from_secret: REGISTRY
       REGISTRY_USER:
         from_secret: REGISTRY_USER
       REGISTRY_PASS:
@@ -18,7 +16,7 @@ steps:
       IMAGE_NAME:
         from_secret: IMAGE_NAME
     commands:
-      - docker login "$REGISTRY" -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+      - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
       - docker pull "$IMAGE_NAME" || true
       - docker build --cache-from "$IMAGE_NAME:latest" -t "$IMAGE_NAME" .
       - docker push "$IMAGE_NAME"
