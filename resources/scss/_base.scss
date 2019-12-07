@@ -180,11 +180,15 @@ header {
 
     .hello {
         display: inline-block;
+        width: 100%;
+
+        b {
+            float: right;
+        }
     }
 
     a,
     span {
-        text-align: right;
         display: block;
         color: $nav_link_color;
         height: $nav_height;

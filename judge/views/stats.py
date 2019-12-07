@@ -4,7 +4,7 @@ from operator import itemgetter
 from django.conf import settings
 from django.db.models import Case, Count, FloatField, IntegerField, Value, When
 from django.db.models.expressions import CombinedExpression
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import render
 from django.utils.translation import gettext as _
 
@@ -35,6 +35,9 @@ def repeat_chain(iterable):
 
 
 def language_data(request, language_count=Language.objects.annotate(count=Count('submission'))):
+    if not request.user.is_superuser:
+        raise Http404()
+
     languages = language_count.filter(count__gt=0).values('key', 'name', 'count').order_by('-count')
     threshold = getattr(settings, 'DMOJ_STATS_LANGUAGE_THRESHOLD', 10)
     num_languages = min(len(languages), threshold)
@@ -57,6 +60,9 @@ def ac_language_data(request):
 
 
 def status_data(request, statuses=None):
+    if not request.user.is_superuser:
+        raise Http404()
+
     if not statuses:
         statuses = (Submission.objects.values('result').annotate(count=Count('result'))
                     .values('result', 'count').order_by('-count'))
@@ -83,6 +89,9 @@ def status_data(request, statuses=None):
 
 
 def ac_rate(request):
+    if not request.user.is_superuser:
+        raise Http404()
+
     rate = CombinedExpression(ac_count / Count('submission'), '*', Value(100.0), output_field=FloatField())
     data = Language.objects.annotate(total=Count('submission'), ac_rate=rate).filter(total__gt=0) \
         .values('key', 'name', 'ac_rate').order_by('total')
@@ -102,6 +111,9 @@ def ac_rate(request):
 
 
 def language(request):
+    if not request.user.is_superuser:
+        raise Http404()
+
     return render(request, 'stats/language.html', {
         'title': _('Language statistics'), 'tab': 'language',
     })

@@ -1,9 +1,8 @@
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.urls import Resolver404, resolve, reverse
-from django.utils import timezone
+from django.utils import timezone, translation
 from django.utils.http import urlquote
-
 from preferences import preferences
 
 from judge.models import Contest, ContestParticipation
@@ -28,6 +27,9 @@ class DMOJLoginMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
+        lang = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+        translation.activate(lang)
+
         if request.user.is_authenticated:
             profile = request.profile = request.user.profile
             login_2fa_path = reverse('login_2fa')

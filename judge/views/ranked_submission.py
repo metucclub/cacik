@@ -1,6 +1,9 @@
 from django.urls import reverse
+from django.http import Http404
 from django.utils.html import format_html
 from django.utils.translation import gettext as _
+
+from preferences import preferences
 
 from judge.models import Submission
 from judge.utils.problems import get_result_data
@@ -15,6 +18,9 @@ class RankedSubmissions(ProblemSubmissions):
     dynamic_update = False
 
     def get_queryset(self):
+        if preferences.SitePreferences.hide_best_solutions:
+            raise Http404()
+
         if self.in_contest:
             contest_join = '''INNER JOIN judge_contestsubmission AS cs ON (sub.id = cs.submission_id)
                               INNER JOIN judge_contestparticipation AS cp ON (cs.participation_id = cp.id)'''
