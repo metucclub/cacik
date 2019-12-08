@@ -179,8 +179,7 @@ header {
     }
 
     .hello {
-        display: inline-block;
-        width: 100%;
+        float: right;
 
         b {
             float: right;
