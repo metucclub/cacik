@@ -132,7 +132,7 @@ urlpatterns = [
     path('submissions/user/<str:user>/', paged_list_view(submission.AllUserSubmissions, 'all_user_submissions')),
 
     path('src/<int:submission>/', submission.SubmissionSource.as_view(), name='submission_source'),
-    path('src/<int:submission>/raw', submission.SubmissionSourceRaw.as_view(), name='submission_source_raw'),
+    path('src/<int:submission>/raw/', submission.SubmissionSourceRaw.as_view(), name='submission_source_raw'),
 
     path('submission/<int:submission>/', include([
         path('', submission.SubmissionStatus.as_view(), name='submission_status'),
@@ -149,7 +149,7 @@ urlpatterns = [
 
     path('user/', user.UserAboutPage.as_view(), name='user_page'),
     path('edit/profile/', user.edit_profile, name='user_edit_profile'),
-    path('user/<str:user>', include([
+    path('user/<str:user>/', include([
         path('', user.UserAboutPage.as_view(), name='user_page'),
         path('solved/', include([
             path('', user.UserProblemsPage.as_view(), name='user_problems'),
@@ -232,8 +232,8 @@ urlpatterns = [
         path('template/', problem.LanguageTemplateAjax.as_view(), name='language_template_ajax'),
 
         path('select2/', include([
-            path('user_search', UserSearchSelect2View.as_view(), name='user_search_select2_ajax'),
-            path('contest_users/<str:contest>', ContestUserSearchSelect2View.as_view(),
+            path('user_search/', UserSearchSelect2View.as_view(), name='user_search_select2_ajax'),
+            path('contest_users/<str:contest>/', ContestUserSearchSelect2View.as_view(),
                 name='contest_user_search_select2_ajax'),
             path('ticket_user/', TicketUserSelect2View.as_view(), name='ticket_user_select2_ajax'),
             path('ticket_assignee/', AssigneeSelect2View.as_view(), name='ticket_assignee_select2_ajax'),
