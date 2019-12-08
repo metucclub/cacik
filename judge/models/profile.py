@@ -11,6 +11,8 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from fernet_fields import EncryptedCharField
 
+from preferences import preferences
+
 from judge.models.choices import TIMEZONE
 from judge.models.runtime import Language
 from judge.ratings import rating_class
@@ -26,12 +28,12 @@ class EncryptedNullCharField(EncryptedCharField):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, verbose_name=_('user associated'), on_delete=models.CASCADE)
-    display_name = models.CharField(max_length=50, verbose_name=_('display name'),
+    display_name = models.CharField(max_length=300, verbose_name=_('display name'),
                                         null=True, blank=True)
     about = models.TextField(verbose_name=_('self-description'), null=True, blank=True)
     timezone = models.CharField(max_length=50, verbose_name=_('location'), choices=TIMEZONE,
                                 default=getattr(settings, 'DEFAULT_USER_TIME_ZONE', 'America/Toronto'))
-    language = models.ForeignKey('Language', verbose_name=_('preferred language'), on_delete=models.SET_DEFAULT, default=Language.get_python2())
+    language = models.ForeignKey('Language', verbose_name=_('preferred language'), null=True, blank=True, on_delete=models.SET_DEFAULT, default=None)
     points = models.FloatField(default=0, db_index=True)
     performance_points = models.FloatField(default=0, db_index=True)
     problem_count = models.IntegerField(default=0, db_index=True)
@@ -57,6 +59,10 @@ class Profile(models.Model):
     @cached_property
     def username(self):
         return self.user.username
+
+    @property
+    def public_name(self):
+        return self.display_name if self.display_name and preferences.SitePreferences.use_display_name_as_public_name else self.user.username
 
     _pp_table = [pow(getattr(settings, 'DMOJ_PP_STEP', 0.95), i)
                  for i in range(getattr(settings, 'DMOJ_PP_ENTRIES', 100))]

@@ -179,10 +179,6 @@
                 };
 
                 install_tooltips();
-
-                setInterval(function() {
-                    window.location.reload();
-                }, 10000);
             });
         </script>
     {% endif %}
@@ -223,14 +219,12 @@
         {% endif %}
     </div>
 
-    <div>Reloads every 10 seconds.</div>
-
     {% if contest.can_see_scoreboard(request.user) and not contest.can_see_real_scoreboard(request.user) %}
         <div>Contest frozen at {{ contest.freeze_scoreboard_after|date(_("F j, Y, G:i T")) }}</div>
+        <hr>
     {% endif %}
 
     {% if contest.primary_group %}
-        <hr>
         <div>To see the full scoreboard, click <a href="?all">here</a>
     {% endif %}
 

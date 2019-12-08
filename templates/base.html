@@ -177,11 +177,7 @@
                     {% endif %}
 
                     <span class="hello">
-                        {% if request.profile.display_name %}
-                            <b>{{ request.profile.display_name }}</b>
-                        {% else %}
-                            <b>{{ request.user.username }}</b>
-                        {% endif %}
+                        <b>{{ request.profile.public_name }}</b>
                     </span>
                 </a>
                 <ul class="user-drop">

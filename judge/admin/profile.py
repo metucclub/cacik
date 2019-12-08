@@ -72,8 +72,7 @@ class ProfileAdmin(admin.ModelAdmin):
         return fields
 
     def show_public(self, obj):
-        return format_html('<a href="{0}" style="white-space:nowrap;">{1}</a>',
-                           obj.get_absolute_url(), gettext('View on site'))
+        return format_html('{0}', obj.display_name)
     show_public.short_description = ''
 
     def admin_user_admin(self, obj):

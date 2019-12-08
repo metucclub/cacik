@@ -569,7 +569,7 @@ def get_contest_ranking_list(request, contest, participation=None, ranking_list=
     is_show_full_scoreboard = 'all' in request.GET
 
     if contest.hide_scoreboard and contest.is_in_contest(request.user):
-        return ([(_('???'), make_contest_ranking_profile(contest, request.profile.current_contest, problems, is_scoreboard_frozen=is_scoreboard_frozen, is_show_full_scoreboard=is_show_full_scoreboard))],
+        return ([(_('???'), make_contest_ranking_profile(contest, request.profile.current_contest, problems, is_scoreboard_frozen=is_scoreboard_frozen))],
                 problems)
 
     users = ranker(ranking_list(contest, problems, is_scoreboard_frozen=is_scoreboard_frozen, is_show_full_scoreboard=is_show_full_scoreboard),
@@ -581,7 +581,7 @@ def get_contest_ranking_list(request, contest, participation=None, ranking_list=
             if participation is None or participation.contest_id != contest.id:
                 participation = None
         if participation is not None and participation.virtual:
-            users = chain([('-', make_contest_ranking_profile(contest, participation, problems, is_scoreboard_frozen=is_scoreboard_frozen, is_show_full_scoreboard=is_show_full_scoreboard))], users)
+            users = chain([('-', make_contest_ranking_profile(contest, participation, problems, is_scoreboard_frozen=is_scoreboard_frozen))], users)
     return users, problems
 
 

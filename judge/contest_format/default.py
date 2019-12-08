@@ -1,6 +1,6 @@
 from datetime import timedelta
 from django.core.exceptions import ValidationError
-from django.db.models import Max
+from django.db.models import Max, Min
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -62,6 +62,19 @@ class DefaultContestFormat(BaseContestFormat):
 
         data = [ContestParticipationData() for _ in range(len(querysets))]
 
+        """
+          for result in queryset.values('problem_id').annotate(points=Max('points')): # , time=Min('submission__date')
+                x_problem_id = result['problem_id']
+                x_points = result['points']
+
+                result = queryset.filter(points=x_points).order_by('submission__date').first()
+                result = {
+                    'time': result.submission.date,
+                    'points': x_points,
+                    'problem_id': x_problem_id
+                }
+
+        """
 
         for i, queryset in enumerate(querysets):
             for result in queryset.values('problem_id').annotate(time=Max('submission__date'), points=Max('points')):

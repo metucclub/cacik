@@ -172,7 +172,10 @@ class Problem(models.Model):
         return user.has_perm('judge.edit_own_problem') and self.is_editor(user.profile)
 
     def is_accessible_by(self, user):
-        # If the user can view all problems.
+        # Problem is public.
+        if self.is_public:
+            return True
+               # If the user can view all problems.
         if user.has_perm('judge.see_private_problem'):
             return True
 

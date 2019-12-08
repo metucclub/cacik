@@ -37,7 +37,7 @@
               {{- loop.index }}
             {% endif %}
 
-            {% if problem.id in completed_problem_ids %}
+            {% if problem.problem.id in completed_problem_ids %}
                 <i class="solved-problem-color title-state fa fa-check-circle"></i>
             {% endif %}
 

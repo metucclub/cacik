@@ -547,7 +547,7 @@ def problem_submit(request, problem=None, submission=None):
                 raise PermissionDenied()
             if not form.cleaned_data['problem'].is_accessible_by(request.user):
                 user_logger.info('Naughty user %s wants to submit to %s without permission',
-                                 request.user.username, form.cleaned_data['problem'].code)
+                                 request.user.profile.public_name, form.cleaned_data['problem'].code)
                 return HttpResponseForbidden('<h1>Do you want me to ban you?</h1>')
             if not request.user.is_superuser and form.cleaned_data['problem'].banned_users.filter(
                     id=profile.id).exists():

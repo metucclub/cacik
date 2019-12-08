@@ -324,10 +324,10 @@ class ContestParticipation(models.Model):
 
     def __str__(self):
         if self.spectate:
-            return gettext('%s spectating in %s') % (self.user.username, self.contest.name)
+            return gettext('%s spectating in %s') % (self.user.profile.public_name, self.contest.name)
         if self.virtual:
-            return gettext('%s in %s, v%d') % (self.user.username, self.contest.name, self.virtual)
-        return gettext('%s in %s') % (self.user.username, self.contest.name)
+            return gettext('%s in %s, v%d') % (self.user.profile.public_name, self.contest.name, self.virtual)
+        return gettext('%s in %s') % (self.user.profile.public_name, self.contest.name)
 
     class Meta:
         verbose_name = _('contest participation')

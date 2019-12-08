@@ -43,20 +43,31 @@ class Command(BaseCommand):
             teams = json.load(f)
 
             usernames = []
+            emails = []
             participant_count = 0
             success = True
 
             for team in teams:
-                username = team['email']
+                username = create_slug(team['name'])
+                email = team['email']
                 password = team['password']
 
                 if username in usernames:
                     success = False
-                    print('{} duplicate email: "{}".'.format(ERROR_TEXT, username))
+                    print('{} duplicate username: "{}".'.format(ERROR_TEXT, username))
 
                     break
                 else:
                     usernames.append(username)
+                    team['username'] = username
+
+                if email in emails:
+                    success = False
+                    print('{} duplicate email: "{}".'.format(ERROR_TEXT, email))
+
+                    break
+                else:
+                    emails.append(email)
 
                 if 'group' in team:
                     if Group.objects.filter(name=team['group']).count() == 0:
@@ -69,7 +80,8 @@ class Command(BaseCommand):
                 default_lang = Language.objects.get(key='PY2')
 
                 for team in teams:
-                    username = team['email']
+                    username = team['username']
+                    email = team['email']
                     password = team['password']
                     team_name = team['name']
                     members = team['members']
@@ -78,7 +90,7 @@ class Command(BaseCommand):
 
                     new_user = User.objects.get_or_create(username=username,
                         defaults={
-                            'email': username,
+                            'email': email,
                             'is_active': True,
                         })[0]
                     new_user.set_password(password)
@@ -86,10 +98,10 @@ class Command(BaseCommand):
 
                     new_profile = Profile.objects.get_or_create(user=new_user)[0]
                     new_profile.display_name = '{} ({})'.format(
-                        team_name, ', '.join(map(lambda u: u['last_name'], members)),
+                        team_name, ', '.join(map(lambda u: str(u['last_name']).title(), members)),
                     )
                     new_profile.notes = '\n'.join(
-                        map(lambda u: '{} {}'.format(u['first_name'], u['last_name']), members),
+                        map(lambda u: '{} {}'.format(str(u['first_name']).title(), str(u['last_name']).title()), members),
                     )
                     new_profile.timezone = 'Europe/Istanbul'
                     new_profile.language = default_lang

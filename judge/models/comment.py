@@ -125,7 +125,7 @@ class Comment(MPTTModel):
         return '%s#comment-%d' % (self.link, self.id)
 
     def __str__(self):
-        return '%(page)s by %(user)s' % {'page': self.page, 'user': self.author.user.username}
+        return '%(page)s by %(user)s' % {'page': self.page, 'user': self.author.public_name}
 
         # Only use this when queried with
         # .prefetch_related(Prefetch('votes', queryset=CommentVote.objects.filter(voter_id=profile_id)))

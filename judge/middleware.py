@@ -28,6 +28,7 @@ class DMOJLoginMiddleware(object):
 
     def __call__(self, request):
         lang = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+        request.LANGUAGE_CODE = lang
         translation.activate(lang)
 
         if request.user.is_authenticated:
@@ -60,7 +61,7 @@ class ContestMiddleware(object):
         profile = request.profile
 
         if profile:
-            if not request.user.is_superuser and preferences.SitePreferences.active_contest and not preferences.SitePreferences.active_contest.ended:
+            if not request.user.is_superuser and preferences.SitePreferences.active_contest and preferences.SitePreferences.active_contest.can_join and not preferences.SitePreferences.active_contest.ended:
                 active_contest = preferences.SitePreferences.active_contest
 
                 is_organizer = active_contest.organizers.filter(id=profile.id).exists()

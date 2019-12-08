@@ -1,5 +1,9 @@
 {% if preferences.SitePreferences.active_contest %}
-    {{ user.username }}
+    {{ user.profile.public_name }}
 {% else %}
-    <span class="{{ profile.css_class }}"><a href="{{ url('user_page', user.username) }}">{{ user.username }}</a></span>
+    <span class="{{ profile.css_class }}">
+        <a href="{{ url('user_page', user.username) }}">
+            {{ user.profile.public_name }}
+        </a>
+    </span>
 {% endif %}

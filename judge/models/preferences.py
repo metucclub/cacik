@@ -23,3 +23,5 @@ class SitePreferences(Preferences):
     disable_forgot_password = models.BooleanField(default=False)
     disable_change_password = models.BooleanField(default=False)
     disable_mail_verification = models.BooleanField(default=False)
+
+    use_display_name_as_public_name = models.BooleanField(default=False)
