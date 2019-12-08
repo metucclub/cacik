@@ -30,10 +30,9 @@ celery
 libsass
 django-sass-processor
 django-preferences
-celery
 sqlparse
 mysqlclient
 websocket-client
 unicodecsv
-redis
 django-rosetta
+python-memcached

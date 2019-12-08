@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3-alpine
 
 RUN apk add --upgrade  \
     build-base \
@@ -34,13 +34,14 @@ RUN wget -q https://github.com/fgrehm/docker-phantomjs2/releases/download/v2.0.0
 RUN mkdir -p /app
 WORKDIR /app
 
-RUN mkdir -p static/pdfcache/
+RUN mkdir -p pdfcache/
 
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt && \
     pip install gunicorn && \
-    pip install gunicorn[gevent]
+    pip install gunicorn[gevent] && \
+    pip install gunicorn[gthread]
 
 COPY package.json .
 RUN npm install .
