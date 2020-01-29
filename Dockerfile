@@ -6,7 +6,7 @@ RUN apk add --upgrade  \
     mariadb-dev \
     libxml2-dev \
     libxslt-dev \
-    py2-psycopg2 \
+    py3-psycopg2 \
     zlib-dev \
     jpeg-dev \
     gettext \
