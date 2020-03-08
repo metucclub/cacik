@@ -73,7 +73,7 @@
         {% for sub in submissions %}
             <tr>
                 <td><a href="{{ url('submission_source', sub.id) }}">{{ sub.id }}</a></td>
-                <td>{{ link_user(sub.user) }}</td>
+                <td>{{ link_user(request, sub.user) }}</td>
                 <td><span class="case-{{ sub.result }}">{{ sub.result }}</span></td>
                 <td>{{ sub.language.name }}</td>
                 <td><span class="time">{{ relative_time(sub.date) }}</span></td>

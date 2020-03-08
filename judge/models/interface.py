@@ -10,19 +10,7 @@ from mptt.models import MPTTModel
 
 from judge.models.profile import Profile
 
-__all__ = ['MiscConfig', 'validate_regex', 'NavigationBar', 'BlogPost']
-
-
-class MiscConfig(models.Model):
-    key = models.CharField(max_length=30, db_index=True)
-    value = models.TextField(blank=True)
-
-    def __str__(self):
-        return self.key
-
-    class Meta:
-        verbose_name = _('configuration item')
-        verbose_name_plural = _('miscellaneous configuration')
+__all__ = ['validate_regex', 'NavigationBar', 'BlogPost']
 
 
 def validate_regex(regex):

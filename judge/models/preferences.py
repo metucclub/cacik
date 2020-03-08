@@ -28,3 +28,4 @@ class SitePreferences(Preferences):
 
     extra_css = models.TextField(blank=True, null=True)
     extra_js = models.TextField(blank=True, null=True)
+    extra_body_end_html = models.TextField(blank=True, null=True)

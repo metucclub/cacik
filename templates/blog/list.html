@@ -105,7 +105,7 @@
                             {%- if post.sticky %}<i title="Sticky" class="fa fa-star fa-fw"></i>{% endif -%}
                             {% with authors=post.authors.all() %}
                                 {%- if authors -%}
-                                    <span class="post-authors">{{ link_users(authors) }}</span>
+                                    <span class="post-authors">{{ link_users(request, authors) }}</span>
                                 {%- endif -%}
                             {% endwith %}
                             {{ relative_time(post.publish_on, abs=_('posted on {time}'), rel=_('posted {time}')) -}}
@@ -241,7 +241,7 @@
                                         <a href="{{ ticket.linked_item.get_absolute_url() }}">
                                             {{ ticket.linked_item|item_title }}</a>
                                     </div>
-                                    <div>{{ link_user(ticket.user) }}</div>
+                                    <div>{{ link_user(request, ticket.user) }}</div>
                                 </li>
                             {% endfor %}
                         </ul>

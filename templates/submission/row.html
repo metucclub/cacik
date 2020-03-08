@@ -22,7 +22,7 @@
         <div class="name"><a href="{{ url('problem_detail', submission.problem.code) }}">{{ problem_name }}</a></div>
     {% endif %}
     <div>
-        {{ link_user(submission.user) }}
+        {{ link_user(request, submission.user) }}
         <span class="time">{{ relative_time(submission.date) }}</span>
         {% if not request.in_contest and submission.contest_object_id %}
             <a href="{{ url('contest_view', submission.contest_object.key) }}"

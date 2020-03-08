@@ -84,7 +84,6 @@ WPADMIN = {
                 'model': 'judge.NavigationBar',
                 'icon': 'fa-bars',
                 'children': [
-                    'judge.MiscConfig',
                     'judge.License',
                     'sites.Site',
                     'redirects.Redirect',
@@ -192,7 +191,6 @@ TEMPLATES = [
                 'judge.template_context.get_resource',
                 'judge.template_context.general_info',
                 'judge.template_context.site',
-                'judge.template_context.misc_config',
                 'judge.template_context.event_config',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',

@@ -1,4 +1,4 @@
-{% if preferences.SitePreferences.active_contest %}
+{% if not request.user.is_superuser and preferences.SitePreferences.active_contest %}
     {{ user.profile.public_name }}
 {% else %}
     <span class="{{ profile.css_class }}">

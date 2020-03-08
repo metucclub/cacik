@@ -144,7 +144,7 @@ def item_title(item):
 
 @registry.function
 @registry.render_with('user/link.html')
-def link_user(user):
+def link_user(request, user):
     if isinstance(user, Profile):
         user, profile = user.user, user
     elif isinstance(user, AbstractUser):
@@ -153,13 +153,13 @@ def link_user(user):
         user, profile = user.user, user
     else:
         raise ValueError('Expected profile or user, got %s' % (type(user),))
-    return {'preferences': preferences, 'user': user, 'profile': profile}
+    return {'preferences': preferences, 'user': user, 'profile': profile, 'request': request}
 
 
 @registry.function
 @registry.render_with('user/link-list.html')
-def link_users(users):
-    return {'preferences': preferences, 'users': users}
+def link_users(request, users):
+    return {'preferences': preferences, 'users': users, 'request': request}
 
 
 @registry.function

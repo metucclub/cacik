@@ -3,9 +3,6 @@
 <head>
     <title>{% block title %}{{ title }} - {{ preferences.SitePreferences.site_name }}{% endblock %}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    {% if misc_config.meta_keywords %}
-        <meta name="keywords" content="{{ misc_config.meta_keywords }}">
-    {% endif %}
     {% if meta_description %}
         <meta name="description" content="{{ meta_description }}">
     {% endif %}
@@ -66,7 +63,7 @@
 
         {% if preferences.SitePreferences.extra_css %}
             <style>
-                {{ preferences.SitePreferences.extra_css }}
+                {{ preferences.SitePreferences.extra_css|safe }}
             </style>
         {% endif %}
     {% endcompress %}
@@ -117,7 +114,7 @@
 
         {% if preferences.SitePreferences.extra_js %}
             <script>
-                {{ preferences.SitePreferences.extra_js }}
+                {{ preferences.SitePreferences.extra_js|safe }}
             </script>
         {% endif %}
     {% endcompress %}
@@ -133,10 +130,6 @@
         </script>
     {% else %}
         <script>window.user = {};</script>
-    {% endif %}
-
-    {% if misc_config.analytics %}
-        {{ misc_config.analytics|safe }}
     {% endif %}
 
     <noscript>
@@ -252,6 +245,10 @@
     {% endif %}
 
     {% block bodyend %}{% endblock %}
+
+    {% if preferences.SitePreferences.extra_body_end_html %}
+        {{ preferences.SitePreferences.extra_body_end_html|safe }}
+    {% endif %}
 
     <footer>
         <span id="footer-content">

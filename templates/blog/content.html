@@ -20,7 +20,7 @@
         <div class="time">
             {% with authors=post.authors.all() %}
                 {% if authors %}
-                    <span class="post-authors">{{ link_users(authors) }}</span>
+                    <span class="post-authors">{{ link_users(request, authors) }}</span>
                 {% endif %}
             {% endwith %}
             <span class="post-time">

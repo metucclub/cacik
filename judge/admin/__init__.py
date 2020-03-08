@@ -12,7 +12,7 @@ from judge.admin.submission import SubmissionAdmin
 from judge.admin.taxon import ProblemGroupAdmin, ProblemTypeAdmin
 from judge.admin.ticket import TicketAdmin
 from judge.models import BlogPost, Comment, CommentLock, Contest, ContestParticipation, \
-    ContestTag, Judge, Language, License, MiscConfig, NavigationBar, \
+    ContestTag, Judge, Language, License, NavigationBar, \
     Problem, ProblemGroup, ProblemType, Profile, \
     SitePreferences, Submission, Ticket
 
@@ -26,7 +26,6 @@ admin.site.register(Judge, JudgeAdmin)
 admin.site.register(Language, LanguageAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
-admin.site.register(MiscConfig)
 admin.site.register(NavigationBar, NavigationBarAdmin)
 admin.site.register(SitePreferences, SitePreferencesAdmin)
 admin.site.register(Problem, ProblemAdmin)

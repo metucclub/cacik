@@ -13,5 +13,5 @@ class SitePreferencesAdmin(PreferencesAdmin):
                 'disable_change_password')}),
         ('Comments', {'fields': ('no_comments',)}),
         ('Submissions', {'fields': ('hide_best_solutions',)}),
-        ('Extras', {'fields': ('extra_css', 'extra_js')}),
+        ('Extras', {'fields': ('extra_css', 'extra_js', 'extra_body_end_html')}),
     )

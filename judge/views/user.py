@@ -114,7 +114,7 @@ class UserPage(TitleMixin, UserMixin, DetailView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if preferences.SitePreferences.active_contest:
+        if preferences.SitePreferences.active_contest and not request.user.is_superuser:
             if request.META.get('HTTP_REFERER'):
                 return redirect(request.META.get('HTTP_REFERER'))
             else:
@@ -216,7 +216,7 @@ class UserPerformancePointsAjax(UserProblemsPage):
 
 @login_required
 def edit_profile(request):
-    if preferences.SitePreferences.active_contest:
+    if preferences.SitePreferences.active_contest and not request.user.is_superuser:
         raise Http404()
 
     profile = Profile.objects.get(user=request.user)
@@ -288,7 +288,7 @@ class UserList(QueryStringSortMixin, DiggPaginatorMixin, TitleMixin, ListView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if preferences.SitePreferences.active_contest:
+        if preferences.SitePreferences.active_contest and not request.user.is_superuser:
             raise Http404()
 
         return super(UserList, self).get(request, *args, **kwargs)
@@ -305,7 +305,7 @@ class FixedContestRanking(ContestRanking):
 
 
 def users(request):
-    if preferences.SitePreferences.active_contest:
+    if preferences.SitePreferences.active_contest and not request.user.is_superuser:
             raise Http404()
 
     if request.user.is_authenticated:

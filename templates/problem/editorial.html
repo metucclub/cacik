@@ -23,7 +23,7 @@
         {% endif %}
         {% with authors=solution.authors.all() %}
             {% if authors %}
-                <p>Authors: {{ link_users(authors) }}</p>
+                <p>Authors: {{ link_users(request, authors) }}</p>
             {% endif %}
         {% endwith %}
         {{ solution.content|markdown('solution')|reference|str|safe }}

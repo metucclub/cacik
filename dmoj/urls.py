@@ -2,7 +2,6 @@ from django.conf import settings
 from django.urls import path, re_path, include
 # from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.sitemaps.views import sitemap
 from django.http import Http404, HttpResponsePermanentRedirect
 from django.templatetags.static import static
 from django.conf.urls.static import static as static_urls
@@ -11,8 +10,6 @@ from django.utils.functional import lazystr
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import RedirectView
 
-from judge.sitemap import BlogPostSitemap, ContestSitemap, HomePageSitemap, ProblemSitemap, \
-    SolutionSitemap, UrlSitemap, UserSitemap
 from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, mailgun, \
     preview, problem, problem_manage, ranked_submission, register, stats, status, submission, tasks, ticket, totp, \
     user, widgets
@@ -185,7 +182,7 @@ urlpatterns = [
         path('message/', contests.ContestShareMessage.as_view(), name='contest_share_message'),
         path('scoreboard/', contests.ContestRanking.as_view(), name='contest_ranking'),
         path('scoreboard/ajax/', contests.contest_ranking_ajax, name='contest_ranking_ajax'),
-        path('join/..', contests.ContestJoin.as_view(), name='contest_join'),
+        path('join/', contests.ContestJoin.as_view(), name='contest_join'),
         path('leave/', contests.ContestLeave.as_view(), name='contest_leave'),
 
         path('rank/<str:problem>/',
@@ -205,15 +202,16 @@ urlpatterns = [
     path('runtimes/matrix/', status.version_matrix, name='version_matrix'),
     path('status/', status.status_all, name='status_all'),
 
-    path('api/', include([
-        path('contest/list/', api.api_v1_contest_list),
-        path('contest/info/<str:contest>/', api.api_v1_contest_detail),
-        path('problem/list/', api.api_v1_problem_list),
-        path('problem/info/<str:problem>/', api.api_v1_problem_info),
-        path('user/list/', api.api_v1_user_list),
-        path('user/info/<str:user>/', api.api_v1_user_info),
-        path('user/submissions/<str:user>/', api.api_v1_user_submissions),
-    ])),
+    #path('api/', include([
+    #    path('contest/list/', api.api_v1_contest_list),
+    #    path('contest/info/<str:contest>/', api.api_v1_contest_detail),
+    #    path('problem/list/', api.api_v1_problem_list),
+    #    path('problem/info/<str:problem>/', api.api_v1_problem_info),
+    #    path('user/list/', api.api_v1_user_list),
+    #    path('user/info/<str:user>/', api.api_v1_user_info),
+    #    path('user/submissions/<str:user>/', api.api_v1_user_submissions),
+    # ])),
+
 
     path('blog/', paged_list_view(blog.PostList, 'blog_post_list')),
     re_path(r'^post/(?P<id>\d+)-(?P<slug>.*)$', blog.PostView.as_view(), name='blog_post'),
@@ -273,18 +271,6 @@ urlpatterns = [
         path('close/', ticket.TicketStatusChangeView.as_view(open=False), name='ticket_close'),
         path('notes/', ticket.TicketNotesEditView.as_view(), name='ticket_notes'),
     ])),
-
-    path('sitemap.xml', sitemap, {'sitemaps': {
-        'problem': ProblemSitemap,
-        'user': UserSitemap,
-        'home': HomePageSitemap,
-        'contest': ContestSitemap,
-        'blog': BlogPostSitemap,
-        'solutions': SolutionSitemap,
-        'pages': UrlSitemap([
-            {'location': '/about/', 'priority': 0.9},
-        ]),
-    }}),
 
     path('judge-select2/', include([
         path('profile/', UserSelect2View.as_view(), name='profile_select2'),

@@ -10,7 +10,7 @@
         <tbody>
         {% for vote in votes %}
             <tr>
-                <td>{{ link_user(vote.voter) }}</td>
+                <td>{{ link_user(request, vote.voter) }}</td>
                 <td>{{ vote.score }}</td>
             </tr>
         {% endfor %}

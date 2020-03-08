@@ -326,7 +326,7 @@
                     <div class="info-title">{{ _('Assignees') }}</div>
                     <div class="info-data">
                         {% if assignees %}
-                            {{ link_users(assignees) }}
+                            {{ link_users(request, assignees) }}
                         {% else %}
                             <div class="info-empty">{{ _('No one is assigned.') }}</div>
                         {% endif %}

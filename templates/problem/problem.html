@@ -204,7 +204,7 @@
                     {% pluralize count %}
                     Authors:
                 {% endtrans %}</span>
-                    <div class="pi-value authors-value">{{ link_users(authors) }}</div>
+                    <div class="pi-value authors-value">{{ link_users(request, authors) }}</div>
                 </div>
             {% endif %}
         {% endwith %}
