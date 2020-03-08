@@ -62,24 +62,22 @@ class DefaultContestFormat(BaseContestFormat):
 
         data = [ContestParticipationData() for _ in range(len(querysets))]
 
-        """
-          for result in queryset.values('problem_id').annotate(points=Max('points')): # , time=Min('submission__date')
-                x_problem_id = result['problem_id']
-                x_points = result['points']
-
-                result = queryset.filter(points=x_points).order_by('submission__date').first()
-                result = {
-                    'time': result.submission.date,
-                    'points': x_points,
-                    'problem_id': x_problem_id
-                }
-
-        """
 
         for i, queryset in enumerate(querysets):
-            for result in queryset.values('problem_id').annotate(time=Max('submission__date'), points=Max('points')):
+            for result_only_point in queryset.values('problem_id').annotate(points=Max('points')):
+                result = queryset.filter(
+                    problem_id=result_only_point['problem_id'],
+                    points=result_only_point['points']
+                ).order_by('submission__date').first()
+
+                result = {
+                    'time': result.submission.date,
+                    'points': result_only_point['points'],
+                    'problem_id': result_only_point['problem_id'],
+                }
+
                 ws_count = queryset.filter(problem_id=result['problem_id'],
-                    submission__result__in=['WA', 'TLE', 'MLE', 'OLE', 'IR', 'RTE']).count()
+                    submission__result__in=['WA', 'TLE', 'MLE', 'OLE', 'IR', 'RTE']).count() if self.config['penalty'] > 0 else 0
 
                 dt = (result['time'] - participation.start).total_seconds()
 
@@ -111,7 +109,7 @@ class DefaultContestFormat(BaseContestFormat):
                 penalty = ''
             else:
                 penalty = format_html('<small style="color:red"> ({penalty})</small>',
-                                    penalty=floatformat(format_data['penalty'])) if format_data['penalty'] else ''
+                                    penalty=floatformat(format_data['penalty'])) if format_data['penalty'] > 0 else ''
 
             return format_html(
                 u'<td class="{state}">{points}{penalty}<div class="solving-time">{time}</div></td>',
