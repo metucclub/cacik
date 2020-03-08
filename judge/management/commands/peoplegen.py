@@ -88,9 +88,8 @@ class Command(BaseCommand):
 
                     participant_count += len(members)
 
-                    new_user = User.objects.get_or_create(username=username,
+                    new_user = User.objects.get_or_create(username=username, email=email,
                         defaults={
-                            'email': email,
                             'is_active': True,
                         })[0]
                     new_user.set_password(password)

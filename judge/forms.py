@@ -3,7 +3,8 @@ from operator import attrgetter
 import pyotp
 from django import forms
 from django.conf import settings
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db.models import Q
@@ -72,12 +73,18 @@ class NewMessageForm(ModelForm):
         if PagedownWidget is not None:
             widgets['content'] = MathJaxPagedownWidget()
 
+class CustomAuthenticationForm(forms.Form):
+    email = forms.EmailField(widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': _('Email')}))
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'placeholder': _('Password')}),
+    )
 
-class CustomAuthenticationForm(AuthenticationForm):
-    def __init__(self, *args, **kwargs):
-        super(CustomAuthenticationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'placeholder': _('Username')})
-        self.fields['password'].widget.attrs.update({'placeholder': _('Password')})
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        self.user_cache = None
+        super().__init__(*args, **kwargs)
 
         self.has_google_auth = self._has_social_auth('GOOGLE_OAUTH2')
         self.has_facebook_auth = self._has_social_auth('FACEBOOK')
@@ -87,6 +94,41 @@ class CustomAuthenticationForm(AuthenticationForm):
         return (getattr(settings, 'SOCIAL_AUTH_%s_KEY' % key, None) and
                 getattr(settings, 'SOCIAL_AUTH_%s_SECRET' % key, None))
 
+    def clean(self):
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+
+        try:
+            user = User.objects.get(email=email)
+            username = user.username
+        except:
+            raise self.get_invalid_login_error()
+
+        if username is not None and password:
+            self.user_cache = authenticate(self.request, username=username, password=password)
+
+            if self.user_cache is None:
+                raise self.get_invalid_login_error()
+            else:
+                if not self.user_cache.is_active:
+                    raise forms.ValidationError(
+                        _("This account is inactive."),
+                        code='inactive',
+                    )
+
+        return self.cleaned_data
+
+    def get_user(self):
+        return self.user_cache
+
+    def get_invalid_login_error(self):
+        return forms.ValidationError(
+            _(
+                "Please enter a correct email and password. Note that both "
+                "fields may be case-sensitive."
+            ),
+            code='invalid_login',
+        )
 
 class NoAutoCompleteCharField(forms.CharField):
     def widget_attrs(self, widget):
