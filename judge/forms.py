@@ -74,7 +74,7 @@ class NewMessageForm(ModelForm):
             widgets['content'] = MathJaxPagedownWidget()
 
 class CustomAuthenticationForm(forms.Form):
-    email = forms.EmailField(widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': _('Email')}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': _('Email or Username')}))
     password = forms.CharField(
         label=_("Password"),
         strip=False,
@@ -100,9 +100,13 @@ class CustomAuthenticationForm(forms.Form):
 
         try:
             user = User.objects.get(email=email)
-            username = user.username
         except:
-            raise self.get_invalid_login_error()
+            try:
+                user = User.objects.get(username=email)
+            except:
+                raise self.get_invalid_login_error()
+
+        username = user.username
 
         if username is not None and password:
             self.user_cache = authenticate(self.request, username=username, password=password)
