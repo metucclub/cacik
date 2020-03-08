@@ -181,6 +181,14 @@
                 install_tooltips();
             });
         </script>
+
+        {% if request.user.is_superuser %}
+            <script>
+                setInterval(function() {
+                    window.location.reload();
+                }, 10000);
+            </script>
+        {% endif %}
     {% endif %}
     <script type="text/javascript">
         $(function () {

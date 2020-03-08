@@ -161,7 +161,7 @@ class Contest(models.Model):
         return True
 
     def can_see_real_scoreboard(self, user):
-        if not self.can_see_scoreboard(user):
+        if not user or not self.can_see_scoreboard(user):
             return False
 
         if self.freeze_scoreboard_after is not None and not self.ended and self._now > self.freeze_scoreboard_after:

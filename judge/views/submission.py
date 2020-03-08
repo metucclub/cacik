@@ -212,7 +212,17 @@ class SubmissionsListBase(DiggPaginatorMixin, TitleMixin, ListView):
         if self.selected_statuses:
             queryset = queryset.filter(result__in=self.selected_statuses)
 
+        active_contest = preferences.SitePreferences.active_contest
+        if active_contest and not self.allow_dynamic_update:
+            queryset = queryset.filter(date__lt=active_contest.freeze_scoreboard_after)
+
         return queryset
+
+    @property
+    def allow_dynamic_update(self):
+        active_contest = preferences.SitePreferences.active_contest
+
+        return not (active_contest and active_contest.freeze_scoreboard_after and not active_contest.can_see_real_scoreboard(self.request.user))
 
     def get_queryset(self):
         queryset = self._get_queryset()
@@ -316,7 +326,7 @@ class AllUserSubmissions(ConditionalUserTabMixin, UserMixin, SubmissionsListBase
 
     def get_context_data(self, **kwargs):
         context = super(AllUserSubmissions, self).get_context_data(**kwargs)
-        context['dynamic_update'] = context['page_obj'].number == 1
+        context['dynamic_update'] = self.allow_dynamic_update and context['page_obj'].number == 1
         context['dynamic_user_id'] = self.profile.id
         return context
 
@@ -343,6 +353,8 @@ class ProblemSubmissionsBase(SubmissionsListBase):
             raise Http404()
 
     def access_check(self, request):
+        super(ProblemSubmissionsBase, self).access_check(request)
+
         if not self.problem.is_accessible_by(request.user):
             raise Http404()
 
@@ -361,9 +373,11 @@ class ProblemSubmissionsBase(SubmissionsListBase):
 
     def get_context_data(self, **kwargs):
         context = super(ProblemSubmissionsBase, self).get_context_data(**kwargs)
-        if self.dynamic_update:
+        if self.dynamic_update and self.allow_dynamic_update:
             context['dynamic_update'] = context['page_obj'].number == 1
             context['dynamic_problem_id'] = self.problem.id
+        else:
+            context['dynamic_update'] = False
         context['best_submissions_link'] = reverse('ranked_submissions', kwargs={'problem': self.problem.code})
         return context
 
@@ -456,7 +470,7 @@ class AllSubmissions(SubmissionsListBase):
 
     def get_context_data(self, **kwargs):
         context = super(AllSubmissions, self).get_context_data(**kwargs)
-        context['dynamic_update'] = context['page_obj'].number == 1
+        context['dynamic_update'] = self.allow_dynamic_update and context['page_obj'].number == 1
         context['stats_update_interval'] = self.stats_update_interval
         return context
 
