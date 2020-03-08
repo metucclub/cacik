@@ -240,10 +240,6 @@
         <div id="content-body">{% block body %}{% endblock %}</div>
     </main>
 
-    {% if i18n_config.announcement %}
-        <div id="announcement">{{ i18n_config.announcement|safe }}</div>
-    {% endif %}
-
     {% block bodyend %}{% endblock %}
 
     {% if preferences.SitePreferences.extra_body_end_html %}
@@ -254,9 +250,6 @@
         <span id="footer-content">
             <br>
             <a style="color: #808080" href="https://dmoj.ca">proudly powered by <b>DMOJ</b></a> |
-            {% if i18n_config.footer %}
-                {{ i18n_config.footer|safe }} |
-            {% endif %}
             <form action="{{ url('set_language') }}" method="post" style="display: inline">
                 {% csrf_token %}
             <input name="next" type="hidden" value="{{ request.get_full_path() }}">
