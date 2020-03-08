@@ -77,7 +77,7 @@ class Command(BaseCommand):
                         break
 
             if success:
-                default_lang = Language.objects.get(key='PY2')
+                default_lang = Language.objects.get(key='PY3')
 
                 for team in teams:
                     username = team['username']

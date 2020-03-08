@@ -63,6 +63,12 @@
         <link rel="stylesheet" href="{{ static('libs/featherlight/featherlight.min.css') }}">
         <link rel="stylesheet" href="{{ static('libs/clipboard/tooltip.css') }}">
         <link rel="stylesheet" href="{{ static('libs/select2/select2.css') }}">
+
+        {% if preferences.SitePreferences.extra_css %}
+            <style>
+                {{ preferences.SitePreferences.extra_css }}
+            </style>
+        {% endif %}
     {% endcompress %}
     <link rel="canonical"
           href="{{ DMOJ_SCHEME }}://{{ DMOJ_CANONICAL|default(site.domain) }}{{ request.get_full_path() }}">
@@ -99,7 +105,6 @@
 
         {% if last_msg and request.in_contest %}
             <script>
-                console.log('contest-message-{{ request.participation.contest.key }}');
                 var receiver = new EventReceiver(
                     "{{ EVENT_DAEMON_LOCATION }}", "{{ EVENT_DAEMON_POLL_LOCATION }}", ['contest-message-{{ request.participation.contest.key }}'], {{last_msg}}, function (message) {
                         if (message.message != undefined) {
@@ -107,6 +112,12 @@
                         }
                     }
                 );
+            </script>
+        {% endif %}
+
+        {% if preferences.SitePreferences.extra_js %}
+            <script>
+                {{ preferences.SitePreferences.extra_js }}
             </script>
         {% endif %}
     {% endcompress %}

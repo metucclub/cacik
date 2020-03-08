@@ -75,7 +75,7 @@ class RegistrationView(OldRegistrationView):
 
         user = super(RegistrationView, self).register(form)
         profile, _ = Profile.objects.get_or_create(user=user, defaults={
-            'language': Language.get_python2(),
+            'language': Language.get_python3(),
         })
 
         cleaned_data = form.cleaned_data
@@ -91,7 +91,7 @@ class RegistrationView(OldRegistrationView):
     def get_initial(self, *args, **kwargs):
         initial = super(RegistrationView, self).get_initial(*args, **kwargs)
         initial['timezone'] = getattr(settings, 'DEFAULT_USER_TIME_ZONE', 'America/Toronto')
-        initial['language'] = Language.objects.get(key=getattr(settings, 'DEFAULT_USER_LANGUAGE', 'PY2'))
+        initial['language'] = Language.objects.get(key=getattr(settings, 'DEFAULT_USER_LANGUAGE', 'PY3'))
         return initial
 
 

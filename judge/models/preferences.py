@@ -25,3 +25,6 @@ class SitePreferences(Preferences):
     disable_mail_verification = models.BooleanField(default=False)
 
     use_display_name_as_public_name = models.BooleanField(default=False)
+
+    extra_css = models.TextField(blank=True, null=True)
+    extra_js = models.TextField(blank=True, null=True)

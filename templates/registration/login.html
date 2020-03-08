@@ -39,14 +39,14 @@
             {% csrf_token %}
             {% if form.errors %}
                 <div id="form-errors">
-                    <p class="error">{{ _('Invalid username or password.') }}</p>
+                    <p class="error">{{ _('Invalid email or password.') }}</p>
                 </div>
             {% endif %}
             <table border="0" style="text-align:left">
                 <tr>
                     <th><i class="fa fa-user fa-fw"></i>
                     </th>
-                    <td>{{ form.username }}
+                    <td>{{ form.email }}
                     </td>
                 </tr>
                 <tr>
