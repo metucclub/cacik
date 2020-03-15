@@ -214,7 +214,7 @@ class SubmissionsListBase(DiggPaginatorMixin, TitleMixin, ListView):
 
         active_contest = preferences.SitePreferences.active_contest
         if active_contest and not self.allow_dynamic_update:
-            queryset = queryset.filter(date__lt=active_contest.freeze_scoreboard_after)
+            queryset = queryset.filter(Q(date__lt=active_contest.freeze_scoreboard_after)|Q(user=self.request.profile))
 
         return queryset
 
