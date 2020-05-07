@@ -60,11 +60,12 @@
         <link rel="stylesheet" href="{{ static('libs/featherlight/featherlight.min.css') }}">
         <link rel="stylesheet" href="{{ static('libs/clipboard/tooltip.css') }}">
         <link rel="stylesheet" href="{{ static('libs/select2/select2.css') }}">
-
-        {% if preferences.SitePreferences.extra_css %}
-            {{ preferences.SitePreferences.extra_css|safe }}
-        {% endif %}
     {% endcompress %}
+
+    {% if preferences.SitePreferences.extra_css %}
+        {{ preferences.SitePreferences.extra_css|safe }}
+    {% endif %}
+
     <link rel="canonical"
           href="{{ DMOJ_SCHEME }}://{{ DMOJ_CANONICAL|default(site.domain) }}{{ request.get_full_path() }}">
     {% if request.user.is_impersonate %}
@@ -109,11 +110,11 @@
                 );
             </script>
         {% endif %}
-
-        {% if preferences.SitePreferences.extra_js %}
-            {{ preferences.SitePreferences.extra_js|safe }}
-        {% endif %}
     {% endcompress %}
+    {% if preferences.SitePreferences.extra_js %}
+        {{ preferences.SitePreferences.extra_js|safe }}
+    {% endif %}
+
     {% block js_media %}{% endblock %}
 
     {% if request.user.is_authenticated %}
