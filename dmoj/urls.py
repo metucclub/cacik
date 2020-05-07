@@ -72,7 +72,7 @@ def exception(request):
 def paged_list_view(view, name):
     return include([
         path('', view.as_view(), name=name),
-        path('<int:page>/', view.as_view(), name=name),
+        path('<int:page>', view.as_view(), name=name),
     ])
 
 
