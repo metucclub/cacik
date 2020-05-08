@@ -182,7 +182,7 @@
             });
         </script>
 
-        {% if request.user.is_superuser %}
+        {% if False and request.user.is_superuser %}
             <script>
                 setInterval(function() {
                     window.location.reload();
@@ -233,7 +233,7 @@
     {% endif %}
 
     {% if contest.primary_group %}
-        <div>To see the full scoreboard, click <a href="?all">here</a>
+        <div>To see the full scoreboard, click <a href="?all">here</a></div>
     {% endif %}
 
     {% include "contest/ranking-table.html" %}
