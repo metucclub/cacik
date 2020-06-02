@@ -49,7 +49,8 @@ class PasswordResetView(auth_views.PasswordResetView):
 
 
 class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
-    template_name='registration/password_reset_confirm.html',
+    template_name='registration/password_reset_confirm.html'
+
     def get_context_data(self, **kwargs):
         if preferences.SitePreferences.disable_forgot_password:
             raise Http404()
@@ -58,7 +59,7 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
 
 
 class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
-    template_name='registration/password_reset_complete.html',
+    template_name='registration/password_reset_complete.html'
 
     def get_context_data(self, **kwargs):
         if preferences.SitePreferences.disable_forgot_password:
@@ -68,7 +69,7 @@ class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
 
 
 class PasswordResetDoneView(auth_views.PasswordResetDoneView):
-    template_name='registration/password_reset_done.html',
+    template_name='registration/password_reset_done.html'
 
     def get_context_data(self, **kwargs):
         if preferences.SitePreferences.disable_forgot_password:

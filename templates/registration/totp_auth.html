@@ -38,6 +38,5 @@
             <hr>
             <button style="float:right;" type="submit">{{ _('Login!') }}</button>
         </form>
-        <p class="totp-panel-message">{{ _('If you lost your authentication device, please contact us at %(email)s.', email=preferences.SitePreferences.site_admin_email)|urlize }}</p>
     </div>
 {% endblock %}
