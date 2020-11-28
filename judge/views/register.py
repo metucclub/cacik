@@ -78,6 +78,10 @@ class RegistrationView(OldRegistrationView):
             'language': Language.get_python3(),
         })
 
+        if preferences.SitePreferences.disable_mail_verification:
+            user.is_active = True
+            user.save()
+
         cleaned_data = form.cleaned_data
         profile.timezone = cleaned_data['timezone']
         profile.language = cleaned_data['language']
