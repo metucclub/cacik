@@ -25,7 +25,7 @@ qrcode[pil]
 jsonfield
 pymoss
 packaging
-celery
+celery<5.0.0
 -e git://github.com/DMOJ/ansi2html.git#egg=ansi2html
 libsass
 django-sass-processor
