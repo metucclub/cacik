@@ -6,7 +6,7 @@ django-registration-redux
 django-social-share
 django-impersonate
 django-anymail
--e git://github.com/DMOJ/dmoj-wpadmin.git#egg=dmoj-wpadmin
+dmoj-wpadmin @ git+git://github.com/DMOJ/dmoj-wpadmin.git
 lxml
 Pygments
 mistune
@@ -26,7 +26,7 @@ jsonfield
 pymoss
 packaging
 celery<5.0.0
--e git://github.com/DMOJ/ansi2html.git#egg=ansi2html
+ansi2html @ git+git://github.com/DMOJ/ansi2html.git
 libsass
 django-sass-processor
 django-preferences

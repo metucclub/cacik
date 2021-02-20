@@ -3,6 +3,7 @@ FROM python:3.8-alpine
 RUN apk add --upgrade  \
     build-base \
     libffi-dev \
+    openssl-dev \
     mariadb-dev \
     libxml2-dev \
     libxslt-dev \
@@ -13,6 +14,8 @@ RUN apk add --upgrade  \
     nodejs \
     npm \
     libsass \
+    rust \
+    cargo \
     git \
     zip \
     unzip \
@@ -36,19 +39,20 @@ WORKDIR /app
 
 RUN mkdir -p pdfcache/
 
-COPY requirements.txt .
-
-RUN pip install -r requirements.txt && \
-    pip install gunicorn && \
+RUN pip install gunicorn && \
     pip install gunicorn[gevent] && \
     pip install gunicorn[gthread]
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 COPY package.json .
 RUN npm install .
 
 COPY . .
 
-RUN git clone https://github.com/oznakn/docker-scripts && \
+RUN git clone https://github.com/metucclub/docker-scripts && \
     mv docker-scripts/*.sh . && \
     rm -rf docker-scripts && \
     mkdir -p ./db && \
