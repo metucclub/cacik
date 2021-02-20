@@ -39,7 +39,8 @@ WORKDIR /app
 
 RUN mkdir -p pdfcache/
 
-RUN pip install gunicorn && \
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install gunicorn && \
     pip install gunicorn[gevent] && \
     pip install gunicorn[gthread]
 
