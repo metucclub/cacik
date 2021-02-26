@@ -233,7 +233,14 @@
     {% endif %}
 
     {% if contest.primary_group %}
-        <div>To see the full scoreboard, click <a href="?all">here</a></div>
+        {% if 'all' not in request.GET %}
+            <div style="margin-top: 10px; margin-bottom: 10px;">To see the full scoreboard, click <a href="?all">here</a></div>
+        {% else %}
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+                To see the normal scoreboard, click
+                <a href="javascript:void();" onclick="window.location = location.protocol + '/' + '/' + location.host + location.pathname">here</a>
+            </div>
+        {% endif %}
     {% endif %}
 
     {% include "contest/ranking-table.html" %}
