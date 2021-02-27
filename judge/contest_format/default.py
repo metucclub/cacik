@@ -76,7 +76,7 @@ class DefaultContestFormat(BaseContestFormat):
                     'problem_id': result_only_point['problem_id'],
                 }
 
-                ws_count = queryset.filter(problem_id=result['problem_id'],
+                ws_count = queryset.filter(problem_id=result['problem_id'], submission__date__lt=result['time'],
                     submission__result__in=['WA', 'TLE', 'MLE', 'OLE', 'IR', 'RTE']).count() if self.config['penalty'] > 0 else 0
 
                 dt = (result['time'] - participation.start).total_seconds()
