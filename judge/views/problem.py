@@ -234,7 +234,7 @@ class ProblemPdfView(ProblemMixin, SingleObjectMixin, View):
 
         language = kwargs.get('language', self.request.LANGUAGE_CODE)
         if language not in self.languages:
-            raise Http404()
+            language = 'en'
 
         problem = self.get_object()
         try:
